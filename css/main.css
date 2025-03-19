@@ -1,0 +1,129 @@
+/* main.css */
+:root {
+    --primary-color: #2c3e50;
+    --secondary-color: #3498db;
+    --text-color: #333;
+    --light-bg: #f9f9f9;
+  }
+  
+  /* Base styles */
+  body {
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    line-height: 1.6;
+    margin: 0;
+    padding: 0;
+    color: var(--text-color);
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  
+  /* Header */
+  .site-header {
+    text-align: center;
+    border-bottom: 2px solid var(--primary-color);
+    margin-bottom: 2rem;
+    padding: 2rem 0;
+  }
+  
+  .site-title {
+    font-size: 2.5rem;
+    color: var(--primary-color);
+    margin: 0;
+  }
+  
+  /* Navigation */
+  .nav-links {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    margin: 1rem 0;
+  }
+  
+  .nav-links a {
+    text-decoration: none;
+    color: var(--secondary-color);
+    font-weight: 500;
+  }
+  
+  .nav-links a:hover {
+    text-decoration: underline;
+  }
+  
+  /* Blog posts */
+  .post-list {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .post-item {
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    background-color: var(--light-bg);
+    border-radius: 8px;
+  }
+  
+  .post-title {
+    color: var(--primary-color);
+    margin-top: 0;
+  }
+  
+  .post-date {
+    color: #666;
+    font-size: 0.9rem;
+  }
+  
+  .post-content img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 4px;
+  }
+  
+  /* Links */
+  a {
+    color: var(--secondary-color);
+    text-decoration: none;
+  }
+  
+  a:hover {
+    text-decoration: underline;
+  }
+  
+  /* Footer */
+  .site-footer {
+    text-align: center;
+    padding: 2rem 0;
+    margin-top: 4rem;
+    color: #666;
+    border-top: 1px solid #eee;
+  }
+  
+  /* Responsive design */
+  @media (max-width: 600px) {
+    body {
+      padding: 10px;
+    }
+  
+    .site-title {
+      font-size: 2rem;
+    }
+    
+    .post-item {
+      padding: 1rem;
+    }
+  }
+  
+  /* Code blocks (for technical blogs) */
+  pre {
+    background-color: #f4f4f4;
+    padding: 1rem;
+    overflow-x: auto;
+    border-radius: 4px;
+  }
+  
+  code {
+    font-family: 'Courier New', monospace;
+    font-size: 0.9rem;
+  }
