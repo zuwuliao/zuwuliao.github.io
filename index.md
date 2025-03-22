@@ -3,5 +3,5 @@
   # Welcome to My Blog
   This is the main page of my Jekyll-powered blog.
 
-  [My blog]({% link my_blog/index.markdown %})
+  [My blog]({% link my_blog/_site/index.html %})
 
