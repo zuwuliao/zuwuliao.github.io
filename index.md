@@ -5,5 +5,5 @@
 
   <!-- [Home]({{ site.baseurl }}/) -->
 
-  [My blog]({% link my_blog/_site/index.html %})
+  [My blog]({% link my_blog/index.html %})
 
