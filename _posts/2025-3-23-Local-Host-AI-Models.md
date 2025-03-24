@@ -51,7 +51,7 @@ On browser:
 http://localhost:3000
 
 Select model to chat:
-![pic 1](/images/local-host-ai-model-pic1 "pic 1")
+![pic 1](/images/local-host-ai-model-pic1.png "pic 1")
 
 Ollama run DeepSeek R1 models:
 
@@ -76,10 +76,10 @@ download LM Studio and install
 https://lmstudio.ai/
 
 select LLM model to download on LM Studio
-![pic 2](/images/local-host-ai-model-pic2 "pic 2")
+![pic 2](/images/local-host-ai-model-pic2.png "pic 2")
 
 Now you can chat with LLM on LM Studio just like you chat online:
-![pic 3](/images/local-host-ai-model-pic3 "pic 3")
+![pic 3](/images/local-host-ai-model-pic3.png "pic 3")
 
 Please Note, LM Studio has RAG capability. You can upload a file and chat with it offline. This is super useful for some private and highly sensitive documents process. 
 
