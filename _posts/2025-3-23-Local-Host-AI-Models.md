@@ -12,45 +12,45 @@ The tools we are going to use in this article is Ollama and LM Studio
 
 ### Ollama
 
-Ollama - Run LLM locally
+** Ollama - Run LLM locally **
 
-https://ollama.com/
+* https://ollama.com/ *
 
  
 
-Install Ollama:
+** Install Ollama: **
 
 Download ollama from https://ollama.com and run the package
 
  
 
-Run LLM model:
+** Run LLM model: **
 
-Pull the model
+1. Pull the model
 
-Ollama pull phi3
+    Ollama pull phi3
 
-Run the model
+2. Run the model
 
-          Ollama run phi3
+    Ollama run phi3
 
  
 
 If you are not familiar with CLI or want to have the same user experience as ChatGPT with GUI interface, you can install Ollama Web UI. It is using docker to run.
 
-Run Ollama Web UI:
+** Run Ollama Web UI: **
 
-Install docker and run
+1. Install docker and run
 
-Run the following command:
+2. Run the following command:
 
-docker run -d -p 3000:8080 --add-host=host.docker.internal:host-gateway -v open-webui:/app/backend/data --name   open-webui --restart always ghcr.io/open-webui/open-webui:main
+* docker run -d -p 3000:8080 --add-host=host.docker.internal:host-gateway -v open-webui:/app/backend/data --name   open-webui --restart always ghcr.io/open-webui/open-webui:main *
 
-On browser:
+3. On browser:
 
 http://localhost:3000
 
-Select model to chat:
+4. Select model to chat:
 ![pic 1](/images/local-host-ai-model-pic1.png "pic 1")
 
 Ollama run DeepSeek R1 models:
@@ -71,11 +71,11 @@ Another method you can use that is LM Studio:
 
 ### LM Studio:
 
-download LM Studio and install
+1. download LM Studio and install
 
-https://lmstudio.ai/
+    https://lmstudio.ai/
 
-select LLM model to download on LM Studio
+2. select LLM model to download on LM Studio
 ![pic 2](/images/local-host-ai-model-pic2.png "pic 2")
 
 Now you can chat with LLM on LM Studio just like you chat online:
