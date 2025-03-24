@@ -4,12 +4,14 @@ title: About
 permalink: /about/
 ---
 
-Some information about you!
+Hello,
 
-### More Information
+I’m Kevin Liao, a technology ethusasmist. I’ve been working in Telecom, Network, VoIP, Unify Communication, and Cloud fields. Now, I’m studying and working for Data and AI projects.
 
-A place to include any other types of information that you'd like to include about yourself.
+This blog is for my learning journey for anything I’m interested. Hope it is helpful for you too.
 
-### Contact me
+You can contact me at:
 
-[email@domain.com](mailto:email@domain.com)
+https://www.linkedin.com/in/kevinzuwuliao/
+
+zuwuliao@gmail.com
