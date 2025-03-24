@@ -14,17 +14,17 @@ The tools we are going to use in this article is Ollama and LM Studio
 
 ** Ollama - Run LLM locally **
 
-* https://ollama.com/ *
+*https://ollama.com/*
 
  
 
-** Install Ollama: **
+**Install Ollama:**
 
 Download ollama from https://ollama.com and run the package
 
  
 
-** Run LLM model: **
+**Run LLM model:**
 
 1. Pull the model
 
@@ -38,13 +38,13 @@ Download ollama from https://ollama.com and run the package
 
 If you are not familiar with CLI or want to have the same user experience as ChatGPT with GUI interface, you can install Ollama Web UI. It is using docker to run.
 
-** Run Ollama Web UI: **
+**Run Ollama Web UI:**
 
 1. Install docker and run
 
 2. Run the following command:
 
-* docker run -d -p 3000:8080 --add-host=host.docker.internal:host-gateway -v open-webui:/app/backend/data --name   open-webui --restart always ghcr.io/open-webui/open-webui:main *
+*docker run -d -p 3000:8080 --add-host=host.docker.internal:host-gateway -v open-webui:/app/backend/data --name   open-webui --restart always ghcr.io/open-webui/open-webui:main*
 
 3. On browser:
 
