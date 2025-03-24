@@ -40,6 +40,7 @@ Accuracy: Matches full fine-tuning performance in most cases.
 Deployment: Ideal for efficiently adapting large models for multiple tasks with minimal storage.
 
 ## Comparison Table
+
 | Technique                 | Mathematical Idea                                | Compute Efficiency                         | Memory Efficiency                            | Accuracy Impact                                                  | Deployment Feasibility                                 |
 |--------------------------|---------------------------------------------------|---------------------------------------------|-----------------------------------------------|------------------------------------------------------------------|--------------------------------------------------------|
 | **Dense**                | Full weight matrix                                | High FLOPs; slowest                         | Large model size                              | Highest accuracy                                                 | Difficult for edge; common in cloud                    |
@@ -47,6 +48,7 @@ Deployment: Ideal for efficiently adapting large models for multiple tasks with 
 | **Quantized**            | Low-bit precision (e.g., 8-bit, 4-bit)            | 2–4× speedup per inference                  | 4–16× memory savings                           | <1% accuracy drop with good quantization                        | Used in mobile, edge, cloud                             |
 | **Distillation**         | Student mimics teacher model                      | Faster inference due to smaller model       | 2–10× size reduction                           | Retains ~95–99% of teacher accuracy                              | Used widely in NLP and vision                          |
 | **LoRA**                 | Low-rank adaptation layers                        | Very low compute overhead                   | 10–100× lower fine-tune memory needs           | Matches full fine-tuning                                        | Highly effective for multi-task adaptation             |
+
 
 
 ## Key Takeaways
