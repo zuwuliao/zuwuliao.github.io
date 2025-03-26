@@ -1,6 +1,6 @@
 ---
 layout: page
-title: Test-to-Image AI Challenges
+title: Text-to-Image AI Challenges
 categories: AI
 ---
 
