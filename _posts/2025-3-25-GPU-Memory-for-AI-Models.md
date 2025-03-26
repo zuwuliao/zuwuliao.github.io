@@ -61,18 +61,25 @@ For the FP8 precision:
     • overhead=1.2 - representing a 20% overhead
     • 𝑄= 8 bits
 Substitute the values into the formula:
+
 $$
 M = \left( \frac{70 \times 10^9 \times 1\, \text{byte}}{(32 / 8)} \right) \times 1.2
 $$
+
 Next:
+
 $$
 M = \left( \frac{70 \times 10^9\, \text{bytes}}{4} \right) \times 1.2
 $$
+
 Next:
+
 $$
 M = (17.5 \times 10^9 \, \text{bytes}) \times 1.2
 $$
+
 Work out the memory requirements:
+
 $$
 \begin{align*}
 M &= 21 \times 10^9 \text{ bytes} \\
