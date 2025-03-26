@@ -57,12 +57,14 @@ A single A100 80GB wouldn't be enough, although 2x A100 80GB should be enough to
 To calculate the GPU memory requirements for training a model like Llama3 with 70 billion parameters using different precision levels such as FP8 (8-bit floating-point), we need to adjust our formula to fit the new context. 
 Let's define a general formula first, and then apply it specifically for FP8.
 For the FP8 precision:
-    • Bytes per parameter (b) is 1 byte
-    • Bit width used (Q) is 8 bits
-    • 𝑃=70×109- 70 billion parameters
-    • 𝑏=1- byte per parameter (since 8 bits = 1 byte)
-    • overhead=1.2 - representing a 20% overhead
-    • 𝑄= 8 bits
+
+    * Bytes per parameter (b) is 1 byte
+    * Bit width used (Q) is 8 bits
+    * 𝑃=70×109- 70 billion parameters
+    * 𝑏=1- byte per parameter (since 8 bits = 1 byte)
+    * overhead=1.2 - representing a 20% overhead
+    * 𝑄= 8 bits
+
 Substitute the values into the formula:
 
 $$
@@ -95,10 +97,12 @@ Therefore, the memory requirement for training the Llama3 model with 70 billion 
 **General Process**
 
 Determine the number of parameters in the model (P)
+
     * The model size is often expressed in billions (B) of parameters.
     * For example, a 7B model has 7 billion parameters.
 
 Identify the data type used for the model parameters
+
     * Common data types include:
     * float (32-bit floating point): 4 bytes per parameter
     * half/BF16 (16-bit floating point): 2 bytes per parameter
@@ -106,6 +110,7 @@ Identify the data type used for the model parameters
     * int4 (4-bit integer): 0.5 bytes per parameter
 
 Calculate the storage size of the model (S)
+
     * Multiply the number of parameters (P) by the size of the data type.
     * For example, a 7B model using BF16 would have a storage size of: S = 7 billion * 2 bytes = 14 billion bytes ≈ 14 GB
 
@@ -114,12 +119,14 @@ Estimate the memory required for inference (M_inf)
     * M_inf ≈ S
 
 Estimate the memory required for training (M_train)
+
     * Training typically requires 3 to 4 times the memory needed for inference.
     * A conservative estimate is to multiply the inference memory (M_inf) by a factor of 4.
     * M_train ≈ M_inf * 4
     * For example, training a 7B model using float parameters would require: M_train ≈ 7 billion * 4 bytes * 4 = 112 GB
 
 Consider memory requirements for gradients and optimizer states
+
     * During training, additional memory is needed for gradients and optimiser states.
     * The memory required for gradients is equal to the number of parameters (P).
     * The memory required for optimizer states depends on the optimizer used:
@@ -127,15 +134,18 @@ Consider memory requirements for gradients and optimizer states
     * SGD optimizer: P
 
 Adjust for additional memory overhead
+
     * Training may require additional memory for intermediate computations and data storage.
     * Add a safety margin of 10-20% to the estimated training memory (M_train).
 
 Consider memory-efficient training techniques
+
     * Techniques like LoRA (Low-Rank Adaptation) and QLoRA can reduce memory requirements.
     * These techniques involve training a smaller model while running inference on the original model.
     * The total memory used is the sum of the memory required for inference on the original model and the memory needed for training the smaller model.
 
 Here's an example calculation for training a 13B model using float parameters:
+
     * Number of parameters (P) = 13 billion
     * Data type: float (4 bytes per parameter)
     * Storage size (S) = 13 billion * 4 bytes ≈ 52 GB
