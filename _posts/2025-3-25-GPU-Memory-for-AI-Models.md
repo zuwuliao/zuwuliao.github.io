@@ -42,8 +42,10 @@ M = $\left( \frac{P \times 4B}{\left( \frac{32}{Q} \right)} \right) \times 1.2$
 **GPU memory required for serving Llama 70B**
 Let's try it out for Llama 70 billion parameter model that we will load in 16 bit number format. 
 
-$M = \left( \frac{70 \times 10^9 \times 4\, \text{bytes}}{(32 / 16)} \right) \times 1.2 
-= \left( 140 \times 10^9 \, \text{bytes} \right) \times 1.2 = 168\, \text{GB}$
+$$
+M = \left( \frac{70 \times 10^9 \times 4\, \text{bytes}}{(32 / 16)} \right) \times 1.2 
+= \left( 140 \times 10^9 \, \text{bytes} \right) \times 1.2 = 168\, \text{GB}
+$$
 
 To run this model, you would require two NVIDIA A-100 80GB memory models.
 A single A100 80GB wouldn't be enough, although 2x A100 80GB should be enough to serve the Llama **How to further reduce GPU memory required for Llama 2 70B?**
@@ -59,16 +61,24 @@ For the FP8 precision:
     • overhead=1.2 - representing a 20% overhead
     • 𝑄= 8 bits
 Substitute the values into the formula:
-$M = \left( \frac{70 \times 10^9 \times 1\, \text{byte}}{(32 / 8)} \right) \times 1.2$
+$$
+M = \left( \frac{70 \times 10^9 \times 1\, \text{byte}}{(32 / 8)} \right) \times 1.2
+$$
 Next:
-$M = \left( \frac{70 \times 10^9\, \text{bytes}}{4} \right) \times 1.2$
+$$
+M = \left( \frac{70 \times 10^9\, \text{bytes}}{4} \right) \times 1.2
+$$
 Next:
-$M = (17.5 \times 10^9 \, \text{bytes}) \times 1.2$
+$$
+M = (17.5 \times 10^9 \, \text{bytes}) \times 1.2
+$$
 Work out the memory requirements:
-$\begin{align*}
+$$
+\begin{align*}
 M &= 21 \times 10^9 \text{ bytes} \\
 M &= 21\ \text{GB}
-\end{align*}$
+\end{align*}
+$$
 
 Therefore, the memory requirement for training the Llama3 model with 70 billion parameters using FP8 precision is a much lower 21 GB.
 
