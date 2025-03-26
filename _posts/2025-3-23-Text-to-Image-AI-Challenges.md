@@ -1,6 +1,7 @@
 ---
 layout: page
 title: Test-to-Image AI Challenges
+categories: AI
 ---
 
 You probably found the AI generated text in the image are usually incorrect and poor quality. It could contain misspelled or garbled words, jumbled or mispositioned letters, missing or extra characters, misaligned letters, inconsistent font/style in a word, etc. Why does the powerful image generation AI model can generate high quality beautiful image, but not be able to get the word correct? What makes the correct text so hard to generate? Let’s try to understand it today.

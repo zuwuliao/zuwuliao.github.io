@@ -1,6 +1,7 @@
 ---
 layout: post
 title: Local Host AI Models
+categories: AI
 ---
 
 There are many reasons you may want to host AI models on your local machine. For examples, you want to run use AI models with poor or no Internet connection area; or you don’t want to send your data to public shared AI service provider for security reason. But LLM usually contains too many parameters which requires lots of compute and memory capacity. Can we host AI LLM model on our local server or even on our personal computers? The answer is YES.

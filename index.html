@@ -1,14 +1,22 @@
 ---
 layout: default
-title: Blog Index
+title: Blog Index by Category
 ---
 
-<h1>Blog Posts</h1>
-<ul>
-  {% for post in site.posts %}
-    <li>
-      <a href="{{ site.baseurl }}{{ post.url }}">{{ post.title }}</a>
-      <span style="color: gray; font-size: 0.9em;">({{ post.date | date: "%Y-%m-%d" }})</span>
-    </li>
-  {% endfor %}
-</ul>
+<h1>Blog Posts by Category</h1>
+
+{% assign sorted_categories = site.posts | map: 'categories' | join: ',' | split: ',' | uniq | sort %}
+
+{% for category in sorted_categories %}
+  <h2>{{ category }}</h2>
+  <ul>
+    {% for post in site.posts %}
+      {% if post.categories contains category %}
+        <li>
+          <a href="{{ site.baseurl }}{{ post.url }}">{{ post.title }}</a>
+          <span style="color: gray; font-size: 0.9em;">({{ post.date | date: "%Y-%m-%d" }})</span>
+        </li>
+      {% endif %}
+    {% endfor %}
+  </ul>
+{% endfor %}

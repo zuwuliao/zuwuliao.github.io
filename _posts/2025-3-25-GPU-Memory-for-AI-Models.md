@@ -1,6 +1,7 @@
 ---
 layout: page
 title: GPU Memory for AI Models
+categories: AI
 ---
 
 **Memory Requirements for model training and inferencing:**

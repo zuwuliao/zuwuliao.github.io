@@ -1,6 +1,7 @@
 ---
 layout: post
 title: Comparison of AI Compression Techniques
+categories: AI
 ---
 
 Modern deep learning models can be dense (fully parameterized) or leverage various efficiency techniques like sparsity, quantization, knowledge distillation, LoRA (Low-Rank Adaptation), and others. Below we compare these approaches in terms of mathematical formulation, computational and memory efficiency, accuracy trade-offs, deployment feasibility, and use cases in NLP, CV, and beyond.
