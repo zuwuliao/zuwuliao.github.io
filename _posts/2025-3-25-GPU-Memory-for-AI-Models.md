@@ -26,7 +26,10 @@ https://training.continuumlabs.ai/infrastructure/data-and-memory/calculating-gpu
 **Calculating GPU memory for serving LLMs**
 How many GPUs do I need to be able to serve Llama3 70 billion parameter model? 
 In order to answer that, you need to know how much GPU memory will be required by the model. The formula is:
-M = $\left( \frac{P \times 4B}{\left( \frac{32}{Q} \right)} \right) \times 1.2$
+
+$$
+M = \left( \frac{P \times 4B}{\left( \frac{32}{Q} \right)} \right) \times 1.2
+$$
 
 | Symbol | Description                                                                 |
 |--------|-----------------------------------------------------------------------------|
