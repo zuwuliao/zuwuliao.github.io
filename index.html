@@ -1,18 +1,14 @@
 ---
 layout: default
+title: Blog Index
 ---
 
-<div class="posts">
+<h1>Blog Posts</h1>
+<ul>
   {% for post in site.posts %}
-    <article class="post">
-
-      <h1><a href="{{ site.baseurl }}{{ post.url }}">{{ post.title }}</a></h1>
-
-      <div class="entry">
-        {{ post.excerpt }}
-      </div>
-
-      <a href="{{ site.baseurl }}{{ post.url }}" class="read-more">Read More</a>
-    </article>
+    <li>
+      <a href="{{ site.baseurl }}{{ post.url }}">{{ post.title }}</a>
+      <span style="color: gray; font-size: 0.9em;">({{ post.date | date: "%Y-%m-%d" }})</span>
+    </li>
   {% endfor %}
-</div>
+</ul>
