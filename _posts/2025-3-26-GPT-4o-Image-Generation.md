@@ -12,6 +12,9 @@ Based on the release notes and demo images, the final output image quality is ou
 ![pic 1](/images/GPT-4o-Image-pic1.png "pic 1")
 ![pic 2](/images/GPT-4o-Image-pic2.png "pic 2")
 
+I also tested it with my own prompt "generate a pic with a cloud floating on the blue sky and there are mountains and river down below. There are words "AGC is Awesome!" in the cloud.". Here is the generated image:
+![pic 3](/images/GPT-4o-Image-pic2.png "pic 3")
+
 Curious about how OpenAI achieved such remarkable progress in this area, I did some research. THere isn't too much information publicly. Since there's still not a ton of public info out there, I decided to ask GPT-4.5 for any insider insights. Here’s what I found out from that conversation.
 
 =======================================================================
