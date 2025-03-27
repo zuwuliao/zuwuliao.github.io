@@ -17,7 +17,6 @@ Curious about how OpenAI achieved such remarkable progress in this area, I did s
 
 GPT-4o significantly improves text-to-image generation, specifically in accurately rendering text within generated images. Here's the detailed technical overview of how GPT-4o achieves accurate text rendering:
 
-{% markdown %}
 **Technical Overview of GPT-4o’s Text-to-Image Process (with Accurate Text Generation)**
 
 **Step-by-Step Pipeline:**
@@ -31,6 +30,7 @@ GPT-4o significantly improves text-to-image generation, specifically in accurate
       * GPT-4o encodes the text prompt using a sophisticated transformer-based encoder to generate dense semantic embeddings.
       * Embeddings capture nuanced meaning, context, and visual intent, especially around explicit textual content requirements.
 
+
 2. **Multi-modal Semantic Mapping (Understanding Intent)**
 
   * **Cross-modal Attention Mechanism:**
@@ -43,6 +43,7 @@ GPT-4o significantly improves text-to-image generation, specifically in accurate
   * **Contextual Embedding Refinement:**
 
     Embeddings are refined using large-scale multimodal datasets, specifically trained to handle textual rendering accurately in visual formats.
+
 
 3. **Diffusion-based Image Generation (with Conditioning)**
 
@@ -63,6 +64,7 @@ GPT-4o significantly improves text-to-image generation, specifically in accurate
 
     * CLIP-based classifiers reinforce alignment between generated text in images and textual prompts, significantly boosting accuracy and readability.
 
+
 4. **Text Rendering & Typography Optimization**
 
   * **Explicit Text Rendering Modules:**
@@ -80,6 +82,7 @@ GPT-4o significantly improves text-to-image generation, specifically in accurate
 
     Ensures rendered text visually harmonizes with the surrounding generated visual elements through iterative refinement loops.
 
+
 5. **Quality & Fidelity Assurance (Iterative Refinement)**
 
   * **Iterative Refinement Loops:**
@@ -92,6 +95,7 @@ GPT-4o significantly improves text-to-image generation, specifically in accurate
   * **Error Correction & Self-supervised Techniques:**
 
       * GPT-4o can recognize text rendering anomalies and proactively correct them in subsequent diffusion steps, leveraging internal alignment metrics.
+
 
 6. **Final Output Generation**
 
@@ -109,7 +113,5 @@ GPT-4o significantly improves text-to-image generation, specifically in accurate
   * **Explicit Text Accuracy:** High-quality text rendering within generated images, precisely matching textual prompts.
   * **Enhanced Visual-semantic Alignment:** Significantly improved understanding of textual context, style, and visual integration.
   * **Iterative Quality Enhancement:** Robust iterative refinement ensuring images consistently meet or exceed user expectations in readability and aesthetic quality.
-
-{% endmarkdown %}
 
 This detailed technical overview illustrates precisely how GPT-4o addresses previous limitations, ensuring accurate, clear, and contextually appropriate text-to-image generation, especially for prompts explicitly requiring textual content.
