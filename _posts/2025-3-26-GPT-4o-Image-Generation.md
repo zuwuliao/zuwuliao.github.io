@@ -4,7 +4,8 @@ title: GPT-4o Image Generation
 categories: AI
 ---
 
-Yesterday, OpenAI released GPT-4o Image Generation. https://openai.com/index/introducing-4o-image-generation/
+Yesterday, OpenAI released GPT-4o Image Generation. Check out [OpenAI's GPT-4o announcement](https://openai.com/index/introducing-4o-image-generation/).
+
 
 Based on the release notes and demo images, the final output image quality is outstanding. It not only captures accurate and precise details but also handles text generation exceptionally well—a long-standing challenge in the text-to-image field (as discussed in my previous blog). This improvement marks a significant advancement.
 
