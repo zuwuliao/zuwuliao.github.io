@@ -43,12 +43,12 @@ GPT-4o significantly improves text-to-image generation, specifically in accurate
     GPT-4o employs powerful diffusion models (e.g., Latent Diffusion Model - LDM variants) that iteratively denoise and build images from random noise guided strongly by prompt embeddings.
     * **Conditioning for Text Accuracy:**
         * Special conditioning is applied to explicitly control textual fidelity.
-    * Utilizes structured guidance, ensuring that rendered text: 
-        * Matches exact spelling.
-        * Maintains legibility, correct orientation, and appropriate scaling.
-        * Integrates seamlessly with the image’s visual context (e.g., perspective, texture).
+        * Utilizes structured guidance, ensuring that rendered text: 
+            * Matches exact spelling.
+            * Maintains legibility, correct orientation, and appropriate scaling.
+            * Integrates seamlessly with the image’s visual context (e.g., perspective, texture).
     * **Classifiers & CLIP (Contrastive Language-Image Pre-training):**
-    * CLIP-based classifiers reinforce alignment between generated text in images and textual prompts, significantly boosting accuracy and readability.
+        * CLIP-based classifiers reinforce alignment between generated text in images and textual prompts, significantly boosting accuracy and readability.
 
 4. **Text Rendering & Typography Optimization**
     * **Explicit Text Rendering Modules:**
@@ -57,7 +57,7 @@ GPT-4o significantly improves text-to-image generation, specifically in accurate
         * Ensures text alignment, spacing, curvature (e.g., text following contours of objects like clouds), and readability.
     * **Attention-Enhanced Font Generation:**
         * Transformer-based attention mechanisms guide typography generation, accurately placing characters and spacing based on visual semantics derived from the prompt.
-        * Visual-textual Consistency Enforcement:
+    * **Visual-textual Consistency Enforcement:**
         Ensures rendered text visually harmonizes with the surrounding generated visual elements through iterative refinement loops.
 
 5. **Quality & Fidelity Assurance (Iterative Refinement)**
