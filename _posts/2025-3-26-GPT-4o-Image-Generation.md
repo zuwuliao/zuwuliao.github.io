@@ -21,6 +21,7 @@ GPT-4o significantly improves text-to-image generation, specifically in accurate
 
 **Step-by-Step Pipeline:**
 
+
 1. **Prompt Encoding (Text Embedding)**
 
   * **Input Prompt:**
