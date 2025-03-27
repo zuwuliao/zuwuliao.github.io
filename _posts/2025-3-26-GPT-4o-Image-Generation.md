@@ -24,7 +24,7 @@ GPT-4o significantly improves text-to-image generation, specifically in accurate
 1. **Prompt Encoding (Text Embedding)**
 
   * **Input Prompt:**
-User provides textual description, e.g., "A cloud floating in the blue sky with words 'AGC is Awesome!' clearly written."
+    User provides textual description, e.g., "A cloud floating in the blue sky with words 'AGC is Awesome!' clearly written."
   * **Transformer-based Text Encoder:**
       * GPT-4o encodes the text prompt using a sophisticated transformer-based encoder to generate dense semantic embeddings.
       * Embeddings capture nuanced meaning, context, and visual intent, especially around explicit textual content requirements.
@@ -32,21 +32,21 @@ User provides textual description, e.g., "A cloud floating in the blue sky with 
 2. **Multi-modal Semantic Mapping (Understanding Intent)**
 
   * **Cross-modal Attention Mechanism:**
-GPT-4o employs advanced cross-attention layers to interpret how textual instructions relate visually.
-For example:
+    GPT-4o employs advanced cross-attention layers to interpret how textual instructions relate visually.
+    For example:
 
       * Identifies critical terms: "cloud," "blue sky," "text: AGC is Awesome!".
       * Determines positioning, style, readability, and font considerations implicitly suggested by the prompt.
 
   * **Contextual Embedding Refinement:**
 
-Embeddings are refined using large-scale multimodal datasets, specifically trained to handle textual rendering accurately in visual formats.
+    Embeddings are refined using large-scale multimodal datasets, specifically trained to handle textual rendering accurately in visual formats.
 
 3. **Diffusion-based Image Generation (with Conditioning)**
 
   * **Diffusion Models (Text-conditioned):**
 
-GPT-4o employs powerful diffusion models (e.g., Latent Diffusion Model - LDM variants) that iteratively denoise and build images from random noise guided strongly by prompt embeddings.
+    GPT-4o employs powerful diffusion models (e.g., Latent Diffusion Model - LDM variants) that iteratively denoise and build images from random noise guided strongly by prompt embeddings.
 
   * **Conditioning for Text Accuracy:**
 
@@ -65,7 +65,7 @@ GPT-4o employs powerful diffusion models (e.g., Latent Diffusion Model - LDM var
 
   * **Explicit Text Rendering Modules:**
 
-GPT-4o leverages dedicated text-rendering modules inspired by neural font synthesis methods. This stage explicitly:
+    GPT-4o leverages dedicated text-rendering modules inspired by neural font synthesis methods. This stage explicitly:
 
     * Selects optimal fonts or generates novel styles matching aesthetic guidelines or prompt instructions.
     * Ensures text alignment, spacing, curvature (e.g., text following contours of objects like clouds), and readability.
@@ -76,12 +76,12 @@ GPT-4o leverages dedicated text-rendering modules inspired by neural font synthe
 
     * Visual-textual Consistency Enforcement:
 
-Ensures rendered text visually harmonizes with the surrounding generated visual elements through iterative refinement loops.
+    Ensures rendered text visually harmonizes with the surrounding generated visual elements through iterative refinement loops.
 
 5. **Quality & Fidelity Assurance (Iterative Refinement)**
 
   * **Iterative Refinement Loops:**
-  
+
     * Generated images undergo iterative evaluations using combined visual-language models to measure: 
       * Text Fidelity: Spelling, legibility, alignment with prompt.
       * Visual Aesthetics: Cohesion, resolution, realism.
