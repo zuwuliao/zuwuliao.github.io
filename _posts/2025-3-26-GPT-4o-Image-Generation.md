@@ -18,7 +18,9 @@ Curious about how OpenAI achieved such remarkable progress in this area, I did s
 GPT-4o significantly improves text-to-image generation, specifically in accurately rendering text within generated images. Here's the detailed technical overview of how GPT-4o achieves accurate text rendering:
 
 **Technical Overview of GPT-4o’s Text-to-Image Process (with Accurate Text Generation)**
+
 **Step-by-Step Pipeline:**
+
 1. **Prompt Encoding (Text Embedding)**
 
   * **Input Prompt:**
@@ -79,6 +81,7 @@ Ensures rendered text visually harmonizes with the surrounding generated visual 
 5. **Quality & Fidelity Assurance (Iterative Refinement)**
 
   * **Iterative Refinement Loops:**
+  
     * Generated images undergo iterative evaluations using combined visual-language models to measure: 
       * Text Fidelity: Spelling, legibility, alignment with prompt.
       * Visual Aesthetics: Cohesion, resolution, realism.
