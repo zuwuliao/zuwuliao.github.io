@@ -17,11 +17,11 @@ Haha, LLM presents an answer that sounds right at first but is actually incorrec
 
 Why does LLM give us the wrong answer like that? The paper shows how LLM comes with that answer. Using 36+59 as the example, LLM gives the right answer. Since the model isn't calculator, we assume the model might remember the answer from the large training dataset. The research shows us the surprising method the model is using to come with the correct answer. How it works? The researcher found Claude takes multiple paths in parallel. One path computes a rough approximation of the answer and the other focuses on precisely determining the last digit of the sum. 
 
-![pic 3](/image/LLM-math-pic3.png "pic 3")
+![pic 3](/images/LLM-math-pic3.png "pic 3")
 
 The detail is a bit complex. It illustrates in the diagram below.
 
-![pic 4](/image/LLM-math-pic4.png "pic 4")
+![pic 4](/images/LLM-math-pic4.png "pic 4")
 
 Regardless of whether this is smart or stupid method, what we can tell is this is not the proper way to get mathmatic answer correctly. Basically, the LLM is guessing the answer instead of calculating. It does answer the question why LLM cannot give you the correct answer if the two operands are large such as above numbers in muliplication.
 
