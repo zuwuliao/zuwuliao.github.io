@@ -23,6 +23,10 @@ The detail is a bit complex. It illustrates in the diagram below.
 
 ![pic 4](/images/LLM-math-pic4.png "pic 4")
 
+More interesting, if you ask LLM how it calculated it, it will give you the standard algorithm with carrying the 1 that human use.  This may reflect the fact that the model learns to explain math by simulating explanations written by people. But it never understands the knowledges. So it develops its own way to come to the answers through the training. 
+
+![pic 5](/images/LLM-math-pic5.png "pic 5")
+
 Regardless of whether this is smart or stupid method, what we can tell is this is not the proper way to get mathmatic answer correctly. Basically, the LLM is guessing the answer instead of calculating. It does answer the question why LLM cannot give you the correct answer if the two operands are large such as above numbers in muliplication.
 
 I think this paper is very helpful for us to understand what LLM is and what it is good at. LLM can be a good tool only when we have the right expectation and put it in the right use cases. Further thinking would lead us to think about if Generative AI or LLM is the right way to lead us to AGI. Maybe not...
