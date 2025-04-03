@@ -1,6 +1,6 @@
 ---
 layout: post
-title: GPT-4o Image Generation
+title: How LLMs do math
 categories: AI
 ---
 
