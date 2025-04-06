@@ -6,6 +6,9 @@ categories: AI
 
 Universaty of Hongkong and Huawei Noah's Ark Lab recently leased a new LLM model Dream 7B. It caught my eyes not only because it beats other SOTA models like Qwen2.5 7B, LLaMA3 8B, at some times, even the latest DeepSeek V3-0324 671B model, but also more importantly, it's a Diffusion model, not AutoRegressive model.
 
+Check out [HKU NLP Group Dream 7B Blog](https://hkunlp.github.io/blog/2025/dream/). My blog references HKU NLP Group's blog.
+
+
 ![pic 1](/images/Diffusion-LLM-pic1.png "pic 1")
 ![pic 2](/images/Diffusion-LLM-pic2.png "pic 2")
 
@@ -89,7 +92,7 @@ Different queries may have preferences for the order in which the responses are 
 
 **Quality-speed Trade-off**
 In the above cases, we show one token is generated per step. However, the number of generated tokens per step (controlled by diffusion steps) can be adjusted dynamically, providing a tunable trade-off between speed and quality: fewer steps yield faster but coarser results, while more steps produce higher-quality outputs at greater computational cost. This introduces an additional dimension for inference-time scaling that complements rather than replaces techniques like long chain-of-thought reasoning employed in large language models such as o1 and r1. This adjustable computation-quality tradeoff represents a unique advantage over traditional AR frameworks.
-![pic 9](/images/Diffusion-LLM-pic9.gif "pic 9")
+![pic 9](/images/Diffusion-LLM-pic9.png "pic 9")
 
 **Conclusion**
 We introduce Dream, a new family of efficient, scalable, and flexible diffusion language models with carefully selected training recipes. It performs comparably to the best autoregressive models of similar size in general, mathematical, and coding tasks while especially showcasing advanced planning abilities and flexible inference capabilities.
