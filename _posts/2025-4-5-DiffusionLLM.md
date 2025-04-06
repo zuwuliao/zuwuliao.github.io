@@ -75,14 +75,14 @@ Diffusion models offer more flexible inference compared to AR models in the foll
 **Arbitrary Order**
 Diffusion models are not constrained to sequential (e.g., left-to-right) generation, enabling outputs to be synthesized in arbitrary orders—this allows for more diverse user queries.
 
-*. Completion
+* Completion
 ![pic 4](/images/Diffusion-LLM-pic4.gif "pic 4")
 
-*. Infilling
+* Infilling
 ![pic 5](/images/Diffusion-LLM-pic5.gif "pic 5")
 
 
-*. Controlling the decoding behavior
+* Controlling the decoding behavior
 
 Different queries may have preferences for the order in which the responses are generated. One can also adjust the decoding hyperparameters to control the decoding behavior, shifting it from more left-to-right like an AR model to more random-order generation.
 
@@ -91,8 +91,10 @@ Different queries may have preferences for the order in which the responses are 
 | Configured to decode more in a left-to-right way like an AR model. | Configured to add some randomness in the decoding order. | Configured for fully randomness in the decoding order. |
 
 **Quality-speed Trade-off**
+
 In the above cases, we show one token is generated per step. However, the number of generated tokens per step (controlled by diffusion steps) can be adjusted dynamically, providing a tunable trade-off between speed and quality: fewer steps yield faster but coarser results, while more steps produce higher-quality outputs at greater computational cost. This introduces an additional dimension for inference-time scaling that complements rather than replaces techniques like long chain-of-thought reasoning employed in large language models such as o1 and r1. This adjustable computation-quality tradeoff represents a unique advantage over traditional AR frameworks.
 ![pic 9](/images/Diffusion-LLM-pic9.png "pic 9")
 
 **Conclusion**
+
 We introduce Dream, a new family of efficient, scalable, and flexible diffusion language models with carefully selected training recipes. It performs comparably to the best autoregressive models of similar size in general, mathematical, and coding tasks while especially showcasing advanced planning abilities and flexible inference capabilities.
