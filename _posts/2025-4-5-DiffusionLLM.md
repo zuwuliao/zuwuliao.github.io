@@ -15,11 +15,13 @@ In AI field, the common understanding is AutoRegressive(AR) models are good for 
 
 AR model generates the token from left-to-right one by one. It predicts sequences by modeling the conditional probability of each element in the sequence based on previous elements. They typically use architectures like:
 
-*. Transformers (GPT series): Rely on self-attention mechanisms to model long-range dependencies.
-*. Recurrent Neural Networks (RNNs): Traditional AR models often use LSTM or GRU layers (less common nowadays due to efficiency).
+* Transformers (GPT series): Rely on self-attention mechanisms to model long-range dependencies.
+* Recurrent Neural Networks (RNNs): Traditional AR models often use LSTM or GRU layers (less common nowadays due to efficiency).
 
 Typical Generation Process:
-$p(x) = \prod_{i=1}^{n} p(x_i \mid x_{<i})$
+$$
+p(x) = \prod_{i=1}^{n} p(x_i \mid x_{<i})
+$$
 
 Due to the architecture limitation such as context window and attention mechanism, there are some limitations such as scale, including challenges with complex reasoning, long-term planning, and maintaining coherence across extended contexts.
 
@@ -27,11 +29,13 @@ Diffusion model is using a totaly different mechanism to generate tokens. Unlike
 
 Key Idea:
 
-*. A forward process gradually adds Gaussian noise to data.
-*. The reverse process (learned) removes noise to reconstruct original data.
+* A forward process gradually adds Gaussian noise to data.
+* The reverse process (learned) removes noise to reconstruct original data.
 
 Typical Generation Process:
-$q(x_t \mid x_{t-1}) = \mathcal{N}\left(x_t; \sqrt{1 - \beta_t} \, x_{t-1}, \beta_t I\right)$
+$$
+q(x_t \mid x_{t-1}) = \mathcal{N}\left(x_t; \sqrt{1 - \beta_t} \, x_{t-1}, \beta_t I\right)
+$$
 
 This fundamental architectural difference unlocks several significant advantages:
 
@@ -42,6 +46,7 @@ This fundamental architectural difference unlocks several significant advantages
 There are a few other Diffusion Language Model(dLLM) are already on the market such as DiffLlaMA and LLaDA those have scaled diffusion language model to 7B parameters. Inceptionlabs.ai has introduced the first commercial dLLM based code generation model, Mercury Coder. When evaluated on standard coding benchmarks, Mercury Coder achieves excellent quality across numerous benchmarks, often surpassing the performance of speed-optimized autoregressive models like GPT-4o Mini and Claude 3.5 Haiku while being up to 10x faster.
 
 **Comparative Summary**
+
 | Aspect                  | AR Models                             | Diffusion Models                              |
 |-------------------------|---------------------------------------|-----------------------------------------------|
 | **Quality of Output**   | Good, depends on domain (excellent for text) | Excellent for continuous data (images/audio)  |
@@ -58,7 +63,6 @@ Now let's come back to Dream 7B model and see how it is built and performances.
 Dream 7B is pretrained with a mixture of the aforementioned corpus, totaling 580 billion tokens. The pretraining was done on 96 NVIDIA H800 GPUs for 256 hours. The pretraining process went smoothly overall, with occasional node anomalies, and we did not experience any unrecoverable loss spikes.
 
 ![pic 3](/images/Diffusion-LLM-pic3.png "pic 3")
-![pic 4](/images/Diffusion-LLM-pic4.png "pic 4")
 
 One thing to call out is that the research team found using the weights from the existing autoregressive (AR) model is more effective than training the diffusion language model from scratch. Therefore, Dream 7B is initialized with weights from Qwen2.5 7B. (how to migrate weights from AR model to DM to be researched). During the training process, the team finds the learning rate to be especially important. If it’s set too high, it can quickly wash away the left-to-right knowledge in the initial weights, providing little help in the diffusion training, while if it’s set too low, it can hinder diffusion training.
 
