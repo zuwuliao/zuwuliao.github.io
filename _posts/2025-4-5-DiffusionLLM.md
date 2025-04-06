@@ -73,13 +73,17 @@ Diffusion models offer more flexible inference compared to AR models in the foll
 Diffusion models are not constrained to sequential (e.g., left-to-right) generation, enabling outputs to be synthesized in arbitrary orders—this allows for more diverse user queries.
 
 *. Completion
-![pic 5](/images/Diffusion-LLM-pic5.gif "pic 5")
+![pic 4](/images/Diffusion-LLM-pic4.gif "pic 4")
 
 *. Infilling
-![pic 6](/images/Diffusion-LLM-pic6.gif "pic 6")
+![pic 5](/images/Diffusion-LLM-pic5.gif "pic 5")
 
 
 *. Controlling the decoding behavior
 
 Different queries may have preferences for the order in which the responses are generated. One can also adjust the decoding hyperparameters to control the decoding behavior, shifting it from more left-to-right like an AR model to more random-order generation.
-![pic 7](/images/Diffusion-LLM-pic7.gif "pic 7")
+
+| ![AR model](/images/Diffusion-LLM-pic6.gif) | ![Partial randomness](/images/Diffusion-LLM-pic7.gif) | ![Full randomness](/images/Diffusion-LLM-pic8.gif) |
+|---------------------------------|------------------------------------------|-----------------------------------------|
+| Configured to decode more in a left-to-right way like an AR model. | Configured to add some randomness in the decoding order. | Configured for fully randomness in the decoding order. |
+
