@@ -87,3 +87,9 @@ Different queries may have preferences for the order in which the responses are 
 |---------------------------------|------------------------------------------|-----------------------------------------|
 | Configured to decode more in a left-to-right way like an AR model. | Configured to add some randomness in the decoding order. | Configured for fully randomness in the decoding order. |
 
+**Quality-speed Trade-off**
+In the above cases, we show one token is generated per step. However, the number of generated tokens per step (controlled by diffusion steps) can be adjusted dynamically, providing a tunable trade-off between speed and quality: fewer steps yield faster but coarser results, while more steps produce higher-quality outputs at greater computational cost. This introduces an additional dimension for inference-time scaling that complements rather than replaces techniques like long chain-of-thought reasoning employed in large language models such as o1 and r1. This adjustable computation-quality tradeoff represents a unique advantage over traditional AR frameworks.
+![pic 9](/images/Diffusion-LLM-pic9.gif "pic 9")
+
+**Conclusion**
+We introduce Dream, a new family of efficient, scalable, and flexible diffusion language models with carefully selected training recipes. It performs comparably to the best autoregressive models of similar size in general, mathematical, and coding tasks while especially showcasing advanced planning abilities and flexible inference capabilities.
