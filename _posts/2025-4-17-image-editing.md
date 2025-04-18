@@ -17,6 +17,8 @@ The Problem
 
 ![pic 2](/images/AR-Model-SD-2.png "pic 2")
 
+    You can see it is a totally different picture. It doesn't maintain any infomation from the previous picture from front to background. 
+
 *Why This Happens*
     Diffusion models are structurally not designed for local edits. Their process relies on inversion (reverse denoising), which is complex and error-prone.
 
