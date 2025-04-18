@@ -14,19 +14,20 @@ The Problem
     ![pic 1](/images/AR-Model-SD-1.png "pic 1")
 
     Now I want change the cat to a dog. First of all, there isn't direct way to say change some object in the picture. If I put the same prompt and ask it to change the cat to a dog. It generates a totally different picture for cat, without dog in it. It seems the DM dosen't understand the meaning of 'change'. Therefore, I use the picture it just generated, click on 'edit prompt' and change the 'cat' to 'dog'. Then I got this picture:
-    ![pic 2](/images/AR-Model-SD-2.png "pic 2")
 
-Why This Happens
+![pic 2](/images/AR-Model-SD-2.png "pic 2")
+
+*Why This Happens*
     Diffusion models are structurally not designed for local edits. Their process relies on inversion (reverse denoising), which is complex and error-prone.
 
-Key Concepts
-    1. Diffusion Process:
+*Key Concepts*
+1. Diffusion Process:
     Starts from random noise → progressively denoised → final image.
-    2. Inversion:
+2. Inversion:
     Given an image, try to reverse it to the original noise seed.
-        ○ Problems:
-            *§* Non-unique: One image could come from many noise seeds.
-            *§* Error-prone: Small inversion errors get amplified during generation.
-            *§* Global influence: Prompts affect the whole image, not just one region.
-    3. Editing Consequences:
+    *. Problems:
+        *. Non-unique: One image could come from many noise seeds.
+        *. Error-prone: Small inversion errors get amplified during generation.
+        *. Global influence: Prompts affect the whole image, not just one region.
+3. Editing Consequences:
     Even with perfect inversion, any prompt like "turn a horse into a zebra" may repaint the entire image, not just the horse.
