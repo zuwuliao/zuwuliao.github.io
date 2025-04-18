@@ -8,7 +8,8 @@ Since GPT-4o was released and demostrate the powerful image generation and editi
 
 Let's start from how Diffusion Model generates image. Inspired by @MudTechAI's video [Why Diffusion Models Fail at Local Image Editing](https://www.youtube.com/shorts/zYwwt3hIBpk), I summarize the image editting challenge for DM as below:
 
-The Problem
+**The Problem**
+
     Diffusion models often make unintended changes during image editing. For example:
     I generate an image using Stable Diffision 3.5 running on Azure AI Foundry. The prompt is "generate a picture with a cat watching the fishes in an aquarium tank". Here is the picture:
     ![pic 1](/images/AR-Model-SD-1.png "pic 1")
@@ -19,17 +20,22 @@ The Problem
 
     You can see it is a totally different picture. It doesn't maintain any infomation from the previous picture from front to background. 
 
-*Why This Happens*
+**Why This Happens**
+
     Diffusion models are structurally not designed for local edits. Their process relies on inversion (reverse denoising), which is complex and error-prone.
 
-*Key Concepts*
-1. Diffusion Process:
+**Key Concepts**
+
+1. Diffusion Process
     Starts from random noise → progressively denoised → final image.
+
 2. Inversion:
     Given an image, try to reverse it to the original noise seed.
-    *. Problems:
-        *. Non-unique: One image could come from many noise seeds.
-        *. Error-prone: Small inversion errors get amplified during generation.
-        *. Global influence: Prompts affect the whole image, not just one region.
+
+    * Problems:
+        * Non-unique: One image could come from many noise seeds.
+        * Error-prone: Small inversion errors get amplified during generation.
+        * Global influence: Prompts affect the whole image, not just one region.
+
 3. Editing Consequences:
     Even with perfect inversion, any prompt like "turn a horse into a zebra" may repaint the entire image, not just the horse.
