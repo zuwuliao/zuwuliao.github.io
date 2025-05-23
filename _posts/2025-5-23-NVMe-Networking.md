@@ -51,10 +51,8 @@ The logical topology is comprised of the following:
 
     * Tenant/Compute Network
     The Tenant network is a VLAN trunk that carries one or more VLANs that provide access to the tenant virtual machines. Those VLANs are configured on the ToR switch’s port in trunk mode. To connect VMs to these VLANs, the corresponding VLAN tags are defined on the virtual network adapter. Each tenant VLAN is expected to have an IP subnet assigned to it.
-
     * Management Network
     The management network is a VLAN that carries network traffic to the parent partition. This network is used to access the host operating system. The connectivity to the management network is provided by the management (Mgmt) vNIC in the parent partition. Fault tolerance for the management vNIC is provided by the SET switch. A bandwidth limit can be assigned to the management, as necessary.
-    
     * Storage Network
     The storage network carries RoCEv2 RDMA network traffic that is used for Storage Spaces Direct, storage replication, and Live Migration network traffic. This network is also used for cluster management communication. The storage network has a Storage A and Storage B segment, each with its own IP subnet. This design keeps the east-west RDMA isolated to the ToR switches and avoids the need for the upstream switches to be configured for supporting RoCEv2 traffic.
     DCB (Data Center Bridging) is required for RoCE. If DCB is used, PFC and ETS configuration is implemented properly across every network port, including network switches. RoCE-based Azure Stack HCI implementations require the configuration of three PFC traffic classes, including the default traffic class, across the fabric and all hosts.
