@@ -1,7 +1,7 @@
 ---
 layout: post
 title: NVMe Networking
-categories: Network
+categories: AI
 ---
 
 This post is a study note from Cisco document of [Network Requirements of NVMe Storage](https://www.cisco.com/c/en/us/products/collateral/switches/nexus-9000-series-switches/white-paper-c11-743772.html) and [Azure Stack Solution Design](https://www.cisco.com/c/en/us/td/docs/unified_computing/ucs/UCS_CVDs/ucs_mas_hci_m7.html)
