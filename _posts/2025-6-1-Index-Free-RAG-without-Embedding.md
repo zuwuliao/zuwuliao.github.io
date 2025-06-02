@@ -7,6 +7,7 @@ categories: AI
 During my research, I came across an interesting artical. The artical is called '[Practical Guide for Model Selection for Real‑World Use Cases](https://cookbook.openai.com/examples/partners/model_selection_guide/model_selection_guide#model-guide)' which is meant to explain when to use what model. But in the use case '3A. Use Case: Long-Context RAG for Legal Q&A', it introduces a new Long-Context Agentic RAG implementation. The key word is 'no embedding'. Yes, you didn't read wrong. It's RAG without embedding. The other words, it's index-free.
 
 The following table is from the artical.
+
 | **Layer**          | **Choice**                                              | **Utility**                                                                 |
 |--------------------|----------------------------------------------------------|------------------------------------------------------------------------------|
 | Chunking           | Sentence-aware Splitter                                 | Splits document into 20 equal chunks, respecting sentence boundaries.       |
