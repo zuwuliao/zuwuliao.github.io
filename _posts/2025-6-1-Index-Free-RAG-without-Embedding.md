@@ -4,9 +4,9 @@ title: Index-Free RAG without Embedding
 categories: AI
 ---
 
-During my research, I came across an interesting artical. The artical is called '[Practical Guide for Model Selection for Real‑World Use Cases](https://cookbook.openai.com/examples/partners/model_selection_guide/model_selection_guide#model-guide)' which is meant to explain when to use what model. But in the use case '3A. Use Case: Long-Context RAG for Legal Q&A', it introduces a new Long-Context Agentic RAG implementation. The key word is 'no embedding'. Yes, you didn't read wrong. It's RAG without embedding. The other words, it's index-free.
+During my research, I came across an interesting article. The article is titled '[Practical Guide for Model Selection for Real‑World Use Cases](https://cookbook.openai.com/examples/partners/model_selection_guide/model_selection_guide#model-guide)' which is published by OpenAI. It aims to explain when to use what model. In the section '3A. Use Case: Long-Context RAG for Legal Q&A', the guide introduces a novel Long-Context Agentic RAG implementation. The key message is **No Embedding**. Yes, you read that correctly—this version of RAG is **index-free**.
 
-The following table is from the artical.
+The following table is from the article:
 
 | **Layer**          | **Choice**                                              | **Utility**                                                                 |
 |--------------------|----------------------------------------------------------|------------------------------------------------------------------------------|
@@ -33,11 +33,18 @@ The following diagram illustrates the workflow:
 
 ![pic 1](/images/index-free-rag-1.png "pic 1")
 
-The traditional RAG uses embedding to generate vectors(index), then based on the vector similarity to find the closest semantic vectors. Without embedding, how does RAG retrieve the relevant information? From the above diagram, I find the key step is LLM router to select the relevant chunks and sub-chunks. Now the question is how the router does this function. From the router function description, it maintains a scrachpad to achieve this. "Maintaining a scratchpad allows the model to track decision criteria and reasoning over time. This implementation uses a two-pass approach with GPT-4.1-mini: first requiring the model to update the scratchpad via a tool call (tool_choice="required"), then requesting structured JSON output for chunk selection. This approach provides better visibility into the model's reasoning process while ensuring consistent structured outputs for downstream processing."
+Traditional RAG systems rely on embedding to convert text into vector representations (indices), which are then compared using vector similarity to retrieve semantically relevant content. But without embeddings, how does this new RAG approach retrieve relevant information?
+
+According to the diagram, the key component is the LLM router, which selects the relevant chunks and sub-chunks directly. The mechanism behind this is a scratchpad, which allows the model to track decision criteria and reasoning over time.
+
+As described in the guide:
+“Maintaining a scratchpad allows the model to track decision criteria and reasoning over time. This implementation uses a two-pass approach with GPT-4.1-mini: first requiring the model to update the scratchpad via a tool call (tool_choice='required'), then requesting structured JSON output for chunk selection. This approach provides better visibility into the model's reasoning process while ensuring consistent structured outputs for downstream processing.”
+
+In other words, instead of using vector search, the system relies on a reasoning process guided by the LLM, structured over multiple steps, to identify relevant content.
 
 Then, what is scratchpad? I researched it again and found this paper '[Show Your Work: Scratchpads for Intermediate Computation with Language Models](https://arxiv.org/abs/2112.00114)'
 
-Index-free RAG provides us a ew paradigm of RAG. Can it replace the traditional RAG. The answer is No. It has its own benefits and tradeoffs.
+Index-free RAG presents an alternative paradigm to traditional embedding-based retrieval, emphasizing structured reasoning over vector similarity. But can it replace conventional RAG approaches entirely? The answer is **No**—it offers distinct advantages, but also comes with tradeoffs.
 
 **Benefits**
 
