@@ -4,7 +4,7 @@ title: RAG Chunking Strategy
 categories: AI
 ---
 
-If you have done Retrieval-Augmented Generation (RAG), you may already noticed chunking strategy plays crucial role in the effectiveness of the retrieval process and ultimately the quality of the answer. In this artical, I list the most popular chunking strategies and compare the pros and cons among them. Then I will briefly talk about chunking size and the impact to RAG accuracy. Hope they will provide you some understanding of RAG chunking and help to select the right chunking strategy for your RAG application.
+If you have done Retrieval-Augmented Generation (RAG), you may already noticed chunking strategy plays crucial role in the effectiveness of the retrieval process and ultimately the quality of the answer. In this blog, I list the most popular chunking strategies and compare the pros and cons among them. Then I will talk about chunk size and the impact to RAG accuracy. At last, I will talk about how to select the right chunking strategy and chunk size to address a common challenge in RAG. Hope they will provide you some understanding of RAG chunking and help to select the right chunking strategy for your RAG application.
 
 ## Chunking Types ##
 
@@ -100,7 +100,7 @@ Chunks are generated at multiple levels of granularity (sentence, paragraph, sec
 
 ## Chunk Size ##
 
-Chunk size in RAG significantly influences retrieval accuracy, context quality, and final answer generation. Choosing a chunk size that is too small or too large introduces trade-offs and potential problems. If the chunk size is too small, it causes loss of context, fagmentaion of meaning, overhead in Storage and indexing and increased Redundancy. If the chunk size is too large, it causes lost of precision, miss of important details, wasted LLM context, and latency and cost overhead.
+Chunk size in RAG significantly influences retrieval accuracy, context quality, and final answer generation. Choosing a chunk size that is too small or too large introduces trade-offs and potential problems. If the chunk size is too small, it causes loss of context, fagmentaion of meaning, overhead in storage and indexing, and increased Redundancy. If the chunk size is too large, it causes loss of precision, miss of important details, wasted LLM context, and latency and cost overhead.
 
 | **Chunk Size** | **Pros**                                                            | **Cons / Problems**                                                                                         |
 | -------------- | ------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
