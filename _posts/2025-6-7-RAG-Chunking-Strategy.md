@@ -6,7 +6,7 @@ categories: AI
 
 If you have done Retrieval-Augmented Generation (RAG), you may already noticed chunking strategy plays crucial role in the effectiveness of the retrieval process and ultimately the quality of the answer. In this artical, I list the most popular chunking strategies and compare the pros and cons among them. Then I will briefly talk about chunking size and the impact to RAG accuracy. Hope they will provide you some understanding of RAG chunking and help to select the right chunking strategy for your RAG application.
 
-**Chunking Types**
+## Chunking Types ##
 
 **1. Fixed-Size Chunking**
 
@@ -98,7 +98,7 @@ Chunks are generated at multiple levels of granularity (sentence, paragraph, sec
 | Semantic Chunking      | High relevance and precision              | Complex, computationally expensive   |
 | Recursive/Hierarchical | Best of multiple granularities            | High storage and system complexity   |
 
-**Chunking Size**
+## Chunk Size ##
 
 Chunk size in RAG significantly influences retrieval accuracy, context quality, and final answer generation. Choosing a chunk size that is too small or too large introduces trade-offs and potential problems. If the chunk size is too small, it causes loss of context, fagmentaion of meaning, overhead in Storage and indexing and increased Redundancy. If the chunk size is too large, it causes lost of precision, miss of important details, wasted LLM context, and latency and cost overhead.
 
@@ -147,6 +147,8 @@ The following table summarizes recommended chunk sizes and their effects for dif
 | **Short Factual Q\&A** | *Small chunks* (≈100–300 tokens).                        | - Very high precision: chunks tightly focus on specific facts.<br/>- More chunks overall to search (higher index size).                                                                                    | - Ensures answers come from exact relevant snippet (reduces risk of off-topic content).<br/>- If too short, may omit context needed for clarification (potentially incomplete answer).                                                                                      |
 | **Long Summaries**     | *Large chunks* (≈500–1000 tokens).                       | - Moderate precision: chunks cover broader topics, some extra content may be retrieved.<br/>- Fewer chunks overall (each covers more text).                                                                | - Provides ample context for comprehensive summaries (less chance of missing info).<br/>- Lower risk of hallucination since model sees full context, but may include irrelevant details that need filtering in the summary.                                                 |
 | **Complex Reasoning**  | *Moderate chunks* (≈200–400 tokens, multiple retrieved). | - High recall approach: allows retrieving multiple distinct pieces of info for multi-hop reasoning.<br/>- Each chunk focused on one aspect, improving relevance for that aspect (but need several chunks). | - Model can combine multiple evidence chunks to answer; each chunk is digestible and self-contained for reasoning.<br/>- Requires the model to integrate information across chunks (dependency on LLM's reasoning ability); if chunks lack context, reasoning might falter. |
+
+## Challenges in Chunk Size Selection ##
 
 Now you may ask a question, how do I know what question user would ask before you do the embedding? And yes, this is a fundamental challenge in RAG design.
 
