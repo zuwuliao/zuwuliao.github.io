@@ -61,7 +61,7 @@ Each paragraph is treated as one chunk.
   * Size Inconsistency: Paragraphs may be too long (truncation needed) or too short (inefficient use of tokens).
   * Truncation Risk: Longer paragraphs may exceed token limits for embedding or retrieval.
 
-**5. Semantic Chunking aka LLM-Based Chunking (Dynamic/Adaptive)**
+**5. Semantic Chunking (Dynamic/Adaptive)**
 
 **Description:**
 Uses NLP models to detect topic boundaries or semantic shifts to define chunk boundaries.
@@ -74,7 +74,7 @@ Uses NLP models to detect topic boundaries or semantic shifts to define chunk bo
   * Complex Implementation: Requires embeddings, topic modeling, or segmentation models.
   * Computational Cost: More expensive at preprocessing time.
 
-**6. Recursive/Hierarchical Chunking aka Structure-Based Chunking (Multi-Granularity)**
+**6. Recursive/Hierarchical Chunking (Multi-Granularity)**
 
 **Description:**
 Chunks are generated at multiple levels of granularity (sentence, paragraph, section), and retrieval happens at multiple levels.
@@ -87,6 +87,35 @@ Chunks are generated at multiple levels of granularity (sentence, paragraph, sec
   * Storage Overhead: Requires indexing multiple chunk levels.
   * Complex Retrieval Logic: Needs tuning to avoid retrieving irrelevant granularity.
 
+**7. Document Structure-Based Chunking**
+
+**Description:**
+It uses the semantic structure of a document: title, abstract, sections, subsections, and conclusions. Ideal for structured content like research papers, manuals, or policy docs.
+
+**Pros:**
+  * Flexibility: Enables retrieval of both fine-grained and broad context as needed.
+  * Improved Recall: Can answer specific and broad questions better.
+
+**Cons:**
+  * Storage Overhead: Requires indexing multiple chunk levels.
+  * Complex Retrieval Logic: Needs tuning to avoid retrieving irrelevant granularity.
+
+**8. LLM-Based Chunking**
+
+**Description:**
+leverages a language model to generate semantically meaningful, context-aware chunks, often outperforming rule-based approaches in complexity-rich content.
+
+**Pros:**
+  * Adaptive and context-aware
+  * Semantically optimal
+  * Task-aligned (QA vs summarization)
+
+**Cons:**
+  * Expensive
+  * Requires careful prompting
+  * Not deterministic
+  * Slower
+
 **Summary Table**
 
 | Strategy               | Pros                                      | Cons                                 |
@@ -97,7 +126,8 @@ Chunks are generated at multiple levels of granularity (sentence, paragraph, sec
 | Paragraph-Based        | Preserves natural structure               | Inconsistent size, risk of truncation|
 | Semantic Chunking      | High relevance and precision              | Complex, computationally expensive   |
 | Recursive/Hierarchical | Best of multiple granularities            | High storage and system complexity   |
-
+| Document-Based         | Flexible and improve recall               | Structure dependant, poor support for unstructure  |
+| LLM-Based              | Adaptive, context-aware, semantic optimal | Expensive, require careful prompt, Slower    |
 
 ## Chunk Size ##
 
