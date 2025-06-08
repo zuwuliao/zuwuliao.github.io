@@ -4,7 +4,7 @@ title: RAG Chunking Strategy
 categories: AI
 ---
 
-If you have done Retrieval-Augmented Generation (RAG), you may already noticed chunking strategy plays crucial role in the effectiveness of the retrieval process and ultimately the quality of the answer. In this blog, I list the most popular chunking strategies and compare the pros and cons among them. Then I will talk about chunk size and the impact to RAG accuracy. At last, I will talk about how to select the right chunking strategy and chunk size to address a common challenge in RAG. Hope they will provide you some understanding of RAG chunking and help to select the right chunking strategy for your RAG application.
+If you have done Retrieval-Augmented Generation (RAG), you may already observe chunking strategy plays crucial role in the effectiveness of the retrieval process and ultimately the quality of the answer. In this blog, I list the most popular chunking strategies and compare the pros and cons among them. Then I will talk about chunk size and the impact to RAG accuracy. At last, I will talk about how to select the right chunking strategy and chunk size to address a common challenge in RAG. Hope they will provide you some understanding of RAG chunking and help to select the right chunking strategy for your RAG application.
 
 ## Chunking Types ##
 
@@ -87,6 +87,35 @@ Chunks are generated at multiple levels of granularity (sentence, paragraph, sec
   * Storage Overhead: Requires indexing multiple chunk levels.
   * Complex Retrieval Logic: Needs tuning to avoid retrieving irrelevant granularity.
 
+**7. Document Structure-Based Chunking**
+
+**Description:**
+It uses the semantic structure of a document: title, abstract, sections, subsections, and conclusions. Ideal for structured content like research papers, manuals, or policy docs.
+
+**Pros:**
+  * Flexibility: Enables retrieval of both fine-grained and broad context as needed.
+  * Improved Recall: Can answer specific and broad questions better.
+
+**Cons:**
+  * Storage Overhead: Requires indexing multiple chunk levels.
+  * Complex Retrieval Logic: Needs tuning to avoid retrieving irrelevant granularity.
+
+**8. LLM-Based Chunking**
+
+**Description:**
+leverages a language model to generate semantically meaningful, context-aware chunks, often outperforming rule-based approaches in complexity-rich content.
+
+**Pros:**
+  * Adaptive and context-aware
+  * Semantically optimal
+  * Task-aligned (QA vs summarization)
+
+**Cons:**
+  * Expensive
+  * Requires careful prompting
+  * Not deterministic
+  * Slower
+
 **Summary Table**
 
 | Strategy               | Pros                                      | Cons                                 |
@@ -97,6 +126,8 @@ Chunks are generated at multiple levels of granularity (sentence, paragraph, sec
 | Paragraph-Based        | Preserves natural structure               | Inconsistent size, risk of truncation|
 | Semantic Chunking      | High relevance and precision              | Complex, computationally expensive   |
 | Recursive/Hierarchical | Best of multiple granularities            | High storage and system complexity   |
+| Document-Based         | Flexible and improve recall               | Structure dependant, poor support for unstructure  |
+| LLM-Based              | Adaptive, context-aware, semantic optimal | Expensive, require careful prompt, Slower    |
 
 ## Chunk Size ##
 
@@ -107,7 +138,7 @@ Chunk size in RAG significantly influences retrieval accuracy, context quality, 
 | **Too Small**  | - High retrieval precision<br>- Embeddings focus on atomic concepts | - Missing context<br>- Fragmented meaning<br>- High index/storage cost<br>- Duplication risk                |
 | **Too Large**  | - Preserves full context<br>- Fewer chunks to manage                | - Low retrieval precision<br>- Embedding dilution<br>- May include irrelevant info<br>- Higher compute cost |
 
-Since chunk size is critical, we should understand how to choose the right size of chunk size for embedding. However, there is no one-size-fits-all chunk size – it depends on the use case and even the embedding model used. Below, we analyze chunk size impacts for three use cases – short factual answers, long summaries, and complex reasoning – and then discuss how recommendations change with different embedding models. A comparison table summarizing best practices is also provided for clarity.
+Since chunk size is critical, we should understand how to choose the right size of chunk for embedding. However, there is no one-size-fits-all chunk size – it depends on the use case and even the embedding model used. Below, we analyze chunk size impacts for three use cases – short factual answers, long summaries, and complex reasoning – and then discuss how recommendations change with different embedding models. A comparison table summarizing best practices is also provided for clarity.
 
 **Short Factual Answers**
 
@@ -134,7 +165,7 @@ For use cases where the user asks for a long summary of a document or a section,
 The optimal chunk size is not only task-dependent but also embedding-model-dependent. Different embedding models have different input token limits and may perform better on different chunk lengths.
 Let's use OpenAI’s embeddings model as example to analynize what chunk size works best with it.
 
-OpenAI Embeddings (e.g. text-embedding-ada-002): These models have a very large token limit (currently up to ~8191 tokens per input for ada-002) and are observed to perform well on moderately large chunks. In practice, OpenAI’s ada model often works best on chunks in the few-hundred token range (around 256–512 tokens is a sweet spot). It can handle up to several thousand tokens if needed, which is useful for long documents, but feeding extremely long chunks (thousands of tokens) isn’t usually ideal for semantic search accuracy. As one study noted, ada’s big 8k context window is a boon for indexing long text, but embedding very long chunks can actually reduce retrieval accuracy. The embedding becomes a sort of averaged vector of many concepts, making it harder to precisely match a specific query. So even with OpenAI, you wouldn’t typically chunk an entire 30-page document into one embedding. You’d still chunk into smaller sections (perhaps a few paragraphs each) to maintain focus. The takeaway: OpenAI’s model gives flexibility to use larger chunks than many others, which is great for context-heavy tasks, but aim for a balanced size (hundreds of tokens, not thousands) for best relevance.
+OpenAI Embeddings (e.g. text-embedding-ada-002): These models have a very large token limit (currently up to ~8191 tokens per input for ada-002) and are observed to perform well on moderately large chunks. In practice, OpenAI’s ada model often works best on chunks in the few-hundred token range (around 256–512 tokens is a sweet spot). It can handle up to several thousand tokens if needed, which is useful for long documents, but feeding extremely long chunks (thousands of tokens) isn’t usually ideal for semantic search accuracy. As one study noted, ada’s big 8k context window is an advantage for indexing long text, but embedding very long chunks can actually reduce retrieval accuracy. The embedding becomes a sort of averaged vector of many concepts, making it harder to precisely match a specific query. So even with OpenAI, you wouldn’t typically chunk an entire 30-page document into one embedding. You’d still chunk into smaller sections (perhaps a few paragraphs each) to maintain focus. The takeaway: OpenAI’s model gives flexibility to use larger chunks than many others, which is great for context-heavy tasks, but aim for a balanced size (hundreds of tokens, not thousands) for best relevance.
 
 **Best Practices and Comparison Table**
 
