@@ -219,9 +219,9 @@ loss = alpha * ce_loss + (1 - alpha) * kl_loss
 
 | Metric          | Formula                                     | Use Case in LLMs                            |
 |-----------------|----------------------------------------------|---------------------------------------------|
-| Entropy \( H(P) \)       | \( -\sum P(x) \log P(x) \)                   | Measures prediction uncertainty             |
-| Cross-Entropy \( H(P,Q) \) | \( -\sum P(x) \log Q(x) \)                   | Token prediction loss during training       |
-| KL Divergence \( D_{KL}(P \| Q) \) | \( \sum P(x) \log \frac{P(x)}{Q(x)} \)        | Soft label loss in knowledge distillation   |
+| Entropy $$ H(P) $$      | $$ -\sum P(x) \log P(x) $$                   | Measures prediction uncertainty             |
+| Cross-Entropy $$ H(P,Q) $$ | $$ -\sum P(x) \log Q(x) $$                   | Token prediction loss during training       |
+| KL Divergence $$ D_{KL}(P \| Q) $$ | $$ \sum P(x) \log \frac{P(x)}{Q(x)} $$        | Soft label loss in knowledge distillation   |
 
 ---
 
