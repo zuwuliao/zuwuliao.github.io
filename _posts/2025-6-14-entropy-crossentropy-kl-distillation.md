@@ -3,7 +3,6 @@ layout: post
 title: Entropy, Cross-Entropy, and KL Divergence in the Context of LLMs and Knowledge Distillation
 categories: AI
 ---
-# Entropy, Cross-Entropy, and KL Divergence in the Context of LLMs and Knowledge Distillation
 
 This blog is a summary of the concepts of entropy, cross-entropy, and KL divergence, and how they are applied in the context of LLMs and knowledge distillation. Before diving into the details, let's first understand the plain language explanation of these concepts.
 
@@ -148,6 +147,24 @@ That is, KL measures the **extra** entropy due to predicting with \( Q \) instea
 ## 4. Application in Knowledge Distillation
 
 ### What is Knowledge Distillation?
+
+Knowledge distillation involves using a student model to learn from the predictions of a teacher model (Soft Labels), rather than directly learning from the labels in the training dataset (Hard Labels). The goal of the student model is to simultaneously mimic both the Hard Labels and Soft Labels.
+
+When the teacher model makes predictions on input data, it outputs the probability distribution over each class. For example, in a 3-class classification problem, it might output:
+
+\[
+0.7, 0.2, 0.1
+\]
+
+This is called a **Soft Label**.
+
+In contrast, a **Hard Label** would be:
+
+\[
+1, 0, 0
+\]
+
+These probability distributions reflect the model's "confidence" in each class, and they contain information about the relative relationships between the classes (e.g., Class B is more similar to Class C than to Class A).
 
 Knowledge distillation is a model compression technique where:
 - A **large teacher model** produces soft probability outputs.
