@@ -65,9 +65,9 @@ The below is the formal definition of these concepts.
 
 Entropy quantifies the **uncertainty or randomness** in a probability distribution. For a discrete random variable with distribution \( P(x) \), entropy is defined as:
 
-\[
+$$
 H(P) = - \sum_{x} P(x) \log P(x)
-\]
+$$
 
 - Units depend on the logarithm base (usually base 2 or natural log).
 - Entropy is maximal when the distribution is uniform and minimal (zero) when the outcome is deterministic.
@@ -77,8 +77,8 @@ H(P) = - \sum_{x} P(x) \log P(x)
 Entropy answers: *How unpredictable is the outcome?*
 
 - Example:
-  - \( P = [0.5, 0.5] \Rightarrow H = 1 \)
-  - \( P = [1.0, 0.0] \Rightarrow H = 0 \)
+  - $$ P = [0.5, 0.5] \Rightarrow H = 1 $$
+  - $$ P = [1.0, 0.0] \Rightarrow H = 0 $$
 
 ### Role in LLMs
 
