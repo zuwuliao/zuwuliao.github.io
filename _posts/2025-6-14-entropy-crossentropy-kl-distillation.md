@@ -181,11 +181,11 @@ $$
 $$
 
 Where:
-- \( y \): ground truth label (one-hot)
-- \( s \): student predictions
-- \( t_T, s_T \): teacher/student soft predictions with temperature \( T \)
-- \( \alpha \): trade-off coefficient
-- \( T \): temperature scalar (usually > 1 to soften predictions)
+- $$ y $$: ground truth label (one-hot)
+- $$ s $$: student predictions
+- $$ t_T, s_T $$: teacher/student soft predictions with temperature \( T \)
+- $$ \alpha $$: trade-off coefficient
+- $$ T $$: temperature scalar (usually > 1 to soften predictions)
 
 #### Python Skeleton
 
