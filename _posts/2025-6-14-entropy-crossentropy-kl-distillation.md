@@ -94,15 +94,15 @@ In Large Language Models:
 
 Cross-entropy measures the difference between the **true** distribution \( P(x) \) and the **model's predicted** distribution \( Q(x) \):
 
-\[
+$$
 H(P, Q) = - \sum_{x} P(x) \log Q(x)
-\]
+$$
 
 If the ground truth is a one-hot distribution (common in classification), then cross-entropy reduces to:
 
-\[
+$$
 H(P, Q) = -\log Q(x_{\text{true}})
-\]
+$$
 
 ### Use in LLM Training
 
@@ -127,18 +127,18 @@ loss = loss_fn(logits, true_token_ids)
 
 KL divergence (Kullback-Leibler divergence) measures how one distribution \( Q(x) \) diverges from a reference distribution \( P(x) \):
 
-\[
+$$
 D_{KL}(P \parallel Q) = \sum_{x} P(x) \log \frac{P(x)}{Q(x)}
-\]
+$$
 
 - KL is **asymmetric**: \( D_{KL}(P \parallel Q) \neq D_{KL}(Q \parallel P) \)
 - KL is always ≥ 0, and is 0 iff \( P = Q \)
 
 ### Relationship to Cross-Entropy
 
-\[
+$$
 D_{KL}(P \parallel Q) = H(P, Q) - H(P)
-\]
+$$
 
 That is, KL measures the **extra** entropy due to predicting with \( Q \) instead of \( P \).
 
