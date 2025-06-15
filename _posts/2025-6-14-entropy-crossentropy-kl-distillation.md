@@ -176,9 +176,9 @@ The student is trained to minimize a combination of:
 - Cross-entropy with true labels (hard targets)
 - KL divergence with teacher outputs (soft targets)
 
-\[
+&&
 \mathcal{L}_{\text{distill}} = \alpha \cdot H(y, s) + (1 - \alpha) \cdot T^2 \cdot D_{KL}(t_T \parallel s_T)
-\]
+&&
 
 Where:
 - \( y \): ground truth label (one-hot)
