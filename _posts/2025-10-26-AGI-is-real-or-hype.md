@@ -1,10 +1,10 @@
 ---
 layout: post
-title: AGI is real or hype?
+title: LLM to AGI - Is it real or hype?
 categories: AI
 ---
 
-**AGI: Real Progress or Just Hype?**
+**LLM to AGI: Real Progress or Just Hype?**
 
 I recently watched an interview with Andrey Karpathy that left me both intrigued and validated. If you haven’t seen it, I highly recommend checking it out [here](https://www.youtube.com/watch?v=lXUZvyajciY&t=863s). In it, Karpathy—a well-known AI expert—makes a striking statement: “I did some AI consulting for computer vision. A lot of times, the value that I brought to the company was telling them *not* to use AI. ” I found that ironic, but not surprising. Many respected voices in AI, including Karpathy, Yann LeCun, and Richard Sutton, have expressed skepticism about the current trajectory of AI development, particularly with large language models (LLMs). I agree with them: LLMs are a technological marvel, but they are not a path toward Artificial General Intelligence (AGI). In fact, they might be leading us further away from it.
 
