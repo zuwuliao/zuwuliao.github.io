@@ -43,7 +43,7 @@ Here's the trick:
 
   * They are designed to handle high-resolution images efficiently
 
-##DeepSeek OCR Architecture:
+**DeepSeek OCR Architecture:**
 
 ![pic 1](/images/DeepSeek-OCR.jpg "pic 1")
 
@@ -78,7 +78,7 @@ What Happens in DeepSeek-OCR?
 
 That’s a **10× compression**, dramatically reducing the cost of inference.
 
-##Now, we know what DeepSeek OCR is. Is it a big deal?
+Now, we know what DeepSeek OCR is. Is it a big deal?
 
 My opinion is - it depends. Why?
 
