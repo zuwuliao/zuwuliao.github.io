@@ -71,15 +71,15 @@ DeepSeek-OCR architecture has two main parts:
 
 What Happens in DeepSeek-OCR?
 
-1. Text → Image (optical format)
+**1. Text → Image (optical format)**
 
   * A long text document (say 1000+ tokens) is rendered as an image.
 
-2. Image → Vision Tokens (via DeepEncoder)
+**2. Image → Vision Tokens (via DeepEncoder)**
 
   * The image is encoded into ~64–800 vision tokens, depending on resolution.
 
-3. Vision Tokens → Text (via Decoder)
+**3. Vision Tokens → Text (via Decoder)**
 
   * These tokens are decoded back into text using a language model (DeepSeek3B-MoE).
 
@@ -91,23 +91,23 @@ With DeepSeek OCR, the new Enhanced Pipeline looks like:
 
 **Text Input → Rendered as Image → DeepEncoder → Vision Tokens → Transformer Decoder → Output Tokens**
 
-Now that we understand what DeepSeek OCR is, the next question is: is it a big deal?
+Now that we understand what DeepSeek OCR is, the next question is: **is it a big deal?**
 
 In my view — it depends.
 
-On one hand, DeepSeek OCR introduces a new paradigm for text input. Instead of feeding long text directly into an LLM, this approach converts text into images and lets the model "see" rather than "read." This shift opens up exciting possibilities by moving from token-based language understanding to vision-based encoding.
+**On one hand**, DeepSeek OCR introduces a new paradigm for text input. Instead of feeding long text directly into an LLM, this approach converts text into images and lets the model "see" rather than "read." This shift opens up exciting possibilities by moving from token-based language understanding to vision-based encoding.
 
 This can significantly reduce computational complexity in use cases like OCR, document parsing, chart/table/formula extraction, multilingual OCR, and other forms of visual deep parsing. It also eliminates the need for a tokenizer and embedding layer, simplifying the architecture and reducing overhead.
 
 Notably, Andrej Karpathy has voiced strong criticism of tokenizers in his 
 [post on X](https://x.com/karpathy/status/1980397031542989305), saying: 
 
-"Delete the tokenizer (at the input)!! I already ranted about how much I dislike the tokenizer. Tokenizers are ugly, separate, not end-to-end stage. It "imports" all the ugliness of Unicode, byte encodings, it inherits a lot of historical baggage, security/jailbreak risk (e.g. continuation bytes). It makes two characters that look identical to the eye look as two completely different tokens internally in the network. A smiling emoji looks like a weird token, not an... actual smiling face, pixels and all, and all the transfer learning that brings along. The tokenizer must go."
+    "Delete the tokenizer (at the input)!! I already ranted about how much I dislike the tokenizer. Tokenizers are ugly, separate, not end-to-end stage. It "imports" all the ugliness of Unicode, byte encodings, it inherits a lot of historical baggage, security/jailbreak risk (e.g. continuation bytes). It makes two characters that look identical to the eye look as two completely different tokens internally in the network. A smiling emoji looks like a weird token, not an... actual smiling face, pixels and all, and all the transfer learning that brings along. The tokenizer must go."
 
 
 DeepSeek OCR aligns with this vision by skipping the tokenizer entirely and leveraging raw pixel inputs.
 
-On the other hand, DeepSeek OCR is not a full end-to-end LLM. It's an end-to-end OCR system, which means it’s focused on extracting text from visual input—not on understanding or reasoning over that content like a chatbot or language model would.
+**On the other hand**, DeepSeek OCR is not a full end-to-end LLM. It's an end-to-end OCR system, which means it’s focused on extracting text from visual input—not on understanding or reasoning over that content like a chatbot or language model would.
 
 If you want to use the extracted text for downstream inference, you still need to feed it into a standard Transformer-based LLM. That brings back the same self-attention bottleneck and quadratic scaling with input length. So unless a model can mix visual tokens and text tokens within a shared attention space, the computational savings don’t extend to full LLM inference.
 
