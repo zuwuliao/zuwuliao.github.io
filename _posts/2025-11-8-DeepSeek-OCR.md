@@ -49,6 +49,19 @@ DeepSeek OCR Architecture looks like this:
 
 ![pic 1](/images/DeepSeek-OCR.jpg "pic 1")
 
+
+DeepSeek-OCR architecture has two main parts:
+
+1. DeepEncoder (like a visual compressor):
+
+  * Converts images of text into compact representations (vision tokens)
+
+  * Designed to support high resolution, multiple image sizes, and low memory use
+
+2. DeepSeek3B-MoE Decoder:
+
+  * Converts those vision tokens back into text
+
 What Happens in DeepSeek-OCR?
 
 1. Text → Image (optical format)
@@ -67,5 +80,22 @@ What Happens in DeepSeek-OCR?
 
 That’s a **10× compression**, dramatically reducing the cost of inference.
 
+Now, we know what DeepSeek OCR is. Is it a big deal?
 
+My answer opinion - it depends. Why?
+
+On side, it introduced a new paradim of text input. In stead of feeding LLMs long text, we can convert texts to vision. This is so great. This approach makes LLM from 'Read' to 'See'. It would significantly reduce the computational complexity for some use case such as OCR, Document Parsing, Chart/Table/Formula Extraction, Multilingual OCR and Visual Deep Parsing.
+
+The other side, it's not an end-to-end LLM. It is just an end-to-end OCR. That means it is not a chatbot which can answer your questions. If we want to use the extracted texts for inferencing, all the text tokens need to feed in to Transformer with sel-attention mechnism. That still does not reduce any computational complexity. Unless, we can mix vision tokens and text tokens in self-attention. That is something I don't find anywhere says possible. 
+
+Even we can't use DeepSeek OCR to replace current LLM, this new approach is still very useful in the following use cases:
+| Use Case                        | Description                                      |
+|--------------------------------|--------------------------------------------------|
+| High-Fidelity OCR              | Convert scanned documents or PDFs to structured text with layout preservation. |
+| Document Parsing               | Convert documents into structured formats like Markdown, JSON, or HTML. |
+| Chart/Table/Formula Extraction | Extract data from charts, tables, chemical diagrams, and geometry figures (OCR 2.0). |
+| Multilingual OCR               | OCR for 100+ languages, including minority and non-Latin scripts. |
+| LLM Data Generation            | Massively scale generation of high-quality text data from documents for LLM pretraining. |
+| Visual Deep Parsing            | Understand and describe images embedded in documents, including figures and photos. |
+| Long Context Compression       | Compress long text histories into image-based memory tokens for efficient context use in LLMs. |
 
