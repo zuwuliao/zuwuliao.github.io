@@ -59,13 +59,13 @@ Here's the trick:
 
 DeepSeek-OCR architecture has two main parts:
 
-1. DeepEncoder (like a visual compressor):
+**1. DeepEncoder (like a visual compressor):**
 
   * Converts images of text into compact representations (vision tokens)
 
   * Designed to support high resolution, multiple image sizes, and low memory use
 
-2. DeepSeek3B-MoE Decoder:
+**2. DeepSeek3B-MoE Decoder:**
 
   * Converts those vision tokens back into text
 
