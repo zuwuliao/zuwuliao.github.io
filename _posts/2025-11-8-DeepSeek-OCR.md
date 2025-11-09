@@ -102,7 +102,7 @@ This can significantly reduce computational complexity in use cases like OCR, do
 Notably, Andrej Karpathy has voiced strong criticism of tokenizers in his 
 [post on X](https://x.com/karpathy/status/1980397031542989305), saying: 
 
-    "Delete the tokenizer (at the input)!! I already ranted about how much I dislike the tokenizer. Tokenizers are ugly, separate, not end-to-end stage. It "imports" all the ugliness of Unicode, byte encodings, it inherits a lot of historical baggage, security/jailbreak risk (e.g. continuation bytes). It makes two characters that look identical to the eye look as two completely different tokens internally in the network. A smiling emoji looks like a weird token, not an... actual smiling face, pixels and all, and all the transfer learning that brings along. The tokenizer must go."
+*"Delete the tokenizer (at the input)!! I already ranted about how much I dislike the tokenizer. Tokenizers are ugly, separate, not end-to-end stage. It "imports" all the ugliness of Unicode, byte encodings, it inherits a lot of historical baggage, security/jailbreak risk (e.g. continuation bytes). It makes two characters that look identical to the eye look as two completely different tokens internally in the network. A smiling emoji looks like a weird token, not an... actual smiling face, pixels and all, and all the transfer learning that brings along. The tokenizer must go."*
 
 
 DeepSeek OCR aligns with this vision by skipping the tokenizer entirely and leveraging raw pixel inputs.
