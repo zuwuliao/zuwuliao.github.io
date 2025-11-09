@@ -4,8 +4,6 @@ title: DeepSeek OCR - From Read to See
 categories: AI
 ---
 
-**DeepSeek OCR - From Read to See**
-
 DeepSeek newly released paper [DeepSeek OCR](https://www.arxiv.org/pdf/2510.18234) caught a lot of attention from the acdemic and industry. A lot of people says it's a revolution which solves the long standing challenge of long textual context due to quadratic scaling with sequence length. Even Andrej Karpathy is excited about DeepSeek OCR approach. He said on X 'The more interesting part for me (esp as a computer vision at heart who is temporarily masquerading as a natural language person) is whether pixels are better inputs to LLMs than text. Whether text tokens are wasteful and just terrible, at the input.' 
 
 It is so popular that I decided to spend a little time to research on it. What is DeepSeek OCR? What is the difference from other OCR? Is it a bit deal and what can DeekSeek OCR do? Let's dive into it.
@@ -45,7 +43,7 @@ Here's the trick:
 
   * They are designed to handle high-resolution images efficiently
 
-DeepSeek OCR Architecture looks like this:
+##DeepSeek OCR Architecture:
 
 ![pic 1](/images/DeepSeek-OCR.jpg "pic 1")
 
@@ -80,16 +78,17 @@ What Happens in DeepSeek-OCR?
 
 That’s a **10× compression**, dramatically reducing the cost of inference.
 
-Now, we know what DeepSeek OCR is. Is it a big deal?
+##Now, we know what DeepSeek OCR is. Is it a big deal?
 
-My answer opinion - it depends. Why?
+My opinion is - it depends. Why?
 
 On side, it introduced a new paradim of text input. In stead of feeding LLMs long text, we can convert texts to vision. This is so great. This approach makes LLM from 'Read' to 'See'. It would significantly reduce the computational complexity for some use case such as OCR, Document Parsing, Chart/Table/Formula Extraction, Multilingual OCR and Visual Deep Parsing.
 
 The other side, it's not an end-to-end LLM. It is just an end-to-end OCR. That means it is not a chatbot which can answer your questions. If we want to use the extracted texts for inferencing, all the text tokens need to feed in to Transformer with sel-attention mechnism. That still does not reduce any computational complexity. Unless, we can mix vision tokens and text tokens in self-attention. That is something I don't find anywhere says possible. 
 
 Even we can't use DeepSeek OCR to replace current LLM, this new approach is still very useful in the following use cases:
-| Use Case                        | Description                                      |
+
+| Use Case                       | Description                                      |
 |--------------------------------|--------------------------------------------------|
 | High-Fidelity OCR              | Convert scanned documents or PDFs to structured text with layout preservation. |
 | Document Parsing               | Convert documents into structured formats like Markdown, JSON, or HTML. |
