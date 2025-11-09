@@ -4,13 +4,24 @@ title: DeepSeek OCR - From Read to See
 categories: AI
 ---
 
-DeepSeek newly released paper [DeepSeek OCR](https://www.arxiv.org/pdf/2510.18234) caught a lot of attention from the acdemic and industry. A lot of people says it's a revolution which solves the long standing challenge of long textual context due to quadratic scaling with sequence length. Even Andrej Karpathy is excited about DeepSeek OCR approach. He said on X 'The more interesting part for me (esp as a computer vision at heart who is temporarily masquerading as a natural language person) is whether pixels are better inputs to LLMs than text. Whether text tokens are wasteful and just terrible, at the input.' 
+DeepSeek newly released paper [DeepSeek OCR](https://www.arxiv.org/pdf/2510.18234) has generated significant buzz in both academia and industry. Many are calling it a revolutionary breakthrough, as it tackles a long-standing challenge in LLMs—efficiently handling long textual sequences, which typically suffer from the quadratic complexity of attention mechanisms.
 
-It is so popular that I decided to spend a little time to research on it. What is DeepSeek OCR? What is the difference from other OCR? Is it a bit deal and what can DeekSeek OCR do? Let's dive into it.
+Even Andrej Karpathy shared his excitement on X, commenting:
+“The more interesting part for me (esp as a computer vision at heart who is temporarily masquerading as a natural language person) is whether pixels are better inputs to LLMs than text. Whether text tokens are wasteful and just terrible, at the input.”
 
-Before we talk about DeepSeek OCR, let's see why LLMs have long textual context computational challenge. Today's LLMs are all using Transformer architecture. Standard Transformer Pipeline looks like this:
+Intrigued by the attention it's receiving, I decided to take a closer look:
 
-Text Input → Tokenizer → Embedding Layer → Self-attention Layer → Output Tokens
+What exactly is DeepSeek OCR?
+How does it differ from traditional OCR systems?
+And what can it actually do?
+
+Let’s dive in.
+
+Before diving into DeepSeek OCR, it's important to understand the computational challenges large language models (LLMs) face with long textual contexts.
+
+Modern LLMs are almost universally built on the Transformer architecture, which, while powerful, suffers from a key limitation: the self-attention mechanism scales quadratically with sequence length. In other words, processing a longer input sequence results in exponentially higher computational costs. The standard Transformer Pipeline looks like this:
+
+**Text Input → Tokenizer → Embedding Layer → Self-attention Layer → Output Tokens**
 
 Every step relies on processing raw text and generating attention across all text tokens. The problem is at the self-attention layer. Self-Attention is Quadratic. In transformers (like GPT, BERT, etc.), the core computation is:
 
@@ -27,11 +38,9 @@ For example:
 
 * If you input 10,000 tokens, it jumps to 100 million operations (!)
 
-So the long textual context cause the operation complexity increases quatratically. When you want to give an LLM a long document, or maintain long conversation history, you're increasing input tokens — and each added token slows down inference and increases memory use.
+Because of the Transformer’s self-attention mechanism, handling long textual context introduces quadratic complexity in both computation and memory. When you feed a large language model (LLM) a lengthy document or maintain an extended conversation history, the number of input tokens increases. Each additional token not only slows down inference but also significantly increases memory usage.
 
-DeepSeek-OCR is trying to solve this problem at text input step. It's a system that compresses long text into visual format (images) and later decodes it back into text using AI. This helps overcome the limits of how much text current large language models (LLMs) can handle.
-
-The smart part of DeepSeek-OCR is, instead of feeding long text directly into an LLM (which is costly and slow), they first turn the text into an image (like a snapshot of a document), and then process that image using fewer "vision tokens." This is called "optical compression."
+DeepSeek-OCR addresses this challenge at the input stage. Instead of feeding long text directly into an LLM (which is costly and slow), they first turn the text into an image (like a snapshot of a document), and then process that image using fewer "vision tokens." This is called "optical compression." By converting long textual sequences into images, DeepSeek-OCR bypasses the token-based input limitations of Transformers, enabling more scalable handling of large textual inputs.
 
 Here's the trick:
 
@@ -78,15 +87,33 @@ What Happens in DeepSeek-OCR?
 
 That’s a **10× compression**, dramatically reducing the cost of inference.
 
-Now, we know what DeepSeek OCR is. Is it a big deal?
+With DeepSeek OCR, the new Enhanced Pipeline looks like:
 
-My opinion is - it depends. Why?
+**Text Input → Rendered as Image → DeepEncoder → Vision Tokens → Transformer Decoder → Output Tokens**
 
-On side, it introduced a new paradim of text input. In stead of feeding LLMs long text, we can convert texts to vision. This is so great. This approach makes LLM from 'Read' to 'See'. It would significantly reduce the computational complexity for some use case such as OCR, Document Parsing, Chart/Table/Formula Extraction, Multilingual OCR and Visual Deep Parsing.
+Now that we understand what DeepSeek OCR is, the next question is: is it a big deal?
 
-The other side, it's not an end-to-end LLM. It is just an end-to-end OCR. That means it is not a chatbot which can answer your questions. If we want to use the extracted texts for inferencing, all the text tokens need to feed in to Transformer with sel-attention mechnism. That still does not reduce any computational complexity. Unless, we can mix vision tokens and text tokens in self-attention. That is something I don't find anywhere says possible. 
+In my view — it depends.
 
-Even we can't use DeepSeek OCR to replace current LLM, this new approach is still very useful in the following use cases:
+On one hand, DeepSeek OCR introduces a new paradigm for text input. Instead of feeding long text directly into an LLM, this approach converts text into images and lets the model "see" rather than "read." This shift opens up exciting possibilities by moving from token-based language understanding to vision-based encoding.
+
+This can significantly reduce computational complexity in use cases like OCR, document parsing, chart/table/formula extraction, multilingual OCR, and other forms of visual deep parsing. It also eliminates the need for a tokenizer and embedding layer, simplifying the architecture and reducing overhead.
+
+Notably, Andrej Karpathy has voiced strong criticism of tokenizers in his 
+[post on X](https://x.com/karpathy/status/1980397031542989305), saying: 
+
+"Delete the tokenizer (at the input)!! I already ranted about how much I dislike the tokenizer. Tokenizers are ugly, separate, not end-to-end stage. It "imports" all the ugliness of Unicode, byte encodings, it inherits a lot of historical baggage, security/jailbreak risk (e.g. continuation bytes). It makes two characters that look identical to the eye look as two completely different tokens internally in the network. A smiling emoji looks like a weird token, not an... actual smiling face, pixels and all, and all the transfer learning that brings along. The tokenizer must go."
+
+
+DeepSeek OCR aligns with this vision by skipping the tokenizer entirely and leveraging raw pixel inputs.
+
+On the other hand, DeepSeek OCR is not a full end-to-end LLM. It's an end-to-end OCR system, which means it’s focused on extracting text from visual input—not on understanding or reasoning over that content like a chatbot or language model would.
+
+If you want to use the extracted text for downstream inference, you still need to feed it into a standard Transformer-based LLM. That brings back the same self-attention bottleneck and quadratic scaling with input length. So unless a model can mix visual tokens and text tokens within a shared attention space, the computational savings don’t extend to full LLM inference.
+
+So far, I haven’t seen evidence that DeepSeek OCR (or any current system) allows such hybrid token mixing. That would be a true breakthrough, but it's not yet a reality—at least not based on current public information. 
+
+Even though DeepSeek OCR can’t replace current LLMs for general-purpose reasoning or conversation, its unique approach still provides significant value in several specialized use cases:
 
 | Use Case                       | Description                                      |
 |--------------------------------|--------------------------------------------------|
