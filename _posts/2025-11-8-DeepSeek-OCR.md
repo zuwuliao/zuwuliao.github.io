@@ -85,7 +85,7 @@ What Happens in DeepSeek-OCR?
 
 **So instead of processing 1000+ text tokens, the model only processes 100–800 vision tokens.**
 
-That’s a **10× compression**, dramatically reducing the cost of inference.
+That’s a **10× compression**, dramatically reducing the cost of inference. Based on the paper, this method achieves 96%+ OCR decoding precision at 9-10× text compression, ∼90% at 10-12× compression
 
 With DeepSeek OCR, the new Enhanced Pipeline looks like:
 
