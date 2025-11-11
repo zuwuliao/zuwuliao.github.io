@@ -165,6 +165,7 @@ This mimics skilled readers skipping “the”, “and”, etc., and focusing on
 ![pic 3](/images/VIST-2.png "pic 3")
 
 **Fusion via Cross-Attention**
+
 The key difference to make VIST a LLM that DeepSeek OCR is at the cross attention layer.
 During cross-attention, VIST mixes vision tokens (from the compressed input) with text tokens (from the LLM prompt). Specifically, the vision tokens act as contextual memory, and the text tokens (prompt or current generation) attend to them during inference.
 
@@ -251,7 +252,7 @@ So yes — the mixing happens through attention weights, not direct concatenatio
 | **Text Token Generation**         | Decoder generates text tokens autoregressively       | Decoder reconstructs full text from vision tokens |
 | **Multilingual / Layout Support** | Not the focus                                        | Strong multilingual & layout support              |
 
-Key Difference Summary
+**Key Difference Summary**
 
 | **VIST**                                                                       | **DeepSeek-OCR**                                                           |
 | ---------------------------------------------------------------------------- | ------------------------------------------------------------------------ |
