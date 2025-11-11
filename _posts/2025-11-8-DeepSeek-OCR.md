@@ -125,9 +125,11 @@ Even though DeepSeek OCR can’t replace current LLMs for general-purpose reason
 | Visual Deep Parsing            | Understand and describe images embedded in documents, including figures and photos. |
 | Long Context Compression       | Compress long text histories into image-based memory tokens for efficient context use in LLMs. |
 
-P.S Interesting enough, after I posted this blog, another paper came across and addressed the question I have for mix visual and text token at cross-attention layer. This makes visualizing text input for LLM possible. The paper called [Vision-centric Token Compression in Large Language Model](https://arxiv.org/pdf/2502.00791). Simular to DeepSeek OCR, VIST is also using visual encoders to compress low-importance parts of input into dense visual tokens.
+---
 
-Core Idea
+P.S. Interesting enough, after I posted this blog, another paper came across and addressed the question I have for mix visual and text token at cross-attention layer. This makes visualizing text input for LLM possible. The paper called [Vision-centric Token Compression in Large Language Model](https://arxiv.org/pdf/2502.00791). Simular to DeepSeek OCR, VIST is also using visual encoders to compress low-importance parts of input into dense visual tokens.
+
+**Core Idea**
 
 VIST introduces a slow–fast token compression framework, inspired by how humans read:
 
@@ -137,8 +139,7 @@ VIST introduces a slow–fast token compression framework, inspired by how human
 
 Only the most important semantic content from the distant context is passed in as compressed visual tokens to the LLM using cross-attention(see the diagram below)
 
-![pic 2](/images/VIST-1.png "pic 2")
-![pic 3](/images/VIST-1.5.png "pic 3")
+![pic 2](/images/VIST-1.0.png "pic 2")
 
 **Key Components**
 **1. Vision Encoder + Resampler**
@@ -160,7 +161,7 @@ Only the most important semantic content from the distant context is passed in a
   * Bridges the semantic gap between text embeddings and vision embeddings
 
 This mimics skilled readers skipping “the”, “and”, etc., and focusing on content words.
-![pic 4](/images/VIST-2.png "pic 4")
+![pic 3](/images/VIST-2.png "pic 3")
 
 **Fusion via Cross-Attention**
 The key difference to make VIST a LLM that DeepSeek OCR is at the cross attention layer.
@@ -196,7 +197,9 @@ Inside the LLM, there are cross-attention layers between self-attention blocks.
 
 Mathematically:
 
+$$
 \text{CrossAttention}(Q_{\text{text}}, K_{\text{vision}}, V_{\text{vision}})
+$$
 
 This allows each text token to attend to the semantic information stored in the vision tokens — effectively “looking back” at compressed long context.
 
