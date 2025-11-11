@@ -127,7 +127,7 @@ Even though DeepSeek OCR can’t replace current LLMs for general-purpose reason
 
 ---
 
-P.S. Interesting enough, after I posted this blog, another paper came across and addressed the question I have for mix visual and text token at cross-attention layer. This makes visualizing text input for LLM possible. The paper called [Vision-centric Token Compression in Large Language Model](https://arxiv.org/pdf/2502.00791). Simular to DeepSeek OCR, VIST is also using visual encoders to compress low-importance parts of input into dense visual tokens.
+**P.S.** Interesting enough, after I posted this blog, another paper came across and addressed the question I have for mix visual and text token at cross-attention layer. This makes visualizing text input for LLM possible. The paper called [Vision-centric Token Compression in Large Language Model](https://arxiv.org/pdf/2502.00791). Simular to DeepSeek OCR, VIST is also using visual encoders to compress low-importance parts of input into dense visual tokens.
 
 **Core Idea**
 
@@ -142,6 +142,7 @@ Only the most important semantic content from the distant context is passed in a
 ![pic 2](/images/VIST-1.0.png "pic 2")
 
 **Key Components**
+
 **1. Vision Encoder + Resampler**
 
   * The vision encoder (frozen CLIP ViT-L/14) processes rendered text images.
