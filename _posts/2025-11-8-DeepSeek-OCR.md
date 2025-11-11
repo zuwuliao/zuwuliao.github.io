@@ -125,3 +125,135 @@ Even though DeepSeek OCR can’t replace current LLMs for general-purpose reason
 | Visual Deep Parsing            | Understand and describe images embedded in documents, including figures and photos. |
 | Long Context Compression       | Compress long text histories into image-based memory tokens for efficient context use in LLMs. |
 
+P.S Interesting enough, after I posted this blog, another paper came across and addressed the question I have for mix visual and text token at cross-attention layer. This makes visualizing text input for LLM possible. The paper called [Vision-centric Token Compression in Large Language Model](https://arxiv.org/pdf/2502.00791). Simular to DeepSeek OCR, VIST is also using visual encoders to compress low-importance parts of input into dense visual tokens.
+
+Core Idea
+
+VIST introduces a slow–fast token compression framework, inspired by how humans read:
+
+  * Fast path: Skims the distant context, renders it as images, encodes with a lightweight vision encoder (e.g., CLIP)
+
+  * Slow path: Processes important nearby text using the LLM directly
+
+Only the most important semantic content from the distant context is passed in as compressed visual tokens to the LLM using cross-attention(see the diagram below)
+
+![pic 2](/images/VIST-1.png "pic 2")
+![pic 3](/images/VIST-1.5.png "pic 3")
+
+**Key Components**
+**1. Vision Encoder + Resampler**
+
+  * The vision encoder (frozen CLIP ViT-L/14) processes rendered text images.
+
+  * A Perceiver Resampler compresses these visual features into a fixed number of visual tokens (e.g., 64/image).
+
+**2. PVE (Probability-Informed Visual Enhancement)**
+
+  * A training objective that:
+
+  * Uses token frequency to identify high-value vs. redundant text
+
+  * Masks high-frequency (low-information) tokens
+
+  * Encourages the Resampler to focus on rare, content-rich tokens
+
+  * Bridges the semantic gap between text embeddings and vision embeddings
+
+This mimics skilled readers skipping “the”, “and”, etc., and focusing on content words.
+![pic 4](/images/VIST-2.png "pic 4")
+
+**Fusion via Cross-Attention**
+The key difference to make VIST a LLM that DeepSeek OCR is at the cross attention layer.
+During cross-attention, VIST mixes vision tokens (from the compressed input) with text tokens (from the LLM prompt). Specifically, the vision tokens act as contextual memory, and the text tokens (prompt or current generation) attend to them during inference.
+
+**Step-by-Step: What Happens in VIST**
+
+Let’s walk through the data flow during inference:
+
+**1. Input Partitioning (Slow–Fast Paths)**
+
+VIST splits a long input sequence into two parts:
+
+| Segment                         | Description                                                                                                                                               |
+| ------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Fast path (distant context)** | The older or less relevant parts of the text → rendered into images → encoded by the **vision encoder** and **Resampler** into compact **visual tokens**. |
+| **Slow path (main input)**      | The current or nearby text → processed directly by the **LLM** as normal text tokens.                                                                     |
+
+
+So we end up with two input streams:
+
+ * Vision tokens (compact semantic embeddings from distant context)
+
+ * Text tokens (normal LLM input / prompt)
+
+**2. Fusion via Cross-Attention**
+
+Inside the LLM, there are cross-attention layers between self-attention blocks.
+
+  * The queries (Q) come from the text tokens (prompt or generated tokens)
+
+  * The keys (K) and values (V) come from the vision tokens
+
+Mathematically:
+
+\text{CrossAttention}(Q_{\text{text}}, K_{\text{vision}}, V_{\text{vision}})
+
+This allows each text token to attend to the semantic information stored in the vision tokens — effectively “looking back” at compressed long context.
+
+The result:
+The model reasons over both recent text (in full detail) and older context (in compressed visual form).
+
+**3. Inference-Time Interaction**
+
+At inference:
+
+  1. The LLM processes the text tokens from the main prompt.
+
+  2. Inside each cross-attention layer, it “looks up” relevant information from fixed vision tokens.
+
+  3. The cross-attention outputs are added back into the hidden states, enriching them with long-context semantics.
+
+So yes — the mixing happens through attention weights, not direct concatenation.
+
+**Important Notes**
+
+  * The vision tokens are frozen during inference (no autoregressive update).
+
+  * Only the text tokens evolve as the model generates output.
+
+  * Cross-attention ensures the model can reference visual context at every decoding step.
+
+**Use Cases**
+
+  * Compress long document context before LLM input
+
+  * Open-domain QA with large evidence sets
+
+  * Efficient in-context learning with large numbers of demonstrations
+
+  **Comparison to DeepSeek-OCR**
+
+  | Feature                           | **VIST**                                             | **DeepSeek-OCR**                                  |
+| --------------------------------- | ---------------------------------------------------- | ------------------------------------------------- |
+| **Goal**                          | Compress long input context for LLMs                 | OCR and context compression via image encoding    |
+| **Input**                         | Text (rendered as image)                             | Images or rendered text documents                 |
+| **Output**                        | Text tokens via LLM decoding                         | Text output (OCR-style decoding)                  |
+| **Compression Target**            | Distant text context (selective compression)         | Entire document input                             |
+| **Core Encoder**                  | Frozen CLIP ViT + Perceiver Resampler                | SAM + Convolutional Compressor + CLIP             |
+| **Compression Strategy**          | Frequency-based masking + contrastive learning (PVE) | Token count reduction via patch downsampling      |
+| **Where Used**                    | As auxiliary input to LLM via cross-attention        | As complete input encoder for VLM                 |
+| **Model Role**                    | Visual tokenization for context enhancement          | Full image-to-text decoding pipeline              |
+| **Primary Use Case**              | Long-context language modeling & QA                  | Document OCR, chart parsing, data extraction      |
+| **Text Token Generation**         | Decoder generates text tokens autoregressively       | Decoder reconstructs full text from vision tokens |
+| **Multilingual / Layout Support** | Not the focus                                        | Strong multilingual & layout support              |
+
+Key Difference Summary
+
+| **VIST**                                                                       | **DeepSeek-OCR**                                                           |
+| ---------------------------------------------------------------------------- | ------------------------------------------------------------------------ |
+| Augments an LLM with compressed vision tokens for long-text **enhancement**  | Fully replaces text input with vision tokens for **end-to-end decoding** |
+| Uses **visual token compression selectively** on less important text context | Uses **vision tokens as the primary input** (OCR image-to-text)          |
+| Focuses on **reducing LLM memory cost** for long sequences                   | Focuses on **replacing large text input with fewer vision tokens**       |
+| Designed for **text-first workflows**, compressing past context              | Designed for **image-first workflows**, like scanned documents           |
+
+It's interesting to see same concept of using visual token to compress the long textual context input. How useful of the fusion cross-attention is still a question to me.
