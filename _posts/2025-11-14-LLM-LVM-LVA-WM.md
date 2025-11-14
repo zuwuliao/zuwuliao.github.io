@@ -4,9 +4,13 @@ title: LLM-LVM-LVA-World Model
 categories: AI
 ---
 
-In my early blog, we talked about that LLM might not be the right direction to AGI. The real world is way more complex than just languange can description. For example, when we push a cup out of the table edge, how does LLM to predict the next status of the cup? It should understand the physics that the gravity will pull the cup down to the ground. Based on the nature of the ground like hard court, wood, sand or ruber, the cup may be broken or not. All these knowledge require the AI to perceive the world, to see and to feel. Language model cannot do these at all. What do the current acdemia and researchers do to address this issue? We will look into this cutting-edge status that AI feild.
+In one of my earlier blog posts, I raised the idea that large language models (LLMs) might not be the best path toward AGI. The real world is way more complex than what words alone can capture.
 
-The group of AI experts such as Yang LeCun, Fei Fei Li, and others believe the evolving path should be this:
+Take a simple example: if you push a cup off the edge of a table, what happens next? Can an LLM figure that out? It would need to know that gravity pulls the cup down, and depending on what it hits—hardwood, sand, rubber, concrete—the result could be very different. The cup might break, bounce, or just land softly.
+
+To really understand situations like this, an AI needs to perceive the world—it needs to see, to feel, maybe even to interact. Language models just don’t have that kind of sensory input or physical grounding.
+
+So what are researchers doing about it? How are they trying to build systems that go beyond just language? In this post, we’ll take a quick look at where the field is heading and how people like Yann LeCun, Fei-Fei Li, and others are thinking about the next steps toward more general, grounded intelligence. One of the evolution path they believe is like this:
 
 **LLM**->**LVM**->**LVA**->**World Model(WM)**
 
