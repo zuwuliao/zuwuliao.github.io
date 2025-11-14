@@ -9,20 +9,20 @@ RDMA (Remote Direct Memory Access) is a technology that allows the direct transf
 
 **Key Characteristics of RDMA**
 
-	1. Kernel Bypass:
-		○ RDMA moves data directly from one system’s user-space memory to another system’s user-space memory.
-		○ This bypasses the typical kernel-based network stack, reducing context switches and buffer copies.
-	2. Zero-Copy Data Transfer:
-		○ Because data moves directly between application buffers on different hosts, there is no need to copy data to intermediate kernel buffers.
-		○ This “zero-copy” mechanism eliminates overhead and accelerates data transfers.
-	3. Hardware Offload:
-		○ RDMA-capable NICs (e.g., InfiniBand Host Channel Adapters or Ethernet adapters with RoCE/iWARP support) offload much of the transport functionality.
-		○ Tasks like segmentation, reassembly, and reliability can be handled by the NIC, freeing up CPU cycles.
-	4. Low Latency:
-		○ Removing kernel interactions and unnecessary data copying reduces round-trip time (RTT).
-		○ Latency can drop into the microseconds or even sub-microseconds range in optimized environments.
-	5. High Throughput:
-		○ RDMA-based networks can achieve higher effective throughput because CPU is not a bottleneck and data moves more efficiently through the network.
+1. Kernel Bypass:
+	* RDMA moves data directly from one system’s user-space memory to another system’s user-space memory.
+	* This bypasses the typical kernel-based network stack, reducing context switches and buffer copies.
+2. Zero-Copy Data Transfer:
+	* Because data moves directly between application buffers on different hosts, there is no need to copy data to intermediate kernel buffers.
+	* This “zero-copy” mechanism eliminates overhead and accelerates data transfers.
+3. Hardware Offload:
+	* RDMA-capable NICs (e.g., InfiniBand Host Channel Adapters or Ethernet adapters with RoCE/iWARP support) offload much of the transport functionality.
+	* Tasks like segmentation, reassembly, and reliability can be handled by the NIC, freeing up CPU cycles.
+4. Low Latency:
+	* Removing kernel interactions and unnecessary data copying reduces round-trip time (RTT).
+	* Latency can drop into the microseconds or even sub-microseconds range in optimized environments.
+5. High Throughput:
+	* RDMA-based networks can achieve higher effective throughput because CPU is not a bottleneck and data moves more efficiently through the network.
 
 **Key Technologies Enabling RDMA**
 1. **InfiniBand**:
