@@ -3,8 +3,10 @@ layout: post
 title: InfiniBand vs RoCE
 categories: Network
 ---
+Before we talk about InfiniBand and RoCE, we need to understand what RDMA is. Because both InfiniBand and RoCE are network technology to enable RDMA.
 
 **RDMA**
+
 RDMA (Remote Direct Memory Access) is a technology that allows the direct transfer of data between the memories of two computers on a network without involving the operating system or the CPU in the data path. By bypassing the kernel and avoiding multiple data copies, RDMA significantly reduces latency and CPU overhead compared to traditional TCP/IP networking.
 
 **Key Characteristics of RDMA**
@@ -44,6 +46,7 @@ RDMA (Remote Direct Memory Access) is a technology that allows the direct transf
 Now, let's look at the two popular methods to enable RDMA in the current Data Center.
 
 **InfiniBand**
+
 InfiniBand is a high-speed networking standard for high-performance computing (HPC) that offers extremely low latency and high throughput for connecting servers, storage systems, and embedded devices. It is a specialized, switched-fabric architecture that enables direct memory access between connected devices, bypassing the operating system and CPU for increased efficiency. Originally created to accelerate data center I/O, its capabilities have made it the network of choice for large-scale artificial intelligence (AI) and supercomputing clusters. 
 
 **Key features and components**
