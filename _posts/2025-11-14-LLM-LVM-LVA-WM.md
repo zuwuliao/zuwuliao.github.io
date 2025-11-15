@@ -1,6 +1,6 @@
 ---
 layout: post
-title: LLM-LVM-LVA-World Model
+title: LLM-VLM-LVA-World Model
 categories: AI
 ---
 
@@ -12,11 +12,11 @@ To really understand situations like this, an AI needs to perceive the world—i
 
 So what are researchers doing about it? How are they trying to build systems that go beyond just language? In this post, we’ll take a quick look at where the field is heading and how people like Yann LeCun, Fei-Fei Li, and others are thinking about the next steps toward more general, grounded intelligence. One of the evolution path they believe is like this:
 
-**LLM**->**LVM**->**LVA**->**World Model(WM)**
+**LLM**->**VLM**->**LVA**->**World Model(WM)**
 
 Let's have a look of each of them to understand what they are.
 
-**LLM**
+**LLM(Large Language Model)**
 
 **What it is**
 
@@ -60,7 +60,7 @@ An LLM is an AI system that takes text input and produces text output, functioni
 
   * Scale vs latency: Large models cost compute and require latency/throughput trade-offs.
 
-**LVM**
+**VLM(Vision-Language Model)**
 
 **What it is**
 
@@ -106,7 +106,7 @@ A VLM is an AI system that ingests visual input (images or video) and textual in
 
   * Latency/compute: Vision encoders are heavy; trade-offs for real-time applications.
 
-**VLA**
+**VLA(Vision-Language-Action Model)**
 
 **What is a VLA?**
 
