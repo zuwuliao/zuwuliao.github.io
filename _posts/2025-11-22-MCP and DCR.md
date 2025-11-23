@@ -49,15 +49,15 @@ This approach works well in closed ecosystems (e.g., a company’s internal IdP)
 
 1. Automate client onboarding
 
-  * Allow clients to register themselves automatically via a standard /register endpoint.
+   * Allow clients to register themselves automatically via a standard /register endpoint.
 
 2. Eliminate manual pre-approval
 
-  * The authorization server can create a new client_id (and optional client_secret) dynamically for any app that calls /register.
+   * The authorization server can create a new client_id (and optional client_secret) dynamically for any app that calls /register.
 
 3. Enable large, open ecosystems
 
-  * Open identity providers (like OpenID Connect, Solid, or MCP servers) can accept new clients on the fly — no admin bottleneck.
+   * Open identity providers (like OpenID Connect, Solid, or MCP servers) can accept new clients on the fly — no admin bottleneck.
 
 In short, DCR lets OAuth servers accept and recognize new clients programmatically instead of requiring prior manual registration.
 
@@ -67,53 +67,53 @@ While conceptually well-designed, DCR introduces several operational and securit
 
 1. **Unbounded Growth of Client Records**
 
-  * Each registration creates a new row in the authorization server’s client table.
+   * Each registration creates a new row in the authorization server’s client table.
 
-  * Since clients can re-register freely, you get “client ID sprawl” — millions of short-lived, near-duplicate entries.
+   * Since clients can re-register freely, you get “client ID sprawl” — millions of short-lived, near-duplicate entries.
 
-  * There’s no good expiry or lifecycle management built into the DCR spec.
+   * There’s no good expiry or lifecycle management built into the DCR spec.
 
 2. **No Natural Expiry or Cleanup**
 
-  * The OAuth spec doesn’t define when (or how) a dynamic registration becomes invalid.
+   * The OAuth spec doesn’t define when (or how) a dynamic registration becomes invalid.
 
-  * Servers must build their own expiry, cleanup, and rotation logic — which becomes messy in distributed setups.
+   * Servers must build their own expiry, cleanup, and rotation logic — which becomes messy in distributed setups.
 
 3. **Instance-based Duplication**
 
-  * Each client instance (e.g., each desktop install or cloud deployment) needs its own client_id.
+   * Each client instance (e.g., each desktop install or cloud deployment) needs its own client_id.
 
-  * That means hundreds of client_ids for the same app, just because each user or machine registered separately.
+   * That means hundreds of client_ids for the same app, just because each user or machine registered separately.
 
 4. **Open Attack Surface (Public /register Endpoint)**
 
-  * The /register endpoint is typically unauthenticated by design — any app can hit it.
+   * The /register endpoint is typically unauthenticated by design — any app can hit it.
 
-  * This opens the door to abuse, DoS attacks, and spurious registrations.
+   * This opens the door to abuse, DoS attacks, and spurious registrations.
 
-  * You need extra rate limiting, validation, and sometimes CAPTCHA-like checks.
+   * You need extra rate limiting, validation, and sometimes CAPTCHA-like checks.
 
 5. **Extra Client State to Manage**
 
-  * A client must store and reuse its assigned client_id (and possibly client_secret) for subsequent use.
+   * A client must store and reuse its assigned client_id (and possibly client_secret) for subsequent use.
 
-  * If it loses this state or moves machines, it must re-register — creating more duplicates.
+   * If it loses this state or moves machines, it must re-register — creating more duplicates.
 
 6. **Operational Overhead for Authorization Servers**
 
-  * Authorization servers must handle:
+   * Authorization servers must handle:
 
-    * Persistent storage
+     * Persistent storage
 
-    * Schema migration
+     * Schema migration
 
-    * Rate limiting
+     * Rate limiting
 
-    * Metadata validation
+     * Metadata validation
 
-    * Maintenance of a giant registration dataset
+     * Maintenance of a giant registration dataset
 
-  * This undermines the “simple and stateless” ethos of OAuth.
+   * This undermines the “simple and stateless” ethos of OAuth.
 
 Additionally, if you are using Entra ID as Idp, there is a bigger trouble you have to deal. That is, as of now, Entra ID doesn't support DCR feature. That means when client is trying to register the app to Entra ID, you must find another middleware to handle it. One of the solution on Azure is API Management. API Management can play a role as Auth Server for clients and then uses on-behalf-of flow to exchange it for a token that can be used with Microsoft Graph. The example of deployment can be found [here](https://github.com/localden/remote-auth-mcp-apim-py)
 
@@ -150,6 +150,7 @@ Software Statements are an add-on (an extension) for extra trust, mainly for des
 Signed software statements for desktop apps is a proposed fix for impersonation. Backend hosts a JWKS, authenticates the user, issues a short-lived signed JWT attesting to the client, and the client presents it during OAuth; the auth server verifies against the JWKS. Works with both DCR and CIMD.
 
 **Summary Table:**
+
 | Purpose                      | Mechanism               | Relationship                                   |
 | ---------------------------- | ----------------------- | ---------------------------------------------- |
 | Register clients             | **CIMD**                | Replaces DCR for simpler, safer registration   |
