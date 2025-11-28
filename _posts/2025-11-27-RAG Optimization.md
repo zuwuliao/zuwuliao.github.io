@@ -143,7 +143,7 @@ GraphRAG enhances retrieval by:
 - Generating hierarchical summaries (global → community → local)  
 - Enabling multi-hop question answering via path traversal  
 
-This is especially useful for complex, multi-step reasoning tasks, where answers span multiple documents or entities.
+This is especially useful for complex, multi-step reasoning tasks, where answers span multiple documents or entities. (Reference Doc [Microsoft GraphGRA](https://microsoft.github.io/graphrag/))
 
 ---
 
