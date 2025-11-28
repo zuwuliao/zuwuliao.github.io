@@ -103,7 +103,7 @@ Index design controls the system’s ability to retrieve usable, complete, and s
 
 ### 3.1 Fine-Grained Chunking
 
-Chunking is crucial. Best practices include:
+Chunking is crucial. Best practices include(refer to my previous blog [RAG Chunking Strategy](https://zuwuliao.github.io/RAG-Chunking-Strategy/)):
 
 - **Sentence-aware splitting** – avoid cutting mid-sentence  
 - **Semantic-boundary detection** – break on topic or section changes  
