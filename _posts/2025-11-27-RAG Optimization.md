@@ -267,6 +267,75 @@ A production RAG system is more than a retriever and generator. A mature archite
 
 Using an orchestration framework or workflow engine helps keep the system observable, debuggable, and maintainable.
 
+The diagram looks like:
+
+flowchart LR
+    subgraph Client["Client / UX Layer"]
+        U[User / App]
+    end
+
+    subgraph Orchestrator["Orchestration Layer"]
+        OR[API Gateway / Router]
+        WF[Workflow Engine\n(orchestration logic)]
+    end
+
+    subgraph Retrieval["Retrieval Layer"]
+        QR[Query Rewriter]
+        RT[Query Router]
+        HR[Hybrid Retriever\n(BM25 + Dense)]
+        RR[Reranker]
+        CF[Context Repacker\n& Compressor]
+    end
+
+    subgraph Generation["Generation Layer"]
+        PB[Prompt Builder]
+        LLM[LLM / VLM]
+        PV[Post-processing &\nVerification]
+    end
+
+    subgraph Data["Data & Index Layer"]
+        VD[Vector DB]
+        IDX[Full-text Index\n(BM25/ES/Solr)]
+        DS[Document Store\n(S3/Blob/DB)]
+        KG[Knowledge Graph /\nGraphRAG Index]
+        MC[Metadata Catalog]
+    end
+
+    subgraph GovObs["Security, Governance & Observability"]
+        AUTH[AuthN/AuthZ & ACL]
+        LOG[Logs & Audit]
+        MET[Metrics & Traces]
+        EVAL[Eval Store\n(A/B, offline eval)]
+    end
+
+    U --> OR --> AUTH
+    AUTH --> WF
+
+    WF --> QR
+    QR --> RT
+    RT --> HR
+    HR --> RR
+    RR --> CF
+
+    HR -->|Sparse| IDX
+    HR -->|Dense| VD
+    RT --> KG
+    KG --> HR
+    HR --> DS
+    HR --> MC
+
+    CF --> PB
+    PB --> LLM
+    LLM --> PV
+
+    PV --> WF
+    WF --> LOG
+    WF --> MET
+    WF --> EVAL
+
+    WF --> OR --> U
+
+
 ---
 
 ## 9. Security, Governance & Compliance (New in V2)
