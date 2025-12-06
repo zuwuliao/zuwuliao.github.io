@@ -49,8 +49,13 @@ The below picture shows the comparison between ground truth structure and AlphaF
 After all, I want to say this is the kind of AI we should aim for: not one that simply competes with us, but one that helps us solve humanity’s most complex challenges.
 
 **Reference:**
+
+  * AlphaFold Paper - [Highly accurate protein structure prediction with AlphaFold](https://www.nature.com/articles/s41586-021-03819-2)
+  
   * Google Deepmind Blog - [methods to construct predictions of protein structures](https://deepmind.google/blog/alphafold-using-ai-for-scientific-discovery/)
   
   * AlphaFold Protein Structure Database - [AlphaFold protein structure DB](https://alphafold.ebi.ac.uk/)
 
   * Youtube Video - [AlphaFold - The Most Useful Thing AI Has Ever Done](https://www.youtube.com/watch?v=P_fHJIYENdI)
+
+  * AlphaFold github repo - [alphafold repo](https://github.com/google-deepmind/alphafold)
