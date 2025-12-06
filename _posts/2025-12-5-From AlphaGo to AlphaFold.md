@@ -1,6 +1,6 @@
 ---
 layout: post
-title: From AlphaGo to AlphaFold - The way AI is supposed to be
+title: From AlphaGo to AlphaFold: This Is What AI Should Be
 categories: AI
 ---
 
@@ -51,7 +51,7 @@ After all, I want to say this is the kind of AI we should aim for: not one that 
 **Reference:**
 
   * AlphaFold Paper - [Highly accurate protein structure prediction with AlphaFold](https://www.nature.com/articles/s41586-021-03819-2)
-  
+
   * Google Deepmind Blog - [methods to construct predictions of protein structures](https://deepmind.google/blog/alphafold-using-ai-for-scientific-discovery/)
   
   * AlphaFold Protein Structure Database - [AlphaFold protein structure DB](https://alphafold.ebi.ac.uk/)
