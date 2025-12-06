@@ -1,6 +1,6 @@
 ---
 layout: post
-title: From AlphaGo to AlphaFold: This Is What AI Should Be
+title: From AlphaGo to AlphaFold - This Is What AI Should Be
 categories: AI
 ---
 
