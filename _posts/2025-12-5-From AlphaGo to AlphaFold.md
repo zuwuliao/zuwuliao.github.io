@@ -60,9 +60,11 @@ It works in two main stages. First, the Evoformer processes evolutionary informa
 
 ![pic 3](/images/AlphaFold-Network.jpg "pic 3")
 
+---
+
 **Summary**
 
-After all we learned from AlphaFold, I want to say this is the kind of AI we should aim for: not one that simply competes with us, but one that helps us solve humanity’s most complex challenges.
+With the great success of AlphaFold, AlphaFold DB with over 200 million protein structure predictions is open to the public to accelerate scientific research. After all we learned from AlphaFold, I want to say this is the kind of AI we should aim for: not one that simply competes with us, but one that helps us solve humanity’s most complex challenges.
 
 ---
 
