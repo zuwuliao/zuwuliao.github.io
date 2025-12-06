@@ -1,0 +1,56 @@
+---
+layout: post
+title: From AlphaGo to AlphaFold - The way AI is supposed to be
+categories: AI
+---
+
+AI has had a significant impact on human society—some of it positive, some negative. Many jobs have been replaced or reshaped by AI technologies, leading us to question what role AI should play in our future.
+
+DeepMind offered one possible answer. In 2016, it created AlphaGo, which stunned the world by defeating Go champion Lee Sedol using deep neural networks. It's a historic moment that demonstrated AI's potential to surpass human intelligence in complex tasks. If you haven't watch the AlphaGo movie, I would recommend you to watch it - [AlphaGo](https://www.youtube.com/watch?v=WXuK6gekU1Y&t=17s). Then, in 2020, OpenAI introduced ChatGPT, introducing a global AI revolution. But these breakthroughs raise a deeper question: Is this the kind of AI we want? Or should AI be designed to serve a greater good for all of humanity?
+
+In my opinion, AlphaFold provides the best answer. By solving the great challenge of predicting protein structures, Over 6 decades, all scientists around the world found about 150,000 protein structures. Then in one fell swoop, AlphaFold came in and unveiled over 200 million of them with near-perfect accuracy. This is almost all known proteins in nature. This is a powerful example of how AI can be used not to replace humans, but to unlock new possibilities for human progress.
+
+**AlphaFold**
+
+AlphaFold is an AI system developed by Google DeepMind that predicts a protein’s 3D structure from its amino acid sequence with high accuracy. Proteins are crucial to all biological life. Their 3D shapes determine what they do — from fighting infections to breaking down food. Knowing these shapes helps:
+
+  * Understand how diseases work.
+
+  * Design new drugs.
+
+  * Engineer new enzymes or treatments.
+
+But experimentally figuring out protein structures is slow and expensive.
+
+AlphaFold discovers structure by learning these statistical couplings and geometric constraints using deep neural networks. How AlphaFold Works
+
+AlphaFold uses:
+
+  * A deep neural network trained on existing protein data.
+
+  * Patterns learned from evolutionary sequences and known protein shapes.
+
+  * A transformer-based architecture that models relationships between amino acids.
+
+It outputs both:
+
+  * The 3D coordinates of atoms.
+
+  * A confidence score for each part of the structure.
+
+The methods to construct predictions of protein structures look like:
+
+![pic 1](/images/AlphaFold-1.jpg "pic 1")
+
+The below picture shows the comparison between ground truth structure and AlphaFold generated structure. It shows how close the generated structure is to the true one.
+
+![pic 2](/images/AlphaFold-1.jpg "pic 2")
+
+After all, I want to say this is the kind of AI we should aim for: not one that simply competes with us, but one that helps us solve humanity’s most complex challenges.
+
+**Reference:**
+  * Google Deepmind Blog - [methods to construct predictions of protein structures](https://deepmind.google/blog/alphafold-using-ai-for-scientific-discovery/)
+  
+  * AlphaFold Protein Structure Database - [AlphaFold protein structure DB](https://alphafold.ebi.ac.uk/)
+
+  * Youtube Video - [AlphaFold - The Most Useful Thing AI Has Ever Done](https://www.youtube.com/watch?v=P_fHJIYENdI)
