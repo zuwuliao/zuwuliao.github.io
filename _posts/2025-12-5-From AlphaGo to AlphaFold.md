@@ -44,7 +44,7 @@ The methods to construct predictions of protein structures look like:
 
 The below picture shows the comparison between ground truth structure and AlphaFold generated structure. It shows how close the generated structure is to the true one.
 
-![pic 2](/images/AlphaFold-2.jpg "pic 2")
+![pic 2](/images/AlphaFold-2.gif "pic 2")
 
 After all, I want to say this is the kind of AI we should aim for: not one that simply competes with us, but one that helps us solve humanity’s most complex challenges.
 
