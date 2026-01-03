@@ -12,7 +12,11 @@ Nested Learning (NL) redefines the architecture of large language models by intr
 
 The first major innovation in Nested Learning is the Continuum Memory System (CMS), which replaces the Transformer’s traditional single MLP block with a hierarchy of memory modules that operate at different update frequencies. Instead of a static feed-forward layer that never changes during inference, CMS introduces fast, mid, and slow memory components that learn and update at different timescales. Fast memory captures moment-to-moment information, mid-memory consolidates patterns across short sequences or tasks, and slow-memory absorbs only stable, repeated signals that are safe to store as long-term knowledge. This structure enables NL to perform continual learning during inference while preserving stability and preventing catastrophic forgetting.
 
+![pic 1](/images/NL-1.jpg "pic 1")
+
 To visualize this, imagine CMS as a system of interconnected gears: the small gear (fast memory) spins rapidly and reacts to every input, the medium gear (mid-memory) turns more slowly as consistent patterns emerge, and the large gear (slow memory) moves only when strong, repeated signals push through—storing durable long-term knowledge. This “gear train” captures exactly how CMS filters, stabilizes, and transfers information across memory levels.
+
+
 
 **Innovation 2: Optimizer-as-Architecture**
 
@@ -20,7 +24,55 @@ In standard deep learning, the optimizer (e.g., Adam or SGD) is an external proc
 
 **Innovation 3: Hope Architecture and the Titan Self-Modifying Module**
 
-The third major innovation in Nested Learning is the introduction of Hope, the first full model architecture that operationalizes NL’s multi-timescale learning principles. Hope integrates the Continuum Memory System (CMS) with a self-modifying sequence module called Titan, which serves as the fast-learning engine of the architecture. Titan dynamically generates its own update rules, modifies internal states during inference, and acts as a meta-learner that governs how information flows into CMS. CMS then applies multi-frequency consolidation across fast, mid, and slow memory levels, enabling stable long-term knowledge retention. Together, Titan and CMS form the Hope architecture—a unified system capable of rapid adaptation, continual learning, and self-directed updates that go far beyond the fixed and stateless computation patterns of conventional Transformers.
+The third major innovation in Nested Learning is the introduction of Hope, the first full model architecture that operationalizes NL’s multi-timescale learning principles. Hope integrates the Continuum Memory System (CMS) with a self-modifying sequence module called Titan, which serves as the fast-learning engine of the architecture. Titan dynamically generates its own update rules, modifies internal states during inference, and acts as a meta-learner that governs how information flows into CMS. CMS then applies multi-frequency consolidation across fast, mid, and slow memory levels, enabling stable long-term knowledge retention. Together, Titan and CMS form the Hope architecture, a unified system capable of rapid adaptation, continual learning, and self-directed updates that go far beyond the fixed and stateless computation patterns of conventional Transformers.
+
+The Hope Archietcture:
+
+                             ┌───────────────────────────────────────────┐
+                             │                 INPUT                     │
+                             └───────────────────────────────────────────┘
+                                              │
+                                              ▼
+                     ┌──────────────────────────────────────────────────────────┐
+                     │                   TITAN MODULE                           │
+                     │  (Self-Modifying Fast Learner / Meta-Optimizer)          │
+                     │                                                          │
+                     │  • Learns update rules dynamically                       │
+                     │  • Generates fast-memory updates                         │
+                     │  • Controls information passed to CMS                    │
+                     └──────────────────────────────────────────────────────────┘
+                                              │
+                                              ▼
+            ┌─────────────────────────────────────────────────────────────────────---───┐
+            │       CONTINUUM MEMORY SYSTEM (CMS)                                       │
+            │  Multi-Timescale Memory Implemented Using Multiple MLPs                   │
+            │                                                                           │
+            │   ┌──────────────────────────┬────────────────────────────┬───────-────┐  │
+            │   │   FAST MEMORY LEVEL      │    MID MEMORY LEVEL        │ SLOW MEMORY│  |
+            │   │   (updates every token)  │ (updates per episode/task) │  (updates  │  |
+            │   │                          │                            │ infrequently) │
+            │   ├──────────────────────────┼────────────────────────────┼──────────-─┤  │
+            │   │ • Highly plastic         │ • Consolidates patterns    │ • Stores   │  │
+            │   │ • Short-term state       │   across contexts          │   long-term│  │
+            │   │ • Works with Titan       │ • Filters noise            │   knowledge│  │
+            │   │                          │                            │ • Weight   │  │
+            │   │                          │                            │   updates  │  │
+            │   └──────────────────────────┴────────────────────────────┴────────-───┘  │
+            └─────────────────────────────────────────────────────────────────────---───┘
+                                              │
+                                              ▼
+                      ┌─────────────────────────────────────────────────────────┐
+                      │             CONSOLIDATION & UPDATE LOGIC                │
+                      │   • Determines what information enters slow memory      │
+                      │   • Prevents catastrophic forgetting                    │
+                      │   • Ensures stable long-term storage                    │
+                      └─────────────────────────────────────────────────────────┘
+                                              │
+                                              ▼
+                          ┌───────────────────────────────────────────┐
+                          │                 OUTPUT                    │
+                          └───────────────────────────────────────────┘
+
 
 **Challenges**
 
