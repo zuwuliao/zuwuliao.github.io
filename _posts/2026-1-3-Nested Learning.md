@@ -16,7 +16,7 @@ The first major innovation in Nested Learning is the Continuum Memory System (CM
 
 To visualize this, imagine CMS as a system of interconnected gears: the small gear (fast memory) spins rapidly and reacts to every input, the medium gear (mid-memory) turns more slowly as consistent patterns emerge, and the large gear (slow memory) moves only when strong, repeated signals push through—storing durable long-term knowledge. This “gear train” captures exactly how CMS filters, stabilizes, and transfers information across memory levels.
 
-
+![pic 2](/images/NL-2.gif "pic 2")
 
 **Innovation 2: Optimizer-as-Architecture**
 
