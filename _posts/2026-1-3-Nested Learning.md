@@ -30,6 +30,9 @@ The third major innovation in Nested Learning is the introduction of Hope, the f
 
 The Hope Archietcture:
 
+<div style="text-align: center;">
+<pre style="display: inline-block; text-align: left;">
+
                              ┌───────────────────────────────────────────┐
                              │                 INPUT                     │
                              └───────────────────────────────────────────┘
@@ -75,6 +78,8 @@ The Hope Archietcture:
                           │                 OUTPUT                    │
                           └───────────────────────────────────────────┘
 
+</pre>
+</div>
 
 **Challenges**
 
