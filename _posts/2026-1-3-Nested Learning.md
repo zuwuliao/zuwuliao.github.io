@@ -29,6 +29,7 @@ In standard deep learning, the optimizer (e.g., Adam or SGD) is an external proc
 The third major innovation in Nested Learning is the introduction of Hope, the first full model architecture that operationalizes NL’s multi-timescale learning principles. Hope integrates the Continuum Memory System (CMS) with a self-modifying sequence module called Titan, which serves as the fast-learning engine of the architecture. Titan dynamically generates its own update rules, modifies internal states during inference, and acts as a meta-learner that governs how information flows into CMS. CMS then applies multi-frequency consolidation across fast, mid, and slow memory levels, enabling stable long-term knowledge retention. Together, Titan and CMS form the Hope architecture, a unified system capable of rapid adaptation, continual learning, and self-directed updates that go far beyond the fixed and stateless computation patterns of conventional Transformers.
 
 The Hope Archietcture:
+
                              ┌───────────────────────────────────────────┐
                              │                 INPUT                     │
                              └───────────────────────────────────────────┘
