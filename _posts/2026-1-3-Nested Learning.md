@@ -30,50 +30,7 @@ The third major innovation in Nested Learning is the introduction of Hope, the f
 
 The Hope Archietcture:
 
-                 ┌───────────────────────────────────────────┐
-                 │                 INPUT                     │
-                 └───────────────────────────────────────────┘
-                                  │
-                                  ▼
-         ┌──────────────────────────────────────────────────────────┐
-         │                   TITAN MODULE                           │
-         │  (Self-Modifying Fast Learner / Meta-Optimizer)          │
-         │                                                          │
-         │  • Learns update rules dynamically                       │
-         │  • Generates fast-memory updates                         │
-         │  • Controls information passed to CMS                    │
-         └──────────────────────────────────────────────────────────┘
-                                  │
-                                  ▼
-┌──────────────────────────────────────────────────────────────────--──────┐
-│       CONTINUUM MEMORY SYSTEM (CMS)                                      │
-│  Multi-Timescale Memory Implemented Using Multiple MLPs                  │
-│                                                                          │
-│   ┌──────────────────────────┬────────────────────────────┬─────────-──┐ │
-│   │   FAST MEMORY LEVEL      │    MID MEMORY LEVEL        │ SLOW MEMORY│ |
-│   │   (updates every token)  │ (updates per episode/task) │  (updates  │ |
-│   │                          │                            │ infrequently)│
-│   ├──────────────────────────┼────────────────────────────┼─────────-──┤ │
-│   │ • Highly plastic         │ • Consolidates patterns    │ • Stores   │ │
-│   │ • Short-term state       │   across contexts          │   long-term│ │
-│   │ • Works with Titan       │ • Filters noise            │   knowledge│ │
-│   │                          │                            │ • Weight   │ │
-│   │                          │                            │   updates  │ │
-│   └──────────────────────────┴────────────────────────────┴──────────-─┘ │
-└──────────────────────────────────────────────────────────────────────--──┘
-                                  │
-                                  ▼
-          ┌─────────────────────────────────────────────────────────┐
-          │             CONSOLIDATION & UPDATE LOGIC                │
-          │   • Determines what information enters slow memory      │
-          │   • Prevents catastrophic forgetting                    │
-          │   • Ensures stable long-term storage                    │
-          └─────────────────────────────────────────────────────────┘
-                                  │
-                                  ▼
-              ┌───────────────────────────────────────────┐
-              │                 OUTPUT                    │
-              └───────────────────────────────────────────┘
+![pic 3](/images/NL-3.jpg "pic 3")
 
 **Challenges**
 
