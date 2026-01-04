@@ -30,23 +30,21 @@ The third major innovation in Nested Learning is the introduction of Hope, the f
 
 The Hope Archietcture:
 
-<div style="text-align: center;">
-<pre style="display: inline-block; text-align: left;">
-┌───────────────────────────────────────────┐
-│                 INPUT                     │
-└───────────────────────────────────────────┘
-                   │
-                   ▼
-┌──────────────────────────────────────────────────────────┐
-│                   TITAN MODULE                           │
-│  (Self-Modifying Fast Learner / Meta-Optimizer)          │
-│                                                          │
-│  • Learns update rules dynamically                       │
-│  • Generates fast-memory updates                         │
-│  • Controls information passed to CMS                    │
-└──────────────────────────────────────────────────────────┘
-                   │
-                   ▼
+              ┌───────────────────────────────────────────┐
+              │                 INPUT                     │
+              └───────────────────────────────────────────┘
+                                  │
+                                  ▼
+        ┌──────────────────────────────────────────────────────────┐
+        │                   TITAN MODULE                           │
+        │  (Self-Modifying Fast Learner / Meta-Optimizer)          │
+        │                                                          │
+        │  • Learns update rules dynamically                       │
+        │  • Generates fast-memory updates                         │
+        │  • Controls information passed to CMS                    │
+        └──────────────────────────────────────────────────────────┘
+                                  │
+                                  ▼
 ┌─────────────────────────────────────────────────────────────────────---───┐
 │       CONTINUUM MEMORY SYSTEM (CMS)                                       │
 │  Multi-Timescale Memory Implemented Using Multiple MLPs                   │
@@ -63,22 +61,20 @@ The Hope Archietcture:
 │   │                          │                            │   updates  │  │
 │   └──────────────────────────┴────────────────────────────┴────────-───┘  │
 └─────────────────────────────────────────────────────────────────────---───┘
-                   │
-                   ▼
-┌─────────────────────────────────────────────────────────┐
-│             CONSOLIDATION & UPDATE LOGIC                │
-│   • Determines what information enters slow memory      │
-│   • Prevents catastrophic forgetting                    │
-│   • Ensures stable long-term storage                    │
-└─────────────────────────────────────────────────────────┘
-                   │
-                   ▼
-┌───────────────────────────────────────────┐
-│                 OUTPUT                    │
-└───────────────────────────────────────────┘
+                                  │
+                                  ▼
+        ┌─────────────────────────────────────────────────────────┐
+        │             CONSOLIDATION & UPDATE LOGIC                │
+        │   • Determines what information enters slow memory      │
+        │   • Prevents catastrophic forgetting                    │
+        │   • Ensures stable long-term storage                    │
+        └─────────────────────────────────────────────────────────┘
+                                  │
+                                  ▼
+              ┌───────────────────────────────────────────┐
+              │                 OUTPUT                    │
+              └───────────────────────────────────────────┘
 
-</pre>
-</div>
 
 **Challenges**
 
