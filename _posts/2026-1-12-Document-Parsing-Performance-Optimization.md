@@ -28,10 +28,10 @@ The document addresses the performance optimization to dedicated scenario for AI
 
 Document parsing pipelines frequently hit 3 of Spark’s most common bottlenecks:
 
-### 1. Explode-driven row growth → spill risk
+### 1). Explode-driven row growth → spill risk
 Document parsers often return arrays of elements; explode() multiplies rows quickly. The deck calls out explode() as a common contributor to spill when partitions become too large.   
 
-### 2. Wide transformations → shuffle cost
+### 2). Wide transformations → shuffle cost
 Building “sections” typically involves:
 
 * Window functions(heading propagation / ordering)
@@ -42,7 +42,7 @@ Building “sections” typically involves:
 
 These are classic shuffle triggers, which the deck lists as a key performance tax. 
 
-### 3. Serialization overhead if you use Python UDF / applyInPandas
+### 3). Serialization overhead if you use Python UDF / applyInPandas
 If you do sectionization in Pandas or Python UDFs, you pay serialization costs. The deck recommends sticking to SQL/DataFrames and minimizing UDFs due to serialization overhead—especially Python UDFs. 
 
 ---
