@@ -134,11 +134,11 @@ The deck lists spill causes that map directly to doc parsing workloads:
 
 *	If you see spill in Spark UI:
 
-    o	increase shuffle parallelism (or use spark.sql.shuffle.partitions=auto where supported)
+    *	increase shuffle parallelism (or use spark.sql.shuffle.partitions=auto where supported)
 
-    o	or explicitly size shuffle partitions using the deck’s heuristic:
+    *	or explicitly size shuffle partitions using the deck’s heuristic:
 
-        -	set shuffle partitions to roughly largest shuffle stage size ÷ ~200MB 
+        *	set shuffle partitions to roughly largest shuffle stage size ÷ ~200MB 
 
 *	Consider more memory per core if spill persists (the deck suggests moving to memory-optimized families after confirming spill). 
 
