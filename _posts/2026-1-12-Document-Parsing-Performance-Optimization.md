@@ -34,13 +34,13 @@ Document parsers often return arrays of elements; explode() multiplies rows quic
 ### 2. Wide transformations → shuffle cost
 Building “sections” typically involves:
 
-    * Window functions(heading propagation / ordering)
+* Window functions(heading propagation / ordering)
 
-    * `groupBy`(assemble section text)
+* `groupBy`(assemble section text)
 
-    * `orderBy`(distinct in some pipelines)
+* `orderBy`(distinct in some pipelines)
 
-    These are classic shuffle triggers, which the deck lists as a key performance tax. 
+These are classic shuffle triggers, which the deck lists as a key performance tax. 
 
 ### 3. Serialization overhead if you use Python UDF / applyInPandas
 If you do sectionization in Pandas or Python UDFs, you pay serialization costs. The deck recommends sticking to SQL/DataFrames and minimizing UDFs due to serialization overhead—especially Python UDFs. 
@@ -52,67 +52,95 @@ If you do sectionization in Pandas or Python UDFs, you pay serialization costs. 
 ### A) Keep parsing and sectionization set-based (avoid driver loops)
 ### Do
 
-    *	Parse many documents in one SQL/DataFrame plan
+*	Parse many documents in one SQL/DataFrame plan
 
-    *	Use anti-join gating (LEFT ANTI JOIN) against a cache of processed content_hash values
+*	Use anti-join gating (LEFT ANTI JOIN) against a cache of processed content_hash values
 
 ### Avoid
 
-    *	collect() to driver + for-loop that runs one CALL ... or one parse per document
+*	collect() to driver + for-loop that runs one CALL ... or one parse per document
 
-    The guide explicitly recommends avoiding operations that force work into the driver (collect()), and avoiding extra actions besides reads/writes. 
+The guide explicitly recommends avoiding operations that force work into the driver (collect()), and avoiding extra actions besides reads/writes. 
+
 ### Recommendation
 
-    *	“single INSERT INTO ... WITH ... SELECT ...” approach is the right shape for throughput and scalability.
+*	“single INSERT INTO ... WITH ... SELECT ...” approach is the right shape for throughput and scalability.
+
 ### Note 
-    *	 toPandas() internally uses collect() (or a similar data collection mechanism) to retrieve all records from worker nodes and bring them to the driver node.
+
+*	 toPandas() internally uses collect() (or a similar data collection mechanism) to retrieve all records from worker nodes and bring them to the driver node.
 
 
 ### B) Control document-level parallelism explicitly
 Parsing is often CPU-heavy per document. You want many docs processed concurrently, but you don’t want tiny partitions.
 ### Technique
-    ●	Repartition the document dataset before parsing, based on a document identifier or hash:
-        o	SQL hint (if applicable): /*+ REPARTITION(N) */
-        o	DataFrame: df.repartition(N, "content_hash") or df.repartition(N)
+
+*	Repartition the document dataset before parsing, based on a document identifier or hash:
+    o	SQL hint (if applicable): /*+ REPARTITION(N) */
+    o	DataFrame: df.repartition(N, "content_hash") or df.repartition(N)
+
 ### How to pick N (practical)
-    ●	Start with something like 2–4× total cluster cores for the “parse stage” (enough tasks to keep CPUs busy).
-    ●	Then verify in Spark UI that tasks are evenly sized, and you don’t see heavy spill.
+
+*	Start with something like 2–4× total cluster cores for the “parse stage” (enough tasks to keep CPUs busy).
+
+*	Then verify in Spark UI that tasks are evenly sized, and you don’t see heavy spill.
+
 This aligns with the deck’s “parallelism” principle as a fundamental performance driver. 
  
 
 ### C) Reduce data before wide ops - Early Pruning
 After parsing, do early pruning so you shuffle less:
 ###Do
-    ●	Filter element types early (e.g., keep only section_header and text)
-    ●	Drop fields you don’t need downstream before groupBy/windows
-    ●	Avoid carrying large binary fields after parsing completes
+
+*	Filter element types early (e.g., keep only section_header and text)
+
+*	Drop fields you don’t need downstream before groupBy/windows
+
+*	Avoid carrying large binary fields after parsing completes
+
 This fits the guide’s guidance on reducing shuffled data by removing unnecessary columns/rows before the shuffle. 
 
 
 ### D) Prefer Native SQL / DataFrame + groupBy over Pandas UDF for sectionization
 For sectionization, the fastest/most maintainable pattern is usually:
-    ●	window to forward-fill heading (or another native approach)
-    ●	groupBy heading to assemble content
-    ●	row_number to compute section order
+
+*	window to forward-fill heading (or another native approach)
+
+*	groupBy heading to assemble content
+
+*	row_number to compute section order
+
 Even though window functions require partitioning + ordering, they do not inherently “break parallelism”—they process each document partition in parallel across tasks. The deck’s “code optimization recommendations” also strongly push toward SQL/DataFrames over RDDs/UDFs/driver compute. 
 
 ### Recommendation
-    ●	Use native SQL/DataFrame transforms unless you truly cannot express the logic without Python.
+
+*	Use native SQL/DataFrame transforms unless you truly cannot express the logic without Python.
 
 
 ### E) Spill Management (very relevant to parsing + explode)
 The deck lists spill causes that map directly to doc parsing workloads:
-    ●	partitions too large
-    ●	explode
-    ●	joins producing many rows
-    ●	shuffle partitions too low 
+
+*	partitions too large
+
+*	explode
+
+*	joins producing many rows
+
+*	shuffle partitions too low 
+
 ### Practical actions
-    ●	Ensure AQE is enabled (default in modern runtimes) to help with skew/partition sizing. 
-    ●	If you see spill in Spark UI:
-        o	increase shuffle parallelism (or use spark.sql.shuffle.partitions=auto where supported)
-        o	or explicitly size shuffle partitions using the deck’s heuristic:
-            ▪	set shuffle partitions to roughly largest shuffle stage size ÷ ~200MB 
-    ●	Consider more memory per core if spill persists (the deck suggests moving to memory-optimized families after confirming spill). 
+
+*	Ensure AQE is enabled (default in modern runtimes) to help with skew/partition sizing. 
+
+*	If you see spill in Spark UI:
+
+    o	increase shuffle parallelism (or use spark.sql.shuffle.partitions=auto where supported)
+
+    o	or explicitly size shuffle partitions using the deck’s heuristic:
+
+        ▪	set shuffle partitions to roughly largest shuffle stage size ÷ ~200MB 
+
+*	Consider more memory per core if spill persists (the deck suggests moving to memory-optimized families after confirming spill). 
 
 
 ---
@@ -120,8 +148,10 @@ The deck lists spill causes that map directly to doc parsing workloads:
 ## 4. Data layout for the output “sections cache” table
 
 Your output table (doc sections cache) tends to be:
-    ●	append-heavy (new docs)
-    ●	query-heavy (downstream apps retrieve sections by file_id, content_hash, investment number, etc.)
+
+*	append-heavy (new docs)
+
+*	query-heavy (downstream apps retrieve sections by file_id, content_hash, investment number, etc.)
  
 ### Recommended layout options
 
@@ -129,8 +159,10 @@ Your output table (doc sections cache) tends to be:
 If available, Liquid clustering reduces tuning overhead and is robust to skew and changing access patterns. 
  
 Good when
-    ●	You expect evolving query patterns (sometimes by file_id, sometimes by investment_number)
-    ●	You don’t want to manage partition strategy long-term
+
+*	You expect evolving query patterns (sometimes by file_id, sometimes by investment_number)
+
+*	You don’t want to manage partition strategy long-term
 
 ### Option 2: Z-Order (if you know the main retrieval keys)
 Z-Order the columns you filter on most often (e.g., content_hash, file_id, investment_number) to improve skipping. 
@@ -138,33 +170,44 @@ Z-Order the columns you filter on most often (e.g., content_hash, file_id, inves
 **Partitioning advice for the cache table**
 Partitioning is often not recommended and can cause tiny files and skew if misused; the deck explicitly warns about over-partitioning. 
 
-Recommendation
-    ●	Don’t partition by high-cardinality keys like file_id or content_hash.
-    ●	If you need lifecycle management, consider a low-cardinality partition like ingestion date (only if it truly helps operationally).
+**Recommendation**
+
+*	Don’t partition by high-cardinality keys like file_id or content_hash.
+
+*	If you need lifecycle management, consider a low-cardinality partition like ingestion date (only if it truly helps operationally).
 
 ---
 
 ## 5. Compute Recommendations
 
 The guide differentiates compute choices:
-    ●	Jobs compute for production ETL
-    ●	SQL Warehouse for high concurrency SQL/BI with serverless availability
-    ●	All-purpose for interactive dev 
+
+*	Jobs compute for production ETL
+
+*	SQL Warehouse for high concurrency SQL/BI with serverless availability
+
+*	All-purpose for interactive dev 
 
 ### Best-fit compute choices
 ### 1) Production parsing pipeline (scheduled)
 **Recommended:** Jobs compute + Photon (if your pipeline is mostly SQL/DF) 
  
 **Why**
-    ●	predictable batch throughput
-    ●	isolated runs
-    ●	easy autoscale boundaries
+
+*	predictable batch throughput
+
+*	isolated runs
+
+*	easy autoscale boundaries
  
 ### 2) SQL-first parsing pipeline (pure SQL script)
 **Recommended:** run as a SQL task; consider serverless SQL warehouse if:
-    ●	you want fast startup
-    ●	you want minimal cluster management
-    ●	your workload is well-expressed as SQL and fits warehouse execution patterns 
+
+*	you want fast startup
+
+*	you want minimal cluster management
+
+*	your workload is well-expressed as SQL and fits warehouse execution patterns 
     
 ### 3) Maintenance automation
 If available, enable Predictive Optimization for the cache table so OPTIMIZE/VACUUM happen automatically using serverless compute (“set and forget”). 
@@ -173,25 +216,25 @@ If available, enable Predictive Optimization for the cache table so OPTIMIZE/VAC
 In most cases, using serverless CPU is sufficient. This is because ai_parse_document is a managed AI service call, not a model you run on your Spark (serverless CPU/GPU) executors. Your serverless compute orchestrates the calls and processes the results, but the LLM / parsing model itself runs in Databricks-managed AI infrastructure, not on your job’s CPU or GPU.
 
 GPU makes sense only if:
-    ●	You run your own models (OCR/LLM/embeddings) inside Spark
-    ●	Using libraries that actually leverage CUDA
-    ●	Batching inputs efficiently on executors
+*	You run your own models (OCR/LLM/embeddings) inside Spark
+*	Using libraries that actually leverage CUDA
+*	Batching inputs efficiently on executors
 
 ---
 
 ## 6. “Document parsing” quick recommendations checklist
 ### Do
-    ●	✅ Set-based pipeline (no per-doc driver loop) 
-    ●	✅ Prune early (element types, columns) before shuffles 
-    ●	✅ Use SQL/DataFrame transforms (avoid Python UDFs in hot paths) 
-    ●	✅ Tune parallelism at the document level (repartition docs) 
-    ●	✅ Watch spill and shuffle metrics in Spark UI; adjust partitions using the deck heuristic 
-    ●	✅ Use Liquid clustering or Z-Order on retrieval keys for the cache table 
-    ●	✅ Consider serverless for SQL tasks and for automated maintenance (Predictive Optimization) 
+*	✅ Set-based pipeline (no per-doc driver loop) 
+*	✅ Prune early (element types, columns) before shuffles 
+*	✅ Use SQL/DataFrame transforms (avoid Python UDFs in hot paths) 
+*	✅ Tune parallelism at the document level (repartition docs) 
+*	✅ Watch spill and shuffle metrics in Spark UI; adjust partitions using the deck heuristic 
+*	✅ Use Liquid clustering or Z-Order on retrieval keys for the cache table 
+*	✅ Consider serverless for SQL tasks and for automated maintenance (Predictive Optimization) 
 ### Avoid
-    ●	❌ collect() + Python for-loops that call SQL/stored procs per document 
-    ●	❌ Partitioning on high-cardinality IDs (file/hash) 
-    ●	❌ Pandas/UDF-heavy sectionization unless required
+*	❌ collect() + Python for-loops that call SQL/stored procs per document 
+*	❌ Partitioning on high-cardinality IDs (file/hash) 
+*	❌ Pandas/UDF-heavy sectionization unless required
 
 ---
 
