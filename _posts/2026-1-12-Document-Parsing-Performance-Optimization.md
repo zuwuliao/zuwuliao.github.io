@@ -10,17 +10,17 @@ The document addresses the performance optimization to dedicated scenario for AI
 
 ### Typical Pattern
 
-    1. Read candidate documents (DOC / DOCX / PDF) from a source table 
+1. Read candidate documents (DOC / DOCX / PDF) from a source table 
 
-    2. Incremental gating using a stable hash (e.g., `content_hash`)  
+2. Incremental gating using a stable hash (e.g., `content_hash`)  
 
-    3. Apply parsing in a set-based distributed plan  
+3. Apply parsing in a set-based distributed plan  
 
-    4. `explode()` parsed elements into rows  
+4. `explode()` parsed elements into rows  
 
-    5. Transform into sections  
+5. Transform into sections  
 
-    6. Write into a cache / serving table (Delta)
+6. Write into a cache / serving table (Delta)
 
 ---
 
