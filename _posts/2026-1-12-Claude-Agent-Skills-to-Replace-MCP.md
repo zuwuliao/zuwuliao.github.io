@@ -60,7 +60,7 @@ An MCP server is ultimately just code running on an external workload, exposing 
 
 Given the benefits Agent Skills offer—being token-efficient, lightweight, and easy to manage—it makes sense to use them wherever they’re a viable alternative. They simplify deployment, reduce overhead, and offer a more integrated way to extend Claude’s capabilities without relying on complex external infrastructure. On December 18, 2025, Anthropic took a major step forward to publish Agent Skills as an open standard for cross-platform portability(read more [here](https://www.anthropic.com/engineering/equipping-agents-for-the-real-world-with-agent-skills)). Other industry leaders including OpenAI, Google, Microsoft, and AWS are all adopting or aligning with this standard, which significantly increases its competitiveness in the AI ecosystem.
 
-The key word for Agent Skill is ##trust.
+The key word for Agent Skill is **trust**.
 
 The real distinction between Agent Skills and MCP is not technical feasibility—it is where the trust boundary is drawn. MCP intentionally externalizes execution to enforce hard guarantees around authorization, auditing, rate limits, and side effects independent of the model’s behavior. Agent Skills, by contrast, collapse planning and execution into a single trust domain.
 
