@@ -4,8 +4,6 @@ title: Databricks Documents Parsing at Scale Performance Optimization
 categories: Data
 ---
 
-## Document Parsing Performance Optimization Guidance (v0.1)
-
 The document addresses the performance optimization to dedicated scenario for AI document parsing pipelines (e.g., using ai_parse_document(...), extracting elements, then building section-level outputs). It’s grounded in the Databricks performance optimization guide’s core performance themes—file explosion, data skipping/layout, shuffles, skew, spill, serialization/UDF avoidance, and cluster choice. 
 
 ## 1. Use Case: Document Parsing Pipeline at Scale
@@ -30,9 +28,13 @@ Document parsing pipelines frequently hit 3 of Spark’s most common bottlenecks
 
 ### 2. Wide transformations → shuffle cost
     Building “sections” typically involves:
-    - Window functions(heading propagation / ordering)
-    - `groupBy`(assemble section text)
-    - `orderBy`(distinct in some pipelines)
+
+    * Window functions(heading propagation / ordering)
+
+    * `groupBy`(assemble section text)
+
+    * `orderBy`(distinct in some pipelines)
+
     These are classic shuffle triggers, which the deck lists as a key performance tax. 
 
 ### 3. Serialization overhead if you use Python UDF / applyInPandas
@@ -44,15 +46,21 @@ Document parsing pipelines frequently hit 3 of Spark’s most common bottlenecks
 
 ### A) Keep parsing and sectionization set-based (avoid driver loops)
 ### Do
-    ●	Parse many documents in one SQL/DataFrame plan
-    ●	Use anti-join gating (LEFT ANTI JOIN) against a cache of processed content_hash values
+
+    *	Parse many documents in one SQL/DataFrame plan
+
+    *	Use anti-join gating (LEFT ANTI JOIN) against a cache of processed content_hash values
+
 ### Avoid
-    ●	collect() to driver + for-loop that runs one CALL ... or one parse per document
+
+    *	collect() to driver + for-loop that runs one CALL ... or one parse per document
+
     The guide explicitly recommends avoiding operations that force work into the driver (collect()), and avoiding extra actions besides reads/writes. 
 ### Recommendation
-    ●	“single INSERT INTO ... WITH ... SELECT ...” approach is the right shape for throughput and scalability.
+
+    *	“single INSERT INTO ... WITH ... SELECT ...” approach is the right shape for throughput and scalability.
 ### Note 
-    ●	 toPandas() internally uses collect() (or a similar data collection mechanism) to retrieve all records from worker nodes and bring them to the driver node.
+    *	 toPandas() internally uses collect() (or a similar data collection mechanism) to retrieve all records from worker nodes and bring them to the driver node.
 
 
 ### B) Control document-level parallelism explicitly
