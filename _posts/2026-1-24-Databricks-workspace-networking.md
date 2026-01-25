@@ -4,13 +4,19 @@ title: Databricks workspace networking
 categories: Data
 ---
 
-When you deploy Databricks workspace on your cloud(Azure, AWS or GCP), you know there are two subnets need to be created, one for public and one for private. You need to assign non-overlapping IP address spaces to these two subnets. Sometimes, you are struggling the limited IP address spaces because Databricks doesn't support IPv6 so far. Have you ever thought about what they are and why we need two subnets for workloads? 
+When you deploy Databricks workspace on your cloud(Azure, AWS or GCP), you know there are two subnets need to be created, one for public and one for private. You need to assign non-overlapping IP address spaces to these two subnets. Sometimes, you are struggling the limited IP address spaces because Databricks doesn't support IPv6 so far. Have you ever thought about what these two subnets are and why we need two for workloads? 
 
-Today, let's dive into Databricks workspace networking and explore why there are two subnets and how to overcome shore of the IP address space issue. 
+Today, let’s dive into Databricks workspace networking, explore the roles of the public and private subnets, and discuss strategies for addressing IP address space constraints.
 
 **Host Subnet and Container Subnet**
 
-Under the hood, Databricks runs Spark using a containerized execution model (even though you don’t manage Kubernetes directly). So there is a container subnet for Spark executors' containers. This container subnet is called private subnet. The container needs to run on a host(VM). So there is a host subnet for Databricks compute VMs(Drivers and Workers). Host subnet is called public subnet. Each Databricks VM in the host subnet attaches secondary IPs from the container subnet to run Spark containers. The container subnet is not independent compute — it exists to provide pod/container-level IPs for the hosts.
+Under the hood, Databricks runs Spark using a containerized execution model (even though you don’t manage Kubernetes directly). This architecture involves two key subnets:
+
+* **Private subnet (container subnet)**: Used for Spark executor containers. It provides pod/container-level IP addresses.
+
+* **Public subnet (host subnet)**: Used for Databricks compute VMs, including Drivers and Workers.
+
+Each VM in the host subnet attaches secondary IP addresses from the container subnet in order to run Spark containers. Importantly, the container subnet does not provide independent compute—it exists to supply IPs to containers running on host VMs.
 
 The easy way to remember:
 
@@ -53,7 +59,7 @@ Your VNet / VPC
     * Executor ↔ executor traffic uses container subnet IPs
     * Driver ↔ executor traffic uses container subnet IPs
     * Outbound traffic (to storage, APIs, etc.) egresses via host NIC
-    * Databricks performs source NAT (SNAT)
+    * Databricks performs source NAT (SNAT) - Outbound traffic is NAT-translated to the host VM’s primary IP. External services never see container subnet IPs
 
 Now Let's look at what are the IP address space requirements for subnets:
 
@@ -96,16 +102,33 @@ Container subnet: /22  (~1024 IPs)
 
 ❌ Forgetting IP exhaustion planning
 
-Once you read through here, you may have a question, can we reuse IP address space for container subnets across VNET? There is SNAT and all external resources see IP for Host only. That means container IP is only local significant and will be hidden to external. 
+After learning how Databricks uses host and container subnets, you might wonder:
+Can we reuse container subnet IP ranges across different VNets?
 
-In thoery, Yes, you could reuse IP space for container subnet. And this will save a lot of IP address spaces since container subnet space will be 2 to 4 times as host subnet. The reason of not be able to reuse IP address space for container subnet is VNET peering. Since both subnets IP address spaces need to assign to VNETs. And the requirement for VNET peering is no overlapping IP address space. The is the reason that you cannot reuse IP address space across VNET.
+In theory, yes. Since Spark containers use secondary IPs and all outbound traffic is SNAT’ed (source network address translated) through the host VM, external systems only see the host’s IP. That means the container subnet is locally significant and hidden from the outside world.
 
-How can we solve IP address exausting challenge? Frankly speaking, there isn't good solution. What you can do:
+Reusing container subnet IP space across VNets could help conserve address space—especially since container subnet CIDRs are typically 2 to 4 times larger than host subnets.
 
-1. Use Serverless Compute as much as you can.
+However, the main blocker is VNet peering. Both the host and container subnets are assigned IP ranges within their VNets. And for VNet peering to work, there must be no overlapping IP address space between VNets. This requirement applies to all subnets, including the container subnet—even if its IPs aren't externally routable.
 
-2. wait Databricks to support IPv6.
+That’s why, in practice, you cannot reuse container subnet IP ranges across VNets when peering is involved.
 
-3. For non-peered VNET, you can reuse IP address space for container subnet. But the outbound to Internet need to be carefully implemented if it's not part of Hub-Spoke network. But you need to clearly understand this is a common future blocker.
+**How can we solve IP address exausting challenge?**
 
-4. For peered VNET(especially Hub-Spoke mode), find large unused IP address spaces for container subnets. 
+Frankly, there’s no perfect solution—at least not today. Databricks' current reliance on IPv4, combined with the need for large container subnet CIDRs, makes IP planning a real challenge. However, here are some strategies to mitigate the issue:
+
+1. Use Serverless Compute wherever possible
+
+    Serverless workloads are managed by Databricks and do not consume IP addresses in your VNet, which can dramatically reduce pressure on your address space.
+
+2. Wait for IPv6 support from Databricks
+
+    IPv6 would eliminate most of these constraints by providing vastly more address space. It’s worth watching the roadmap of IPv6 support.
+
+3. Reuse container subnet IP ranges in non-peered VNets
+
+    If a VNet is not peered with others, you can technically reuse the same container subnet IP ranges. However, be cautious with outbound internet access especially if the VNet is not part of a Hub-Spoke model. This design can create future blockers if peering is needed later.
+
+4. In peered VNets (especially Hub-Spoke), allocate large, non-overlapping CIDR blocks
+
+    For peered environments, your only real option is to plan ahead and reserve large, unused IP ranges for container subnets. This requires coordination with network teams and foresight in CIDR allocation.
