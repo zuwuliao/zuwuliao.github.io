@@ -22,6 +22,7 @@ The containers cannot exist without the hosts, but hosts cannot scale efficientl
 
 **Architecture view**
 
+```text
 Your VNet / VPC
 │
 ├── Host Subnet
@@ -33,6 +34,8 @@ Your VNet / VPC
     ├── Executor IPs (secondary IPs attached to host NICs)
     ├── Executor IPs
     └── Executor IPs
+```
+
 
 **How Traffic Actual Works**
 
@@ -72,7 +75,7 @@ Now Let's look at what are the IP address space requirements for subnets:
 
     * Container subnet needs ~2–3× more IPs than host subnet
 
-Why:
+    Why:
 
     * One VM may run dozens of executors
     * Each executor consumes one IP from the container subnet
@@ -84,9 +87,13 @@ Container subnet: /22  (~1024 IPs)
 **Common mistakes**
 
 ❌ Making both subnets the same size
+
 ❌ Treating container subnet as optional
+
 ❌ Blocking NSG rules between the two
+
 ❌ Reusing subnets across workspaces
+
 ❌ Forgetting IP exhaustion planning
 
 Once you read through here, you may have a question, can we reuse IP address space for container subnets across VNET? There is SNAT and all external resources see IP for Host only. That means container IP is only local significant and will be hidden to external. 
