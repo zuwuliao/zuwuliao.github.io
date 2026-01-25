@@ -115,7 +115,7 @@ That’s why, in practice, you cannot reuse container subnet IP ranges across VN
 
 **How can we solve IP address exausting challenge?**
 
-Frankly, there’s no perfect solution—at least not today. Databricks' current reliance on IPv4, combined with the need for large container subnet CIDRs, makes IP planning a real challenge. However, here are some strategies to mitigate the issue:
+Frankly, there’s no perfect solution—at least not today. Databricks only supports IPv4, combined with the need for large container subnet CIDRs, it makes IP planning a real challenge. However, here are some strategies to mitigate the issue:
 
 1. Use Serverless Compute wherever possible
 
