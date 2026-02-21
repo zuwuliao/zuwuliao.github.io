@@ -71,7 +71,7 @@ The “needle in the haystack” problem refers to a situation where an LLM is g
 
 ## Practical Agent Memory Implementations
 
-There are many practical agent memory implementations i.e. MemGPT, MemoryBank, Generative Agents, Reflexion, GraphRAG, etc. Today, I want to introduce a novel agement memory implementation - A-MEM. You can find the A-MEM paper here - [A-Mem: Agentic Memory for LLM Agents](https://arxiv.org/pdf/2502.12110). 
+There are many practical agent memory implementations i.e. MemGPT, MemoryBank, Generative Agents, Reflexion, GraphRAG, etc. Today, I want to introduce a novel agent memory implementation - A-MEM. You can find the A-MEM paper here - [A-Mem: Agentic Memory for LLM Agents](https://arxiv.org/pdf/2502.12110). 
 
 **A-MEM: Agentic Memory for LLM Agents**
 
