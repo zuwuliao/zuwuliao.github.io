@@ -51,7 +51,7 @@ The below is the table for memory forms:
 | Efficiency          | Medium                                | High                               | Very High                                      |
 | Best For            | Personalization, logs, knowledge base | Skill learning, reasoning ability  | Multimodal compression, long-context handling  |
 
-Now that we understand the different forms of memory. It is clear that parametric memory and latent memory are largely invisible and difficult for users to directly control. The only form we can explicitly manipulate is token-level memory. Because token-level memory resides in the context window, you might ask: if we simply increase the context window size, do we even need a separate memory system? Can an agent rely entirely on its context window as memory?
+Now, we understand the different forms of memory. It is clear that parametric memory and latent memory are largely invisible and difficult for users to directly control. The only form we can explicitly manipulate is token-level memory. Because token-level memory resides in the context window, you might ask: if we simply increase the context window size, do we even need a separate memory system? Can an agent rely entirely on its context window as memory?
 
 The answer is **No**.
 
@@ -71,7 +71,7 @@ The “needle in the haystack” problem refers to a situation where an LLM is g
 
 ## Practical Agent Memory Implementations
 
-There are many practical agent memory implementations i.e. MemGPT, MemoryBank, Generative Agents, Reflexion, GraphRAG, etc. Today, I want to introduce a novel agement memory implementation - A-MEM. You can find the A-MEM paper [here](https://arxiv.org/pdf/2502.12110). 
+There are many practical agent memory implementations i.e. MemGPT, MemoryBank, Generative Agents, Reflexion, GraphRAG, etc. Today, I want to introduce a novel agement memory implementation - A-MEM. You can find the A-MEM paper here - [A-Mem: Agentic Memory for LLM Agents](https://arxiv.org/pdf/2502.12110). 
 
 **A-MEM: Agentic Memory for LLM Agents**
 
@@ -87,7 +87,7 @@ The architecture diagram is below:
 
 ![pic 1](/images/A-Mem-1.jpg "pic 1")
 
-If we are using Form-Functions-Dynamics framework to look at A-MEM, you will be:
+If we are using Form-Functions-Dynamics framework to look at A-MEM, it will be:
 
 **Form**
 
