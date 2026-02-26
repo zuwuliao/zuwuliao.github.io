@@ -133,7 +133,7 @@ CIMD (Client ID Metadata Document) is proposed as a replacement for Dynamic Clie
 
 **CIMD Authorization Flow**
 
-![pic 2](/images/DCR-CIMD-flow.jpg "pic 2")
+![pic 2](/images/DCR-CIMD-flow.png "pic 2")
 
 Use an HTTPS URL as the client_id (e.g., https://app.com/oauth.json). The auth server fetches trusted metadata (name, redirect_uris) at auth time. Benefits: no DB growth, no expiry management, one ID per app, and no write-exposed register endpoint. Cost: host a small metadata file.
 
@@ -156,4 +156,6 @@ Signed software statements for desktop apps is a proposed fix for impersonation.
 | Register clients             | **CIMD**                | Replaces DCR for simpler, safer registration   |
 | Authenticate legitimate apps | **Software Statements** | Adds on top of CIMD or DCR to strengthen trust |
 
+**Reference:**
 
+Auth0 blog - [CIMD is the future of MCP Registratoin](https://auth0.com/blog/cimd-vs-dcr-mcp-registration/)
