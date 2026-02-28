@@ -41,15 +41,8 @@ Delta snapshots are log-replay based.
 Iceberg uses a snapshot + manifest tree structure rather than a sequential log.
 
 **Metadata Hierarchy**
-metadata.json
-   ↓
-snapshot
-   ↓
-manifest list
-   ↓
-manifest files (Avro)
-   ↓
-data files (Parquet/ORC/Avro)
+
+![pic 2](/images/iceberg-table-1.jpg "pic 2")
 
 Core Components are:
 
