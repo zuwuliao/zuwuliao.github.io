@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Delta Lake vs Apache Iceberg
-categories: AI
+categories: Data
 ---
 
 
@@ -15,14 +15,7 @@ Delta Lake is built around an append-only transaction log layered on top of Parq
 
 Physical Structure
 
-table/
-├── _delta_log/
-│   ├── 00000000000000000000.json
-│   ├── 00000000000000000001.json
-│   ├── ...
-│   └── 00000000000000000010.checkpoint.parquet
-├── part-0001.parquet
-└── part-0002.parquet
+![pic 1](/images/delta-table.jpg "pic 1")
 
 
 Core Components of Delta Lake are:
@@ -297,10 +290,10 @@ Choose Iceberg When:
 
 **Delta Lake:**
 
-    Transaction-log-based lakehouse optimized for Spark.
+  Transaction-log-based lakehouse optimized for Spark.
 
 **Iceberg:**
 
-    Snapshot-tree-based open table format optimized for engine neutrality.
+  Snapshot-tree-based open table format optimized for engine neutrality.
 
 Both provide ACID. They differ in metadata design philosophy and ecosystem focus.
