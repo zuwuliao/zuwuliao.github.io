@@ -32,7 +32,7 @@ The key techniques are generally categorized into four core strategies: Write, S
 
 **1. Context Selection (Retrieval & Filtering)**
 
-    Instead of providing all available data, these methods identify the most relevant pieces for a specific task. 
+Instead of providing all available data, these methods identify the most relevant pieces for a specific task. 
 
   * **Retrieval-Augmented Generation (RAG)**: The most common technique, using vector databases to retrieve only relevant document snippets based on semantic similarity.
 
@@ -44,7 +44,7 @@ The key techniques are generally categorized into four core strategies: Write, S
 
 **2. Context Compression (Token Optimization)**
 
-    These techniques reduce the size of information without losing essential signals to stay within token limits. 
+These techniques reduce the size of information without losing essential signals to stay within token limits. 
 
   * **Summarization**: Periodically condensing long conversation histories or bulky documents into concise, fact-preserving summaries.
 
@@ -54,7 +54,7 @@ The key techniques are generally categorized into four core strategies: Write, S
 
 **3. Context Ordering (Strategic Placement)**
 
-    The position of information affects model performance due to the "lost-in-the-middle" phenomenon, where LLMs attend more to the beginning and end of a prompt. 
+The position of information affects model performance due to the "lost-in-the-middle" phenomenon, where LLMs attend more to the beginning and end of a prompt. 
 
   * **Priority Placement**: Critical rules, security requirements, and system instructions should be placed at the very beginning.
 
@@ -62,7 +62,7 @@ The key techniques are generally categorized into four core strategies: Write, S
 
 **4. Context Isolation (Specialization)**
 
-    For complex tasks, splitting information across specialized components prevents "context poisoning" or confusion. 
+For complex tasks, splitting information across specialized components prevents "context poisoning" or confusion. 
 
   * **Multi-Agent Architectures**: Dividing a task among multiple sub-agents, each with a focused context window containing only the tools and data relevant to their specific sub-role.
 
