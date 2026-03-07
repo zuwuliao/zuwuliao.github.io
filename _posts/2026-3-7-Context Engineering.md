@@ -6,7 +6,7 @@ categories: AI
 
 As AI evolves from simple chatbots to complex agents, prompt engineering alone is no longer sufficient to ensure high-quality outputs. As the tasks we expect AI to perform grow more complex, the “magic wording” of a prompt matters less than whether the system has access to the right files, tools, and structured inputs. Failures often occur not because the model is “dumb,” but because it was given poorly formatted or irrelevant context—classic “garbage in, garbage out.” Context engineering addresses this challenge by treating the model’s limited attention as a finite resource that must be deliberately allocated to high-signal information.
 
-##Context Engineering
+## Context Engineering
 
 Context engineering is the broader discipline of designing, curating, and managing the entire information ecosystem that a Large Language Model (LLM) accesses during its operation. While earlier AI work focused on phrasing instructions, context engineering focuses on the "knowledge substrate"—ensuring the model has the right data, tools, and memory at the right time to solve a task. 
 
@@ -74,7 +74,7 @@ For complex tasks, splitting information across specialized components prevents 
 
   * **Long-Term Memory**: Storing user preferences, past decisions, and recurring facts in external storage (e.g., Redis) to be retrieved across different sessions
 
-##Prompt Engineering vs Context Engineering
+## Prompt Engineering vs Context Engineering
 
 While prompt engineering focuses on how to ask a question, context engineering focuses on what information the model has available when it answers. 
 
@@ -86,7 +86,7 @@ While prompt engineering focuses on how to ask a question, context engineering f
 | Goal          | Get a specific response from one prompt.                | Ensure consistent performance across long sessions.      |
 | Analogy       | Asking a brilliant question.                            | Building the library and opening the right book.         |
 
-##Advanced Production Context Framework
+## Advanced Production Context Framework
 
 As agent systems move from prototypes to production, context engineering shifts from a collection of techniques to an architectural discipline. The goal is no longer just “fit within the window,” but to systematically control how information flows through inference over time.
 
@@ -296,7 +296,7 @@ Signs of architectural bottlenecks:
 Design for the current model, but remove techniques as capability increases. Add structure only when necessary
 
 
-##Closing Principle
+## Closing Principle
 
 Context engineering is not prompt decoration.
 
