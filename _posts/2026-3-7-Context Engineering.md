@@ -166,7 +166,8 @@ Compared to embedding-heavy retrieval pipelines:
 
 * No ingestion bottleneck during runtime
 
-Vector databases remain powerful for knowledge retrieval. However, for runtime agent state and intermediate artifacts, filesystem-based memory offers operational simplicity and deterministic recoverability.
+In production systems, vector retrieval(RAG) and filesystem memory serve different purposes. Vector databases is best for external knowledge access. However, for the agent’s runtime state and temporary outputs, filesystem storage is simpler to manage and makes it easy to restore data exactly when needed.
+
 
 **4. Reduce / Isolate / Offload**
 
