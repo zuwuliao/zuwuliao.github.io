@@ -29,7 +29,7 @@ Databricks Apps must bind to 0.0.0.0 on the port from the DATABRICKS_APP_PORT en
     ├── app.py              # Entry point
 
     ├── app.yaml            # Databricks Apps config
-    
+
     └── requirements.txt    # Dependencies
 
 2. Create app.py — Entry point
@@ -40,23 +40,23 @@ Databricks Apps must bind to 0.0.0.0 on the port from the DATABRICKS_APP_PORT en
     - Reads Neo4j connection details from environment variables (injected via Databricks secrets)
     - Calls the existing server.main() from mcp_neo4j_cypher
 
-    import os
-    import asyncio
-    from mcp_neo4j_cypher.server import main
+        import os
+        import asyncio
+        from mcp_neo4j_cypher.server import main
 
-    asyncio.run(
-        main(
-        db_url=os.environ["NEO4J_URI"],
-        username=os.environ["NEO4J_USERNAME"],
-        password=os.environ["NEO4J_PASSWORD"],
-        database=os.environ.get("NEO4J_DATABASE", "neo4j"),
-        transport="http",
-        host="0.0.0.0",
-        port=int(os.environ.get("DATABRICKS_APP_PORT", "8000")),
-        path="/api/mcp/",
-        namespace=os.environ.get("NEO4J_NAMESPACE", ""),
+        asyncio.run(
+            main(
+            db_url=os.environ["NEO4J_URI"],
+            username=os.environ["NEO4J_USERNAME"],
+            password=os.environ["NEO4J_PASSWORD"],
+            database=os.environ.get("NEO4J_DATABASE", "neo4j"),
+            transport="http",
+            host="0.0.0.0",
+            port=int(os.environ.get("DATABRICKS_APP_PORT", "8000")),
+            path="/api/mcp/",
+            namespace=os.environ.get("NEO4J_NAMESPACE", ""),
+            )
         )
-    )
 
 3. Create app.yaml — Runtime config
 
