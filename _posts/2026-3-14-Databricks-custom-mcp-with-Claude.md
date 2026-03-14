@@ -79,13 +79,11 @@ env:
 
 **4. Create requirements.txt**
 
-neo4j>=5.26.0
+    neo4j>=5.26.0
+    fastmcp>=2.10.5
+    pydantic>=2.10.1
 
-fastmcp>=2.10.5
-
-pydantic>=2.10.1
-
-(FastAPI/uvicorn are pre-installed in Databricks Apps runtime)
+    (FastAPI/uvicorn are pre-installed in Databricks Apps runtime)
 
 **5. Set up Databricks Secrets**
 

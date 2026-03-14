@@ -299,8 +299,6 @@ Design for the current model, but remove techniques as capability increases. Add
 
 ## Closing Principle
 
-Context engineering is not prompt decoration.
+Context engineering isn’t just adding fancy prompts. It’s the careful management of what information goes into the model’s context, what stays there, and what gets removed - over time, across tasks, and as models change.
 
-It is the disciplined management of what enters, remains in, and exits the context window — across time, tasks, and model upgrades.
-
-In production systems, architecture determines whether agents degrade or scale.
+In real production systems, the system’s architecture determines whether AI agents become less effective or successfully scale.
