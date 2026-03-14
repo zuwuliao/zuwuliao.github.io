@@ -8,7 +8,7 @@ MCP server becomes a common and popular way for Agent to connect to the service 
 
 In this blog, we will use Neo4j MCP server as an example.
 
-**Deploy mcp-neo4j-cypher as a Databricks App**
+##Deploy mcp-neo4j-cypher as a Databricks App
 
 **Context**
 
@@ -78,7 +78,7 @@ Databricks Apps must bind to 0.0.0.0 on the port from the DATABRICKS_APP_PORT en
     fastmcp>=2.10.5
 
     pydantic>=2.10.1
-    
+
     (FastAPI/uvicorn are pre-installed in Databricks Apps runtime)
 
 5. Set up Databricks Secrets
@@ -220,12 +220,69 @@ The app connection looks like this:
 
 ![pic 2](/images/dbx-mcp-claude-2.jpg "pic 2")
 
+**App Permission**
+
+There is another important permission setting which caught us. It's 'Can Use'. Set 'Can Use' for user or user groups in App.
+
+![pic 4](/images/dbx-mcp-claude-4.png "pic 4")
+
+
+
 Now it's time to verify from MCP Client
 
 1. Use MCP Inspector
 
+* Set transport type as 'Streamable HTTP'
+
+* URL is app URL + /api/mcp/. Make sure the trailing '/' is included
+
+* Client_ID is OAuth App Client ID which is manually created in App Connection
+
+![pic 5](/images/dbx-mcp-claude-5.png "pic 5")
+
 2. Use Claude Code
 
+Add MCP Server configuration as the following in .mcp.json file:
+
+```json
+	"dbx-neo4j-cypher": {    
+	      "type": "http",
+	      "url": "https://mcp-neo4j-cypher-***.4.azure.databricksapps.com/api/mcp/",                                                              
+	      "oauth": {
+	        "clientId": "******",
+	        "callbackPort": 8080
+	      }
+    }
+```
+
+![pic 6](/images/dbx-mcp-claude-6.png "pic 6")
+
 3. Use Claude Desktop
+
+Claude Destop configuration is a little bit treacky. It's because the json format of passing client_id value.
+
+* Make a json file to store client_id configuration:
+	
+    ```powershell
+	PS C:\Users\kevinl\code> '{"client_id":"******"}' | Out-File -FilePath "C:\Users\<username>\oauth-client-info.json" -Encoding utf8
+
+    ```
+	
+* Configure DBX MCP server in claude_desktop_config.json like this:
+	
+	```json
+	"dbx-neo4j-cypher": {
+	      "command": "npx",
+	      "args": [
+	        "-y",
+	        "mcp-remote@latest",
+	        "https://mcp-neo4j-cypher-***.4.azure.databricksapps.com/api/mcp/",
+	        "--static-oauth-client-info",
+	        "@C:\\Users\\<username>\\oauth-client-info.json",
+	        "--callback-port",
+	        "8080"
+	      ]
+	    }
+    ```
 
 
