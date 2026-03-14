@@ -95,7 +95,7 @@ Databricks Apps must bind to 0.0.0.0 on the port from the DATABRICKS_APP_PORT en
     databricks sync databricks-neo4j-mcp/
     /Workspace/Users/<your-email>/mcp-neo4j-cypher-app
 
-    ```
+    ```powershell
     PS C:\Users\kevinl\code\databricks-neo4j-mcp> databricks sync . "/Workspace/Users/kevin.liao@gatesfoundation.org/mcp-neo4j-cypher-app"
     Warn: Failed to read git info: CreateFile C:\.git: The system cannot find the file specified.
     Action: PUT: .claude/settings.local.json, app.py, app.yaml, mcp_neo4j_cypher/__init__.py, mcp_neo4j_cypher/server.py, mcp_neo4j_cypher/utils.py, requirements.txt
@@ -115,7 +115,7 @@ Databricks Apps must bind to 0.0.0.0 on the port from the DATABRICKS_APP_PORT en
 
     databricks apps create mcp-neo4j-cypher
 
-        
+    ```powershell    
     PS C:\Users\kevinl\code\databricks-neo4j-mcp> databricks apps create mcp-neo4j-cypher                                                                               
     {
         "app_status": {
@@ -144,7 +144,8 @@ Databricks Apps must bind to 0.0.0.0 on the port from the DATABRICKS_APP_PORT en
         "updater":"***@abc.com",
         "url":"https://mcp-neo4j-cypher-***.4.azure.databricksapps.com"
     }
-
+    ```
+    
     **Add secret resources via Databricks UI:**
 
     #   neo4j-uri     -> scope: neo4j-mcp, key: neo4j-uri
