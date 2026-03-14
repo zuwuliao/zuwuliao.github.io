@@ -39,7 +39,7 @@ Databricks Apps must bind to 0.0.0.0 on the port from the DATABRICKS_APP_PORT en
     - Sets transport to http, host to 0.0.0.0
     - Reads Neo4j connection details from environment variables (injected via Databricks secrets)
     - Calls the existing server.main() from mcp_neo4j_cypher
-
+    ```python
         import os
         import asyncio
         from mcp_neo4j_cypher.server import main
@@ -57,7 +57,7 @@ Databricks Apps must bind to 0.0.0.0 on the port from the DATABRICKS_APP_PORT en
             namespace=os.environ.get("NEO4J_NAMESPACE", ""),
             )
         )
-
+    ```
 3. Create app.yaml — Runtime config
 
     command: ['python', 'app.py']
