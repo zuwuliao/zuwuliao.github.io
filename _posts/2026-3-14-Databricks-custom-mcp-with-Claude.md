@@ -25,8 +25,11 @@ Databricks Apps must bind to 0.0.0.0 on the port from the DATABRICKS_APP_PORT en
     Create a new folder (e.g., databricks-neo4j-mcp/) inside or alongside the repo with these files:
 
     databricks-app/
+
     ├── app.py              # Entry point
+
     ├── app.yaml            # Databricks Apps config
+    
     └── requirements.txt    # Dependencies
 
 2. Create app.py — Entry point
