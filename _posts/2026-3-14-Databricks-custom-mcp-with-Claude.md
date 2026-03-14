@@ -230,7 +230,7 @@ There is another important permission setting which caught us. It's 'Can Use'. S
 
 Now it's time to verify from MCP Client
 
-1. Use MCP Inspector
+**1. Use MCP Inspector**
 
 * Set transport type as 'Streamable HTTP'
 
@@ -240,7 +240,7 @@ Now it's time to verify from MCP Client
 
 ![pic 5](/images/dbx-mcp-claude-5.png "pic 5")
 
-2. Use Claude Code
+**2. Use Claude Code**
 
 Add MCP Server configuration as the following in .mcp.json file:
 
@@ -257,7 +257,7 @@ Add MCP Server configuration as the following in .mcp.json file:
 
 ![pic 6](/images/dbx-mcp-claude-6.png "pic 6")
 
-3. Use Claude Desktop
+**3. Use Claude Desktop**
 
 Claude Destop configuration is a little bit treacky. It's because the json format of passing client_id value.
 
@@ -284,5 +284,5 @@ Claude Destop configuration is a little bit treacky. It's because the json forma
 	      ]
 	    }
     ```
-
+![pic 7](/images/dbx-mcp-claude-7.png "pic 7")
 
