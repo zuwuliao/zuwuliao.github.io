@@ -22,66 +22,70 @@ Databricks Apps must bind to 0.0.0.0 on the port from the DATABRICKS_APP_PORT en
 
 **1. Create the Databricks App project folder**
 
-    Create a new folder (e.g., databricks-neo4j-mcp/) inside or alongside the repo with these files:
+Create a new folder (e.g., databricks-neo4j-mcp/) inside or alongside the repo with these files:
 
-    databricks-app/
+databricks-app/
 
-    ├── app.py              # Entry point
+├── app.py              # Entry point
 
-    ├── app.yaml            # Databricks Apps config
+├── app.yaml            # Databricks Apps config
 
-    └── requirements.txt    # Dependencies
+└── requirements.txt    # Dependencies
 
 **2. Create app.py — Entry point**
 
-    A thin wrapper that:
-    - Reads DATABRICKS_APP_PORT and passes it as the server port
-    - Sets transport to http, host to 0.0.0.0
-    - Reads Neo4j connection details from environment variables (injected via Databricks secrets)
-    - Calls the existing server.main() from mcp_neo4j_cypher
+A thin wrapper that:
 
-    ```python
-        import os
-        import asyncio
-        from mcp_neo4j_cypher.server import main
+- Reads DATABRICKS_APP_PORT and passes it as the server port
 
-        asyncio.run(
-            main(
-            db_url=os.environ["NEO4J_URI"],
-            username=os.environ["NEO4J_USERNAME"],
-            password=os.environ["NEO4J_PASSWORD"],
-            database=os.environ.get("NEO4J_DATABASE", "neo4j"),
-            transport="http",
-            host="0.0.0.0",
-            port=int(os.environ.get("DATABRICKS_APP_PORT", "8000")),
-            path="/api/mcp/",
-            namespace=os.environ.get("NEO4J_NAMESPACE", ""),
-            )
+- Sets transport to http, host to 0.0.0.0
+
+- Reads Neo4j connection details from environment variables (injected via Databricks secrets)
+
+- Calls the existing server.main() from mcp_neo4j_cypher
+
+```python
+    import os
+    import asyncio
+    from mcp_neo4j_cypher.server import main
+
+    asyncio.run(
+        main(
+        db_url=os.environ["NEO4J_URI"],
+        username=os.environ["NEO4J_USERNAME"],
+        password=os.environ["NEO4J_PASSWORD"],
+        database=os.environ.get("NEO4J_DATABASE", "neo4j"),
+        transport="http",
+        host="0.0.0.0",
+        port=int(os.environ.get("DATABRICKS_APP_PORT", "8000")),
+        path="/api/mcp/",
+        namespace=os.environ.get("NEO4J_NAMESPACE", ""),
         )
-    ```
-    
+    )
+```
+
 **3. Create app.yaml — Runtime config**
 
-    command: ['python', 'app.py']
-    env:
-    - name: NEO4J_URI
-        valueFrom: neo4j-uri        # Databricks secret resource
-    - name: NEO4J_USERNAME
-        valueFrom: neo4j-username
-    - name: NEO4J_PASSWORD
-        valueFrom: neo4j-password
-    - name: NEO4J_DATABASE
-        value: 'neo4j'
+command: ['python', 'app.py']
+env:
+- name: NEO4J_URI
+    valueFrom: neo4j-uri        # Databricks secret resource
+- name: NEO4J_USERNAME
+    valueFrom: neo4j-username
+- name: NEO4J_PASSWORD
+    valueFrom: neo4j-password
+- name: NEO4J_DATABASE
+    value: 'neo4j'
 
 **4. Create requirements.txt**
 
-    neo4j>=5.26.0
+neo4j>=5.26.0
 
-    fastmcp>=2.10.5
+fastmcp>=2.10.5
 
-    pydantic>=2.10.1
+pydantic>=2.10.1
 
-    (FastAPI/uvicorn are pre-installed in Databricks Apps runtime)
+(FastAPI/uvicorn are pre-installed in Databricks Apps runtime)
 
 **5. Set up Databricks Secrets**
 
@@ -101,6 +105,7 @@ Databricks Apps must bind to 0.0.0.0 on the port from the DATABRICKS_APP_PORT en
     /Workspace/Users/<your-email>/mcp-neo4j-cypher-app
 
     ```powershell
+
     PS C:\Users\kevinl\code\databricks-neo4j-mcp> databricks sync . "/Workspace/Users/kevin.liao@gatesfoundation.org/mcp-neo4j-cypher-app"
     Warn: Failed to read git info: CreateFile C:\.git: The system cannot find the file specified.
     Action: PUT: .claude/settings.local.json, app.py, app.yaml, mcp_neo4j_cypher/__init__.py, mcp_neo4j_cypher/server.py, mcp_neo4j_cypher/utils.py, requirements.txt
@@ -114,6 +119,7 @@ Databricks Apps must bind to 0.0.0.0 on the port from the DATABRICKS_APP_PORT en
     Uploaded mcp_neo4j_cypher/__init__.py
     Uploaded app.py
     Initial Sync Complete
+    
     ```
 
     **Create the app (first time)**
