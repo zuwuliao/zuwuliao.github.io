@@ -74,8 +74,11 @@ Databricks Apps must bind to 0.0.0.0 on the port from the DATABRICKS_APP_PORT en
 4. Create requirements.txt
 
     neo4j>=5.26.0
+
     fastmcp>=2.10.5
+
     pydantic>=2.10.1
+    
     (FastAPI/uvicorn are pre-installed in Databricks Apps runtime)
 
 5. Set up Databricks Secrets
@@ -145,7 +148,7 @@ Databricks Apps must bind to 0.0.0.0 on the port from the DATABRICKS_APP_PORT en
         "url":"https://mcp-neo4j-cypher-***.4.azure.databricksapps.com"
     }
     ```
-    
+
     **Add secret resources via Databricks UI:**
 
     #   neo4j-uri     -> scope: neo4j-mcp, key: neo4j-uri
