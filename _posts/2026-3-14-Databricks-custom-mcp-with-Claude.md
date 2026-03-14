@@ -159,9 +159,9 @@ PS C:\Users\kevinl\code\databricks-neo4j-mcp> databricks apps create mcp-neo4j-c
 
 **Add secret resources via Databricks UI:**
 
-#   neo4j-uri     -> scope: neo4j-mcp, key: neo4j-uri
-#   neo4j-username -> scope: neo4j-mcp, key: neo4j-username
-#   neo4j-password -> scope: neo4j-mcp, key: neo4j-password
+neo4j-uri     -> scope: neo4j-mcp, key: neo4j-uri
+neo4j-username -> scope: neo4j-mcp, key: neo4j-username
+neo4j-password -> scope: neo4j-mcp, key: neo4j-password
 
 **Deploy**
 
