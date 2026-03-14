@@ -136,11 +136,11 @@ Databricks Apps must bind to 0.0.0.0 on the port from the DATABRICKS_APP_PORT en
         "iam.current-user:read",
         "iam.access-control:read"
         ],
-        "id":"5a6a837b-f70e-4c2b-893f-9a785df1cf98",
+        "id":"******",
         "name":"mcp-neo4j-cypher",
-        **"oauth2_app_client_id":"14ba9166-5d6c-4fcd-a432-06d9b3157d43",**
-        "oauth2_app_integration_id":"14ba9166-5d6c-4fcd-a432-06d9b3157d43",
-        "service_principal_client_id":"5a6a837b-f70e-4c2b-893f-9a785df1cf98",
+        "oauth2_app_client_id":"******",
+        "oauth2_app_integration_id":"******",
+        "service_principal_client_id":"******",
         "service_principal_id":147298485860538,
         "service_principal_name":"app-56taa7 mcp-neo4j-cypher",
         "update_time":"2026-02-25T20:59:55Z",
@@ -191,9 +191,9 @@ Databricks Apps can reach Neo4j Aura over the public internet by default. If you
 
 ## Authentication
 
-Authentication is a big challenge with Claude due to Dynamic Client Registration(DCR) support. In this test, we are using client ID to bypass DCR. Notice the "oauth2_app_client_id" highlighed in Deploy to Databricks steps. That is the client ID we will use. 
+Authentication is a major challenge with Claude due to Dynamic Client Registration(DCR) support. In this test, we are using client ID to bypass DCR. Notice the "oauth2_app_client_id" in Deploy to Databricks step. Make sure to use "oauth2_app_client_id", not "service_principal_client_id". This is essential for client authentication to work correctly. 
 
-However, the system created OAuth2 client ID doesn't allow you to make change to two important parameters - Access Scopes and Client secret, those enable Claude to connect. Let's create a new OAuth2 client ID.
+However, the system generated OAuth client does not allow changes to two important parameters: access scopes and client secret. Both are required to enable Claude to connect successfully. Let's create a new OAuth2 client ID.
 
 We need to set the following parameters:
 
@@ -209,16 +209,16 @@ We need to set the following parameters:
 
 **Access Scopes**
 
-* Check 'All APIs'
+* Check '**All APIs**'
 
 **Client Secret**
 
-* Uncheck 'Generate a client secret'
+* Uncheck '**Generate a client secret**'
 
 
 The app connection looks like this:
 
-![pic 2](/images/dbx-mcp-claude-2.jpg "pic 2")
+![pic 2](/images/dbx-mcp-claude-2.png "pic 2")
 
 **App Permission**
 
