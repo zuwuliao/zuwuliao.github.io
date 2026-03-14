@@ -8,7 +8,7 @@ MCP server becomes a common and popular way for Agent to connect to the service 
 
 In this blog, we will use Neo4j MCP server as an example.
 
-##Deploy mcp-neo4j-cypher as a Databricks App
+## Deploy mcp-neo4j-cypher as a Databricks App
 
 **Context**
 
