@@ -284,5 +284,5 @@ Claude Destop configuration is a little bit treacky. It's because the json forma
 	      ]
 	    }
     ```
-![pic 7](/images/dbx-mcp-claude-7.png "pic 7")
+![pic 7](/images/dbx-mcp-claude-7.jpg "pic 7")
 
