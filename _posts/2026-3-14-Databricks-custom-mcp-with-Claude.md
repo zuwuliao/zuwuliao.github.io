@@ -95,6 +95,7 @@ Databricks Apps must bind to 0.0.0.0 on the port from the DATABRICKS_APP_PORT en
     databricks sync databricks-neo4j-mcp/
     /Workspace/Users/<your-email>/mcp-neo4j-cypher-app
 
+    ```
     PS C:\Users\kevinl\code\databricks-neo4j-mcp> databricks sync . "/Workspace/Users/kevin.liao@gatesfoundation.org/mcp-neo4j-cypher-app"
     Warn: Failed to read git info: CreateFile C:\.git: The system cannot find the file specified.
     Action: PUT: .claude/settings.local.json, app.py, app.yaml, mcp_neo4j_cypher/__init__.py, mcp_neo4j_cypher/server.py, mcp_neo4j_cypher/utils.py, requirements.txt
@@ -108,7 +109,7 @@ Databricks Apps must bind to 0.0.0.0 on the port from the DATABRICKS_APP_PORT en
     Uploaded mcp_neo4j_cypher/__init__.py
     Uploaded app.py
     Initial Sync Complete
-
+    ```
 
     **Create the app (first time)**
 
