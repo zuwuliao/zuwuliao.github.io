@@ -99,85 +99,87 @@ pydantic>=2.10.1
 
 **6. Deploy to Databricks**
 
-    **Sync files to workspace**
+**Sync files to workspace**
 
-    databricks sync databricks-neo4j-mcp/
-    /Workspace/Users/<your-email>/mcp-neo4j-cypher-app
+databricks sync databricks-neo4j-mcp/
+/Workspace/Users/<your-email>/mcp-neo4j-cypher-app
 
-    ```powershell
+```powershell
 
-    PS C:\Users\kevinl\code\databricks-neo4j-mcp> databricks sync . "/Workspace/Users/kevin.liao@gatesfoundation.org/mcp-neo4j-cypher-app"
-    Warn: Failed to read git info: CreateFile C:\.git: The system cannot find the file specified.
-    Action: PUT: .claude/settings.local.json, app.py, app.yaml, mcp_neo4j_cypher/__init__.py, mcp_neo4j_cypher/server.py, mcp_neo4j_cypher/utils.py, requirements.txt
-    Uploaded mcp_neo4j_cypher
-    Uploaded .claude
-    Uploaded requirements.txt
-    Uploaded app.yaml
-    Uploaded mcp_neo4j_cypher/utils.py
-    Uploaded mcp_neo4j_cypher/server.py
-    Uploaded .claude/settings.local.json
-    Uploaded mcp_neo4j_cypher/__init__.py
-    Uploaded app.py
-    Initial Sync Complete
-    
-    ```
+PS C:\Users\kevinl\code\databricks-neo4j-mcp> databricks sync . "/Workspace/Users/kevin.liao@gatesfoundation.org/mcp-neo4j-cypher-app"
+Warn: Failed to read git info: CreateFile C:\.git: The system cannot find the file specified.
+Action: PUT: .claude/settings.local.json, app.py, app.yaml, mcp_neo4j_cypher/__init__.py, mcp_neo4j_cypher/server.py, mcp_neo4j_cypher/utils.py, requirements.txt
+Uploaded mcp_neo4j_cypher
+Uploaded .claude
+Uploaded requirements.txt
+Uploaded app.yaml
+Uploaded mcp_neo4j_cypher/utils.py
+Uploaded mcp_neo4j_cypher/server.py
+Uploaded .claude/settings.local.json
+Uploaded mcp_neo4j_cypher/__init__.py
+Uploaded app.py
+Initial Sync Complete
 
-    **Create the app (first time)**
+```
 
-    databricks apps create mcp-neo4j-cypher
+**Create the app (first time)**
 
-    ```powershell    
-    PS C:\Users\kevinl\code\databricks-neo4j-mcp> databricks apps create mcp-neo4j-cypher                                                                               
-    {
-        "app_status": {
-        "message":"App has status: App has not been deployed yet. Run your app by deploying source code",
-        "state":"UNAVAILABLE"
-        },
-        "compute_status": {
-        "message":"App compute is running.",
-        "state":"ACTIVE"
-        },
-        "create_time":"2026-02-25T20:58:06Z",
-        "creator":"***@abc.com",
-        "description":"",
-        "effective_user_api_scopes": [
-        "iam.current-user:read",
-        "iam.access-control:read"
-        ],
-        "id":"******",
-        "name":"mcp-neo4j-cypher",
-        "oauth2_app_client_id":"******",
-        "oauth2_app_integration_id":"******",
-        "service_principal_client_id":"******",
-        "service_principal_id":147298485860538,
-        "service_principal_name":"app-56taa7 mcp-neo4j-cypher",
-        "update_time":"2026-02-25T20:59:55Z",
-        "updater":"***@abc.com",
-        "url":"https://mcp-neo4j-cypher-***.4.azure.databricksapps.com"
-    }
-    ```
+databricks apps create mcp-neo4j-cypher
 
-    **Add secret resources via Databricks UI:**
+```powershell    
+PS C:\Users\kevinl\code\databricks-neo4j-mcp> databricks apps create mcp-neo4j-cypher                                                                               
+{
+    "app_status": {
+    "message":"App has status: App has not been deployed yet. Run your app by deploying source code",
+    "state":"UNAVAILABLE"
+    },
+    "compute_status": {
+    "message":"App compute is running.",
+    "state":"ACTIVE"
+    },
+    "create_time":"2026-02-25T20:58:06Z",
+    "creator":"***@abc.com",
+    "description":"",
+    "effective_user_api_scopes": [
+    "iam.current-user:read",
+    "iam.access-control:read"
+    ],
+    "id":"******",
+    "name":"mcp-neo4j-cypher",
+    "oauth2_app_client_id":"******",
+    "oauth2_app_integration_id":"******",
+    "service_principal_client_id":"******",
+    "service_principal_id":147298485860538,
+    "service_principal_name":"app-56taa7 mcp-neo4j-cypher",
+    "update_time":"2026-02-25T20:59:55Z",
+    "updater":"***@abc.com",
+    "url":"https://mcp-neo4j-cypher-***.4.azure.databricksapps.com"
+}
+```
 
-    #   neo4j-uri     -> scope: neo4j-mcp, key: neo4j-uri
-    #   neo4j-username -> scope: neo4j-mcp, key: neo4j-username
-    #   neo4j-password -> scope: neo4j-mcp, key: neo4j-password
+**Add secret resources via Databricks UI:**
 
-    **Deploy**
+#   neo4j-uri     -> scope: neo4j-mcp, key: neo4j-uri
+#   neo4j-username -> scope: neo4j-mcp, key: neo4j-username
+#   neo4j-password -> scope: neo4j-mcp, key: neo4j-password
 
-    databricks apps deploy mcp-neo4j-cypher --source-code-path /Workspace/Users/<your-email>/mcp-neo4j-cypher-app
+**Deploy**
 
-    On Databricks GUI, you should see the app is deployed and running.
+databricks apps deploy mcp-neo4j-cypher --source-code-path /Workspace/Users/<your-email>/mcp-neo4j-cypher-app
 
-    ![pic 3](/images/dbx-mcp-claude-3.jpg "pic 3")
+On Databricks GUI, you should see the app is deployed and running.
+
+![pic 3](/images/dbx-mcp-claude-3.jpg "pic 3")
 
 **7. Verify**
 
-    - The app will be accessible at
-    https://<workspace>.databricksapps.com/mcp-neo4j-cypher/api/mcp/
-    - Test with a POST request containing a JSON-RPC call to read_neo4j_cypher
-    - Check Databricks App logs if connection to Neo4j Aura fails (may need network
-    policy allowlisting for *.neo4j.io)
+- The app will be accessible at
+https://<workspace>.databricksapps.com/mcp-neo4j-cypher/api/mcp/
+
+- Test with a POST request containing a JSON-RPC call to read_neo4j_cypher
+
+- Check Databricks App logs if connection to Neo4j Aura fails (may need network
+policy allowlisting for *.neo4j.io)
 
 **Network Note**
 
