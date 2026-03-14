@@ -20,7 +20,7 @@ Databricks Apps must bind to 0.0.0.0 on the port from the DATABRICKS_APP_PORT en
 
 **Steps**
 
-1. Create the Databricks App project folder
+**1. Create the Databricks App project folder**
 
     Create a new folder (e.g., databricks-neo4j-mcp/) inside or alongside the repo with these files:
 
@@ -32,7 +32,7 @@ Databricks Apps must bind to 0.0.0.0 on the port from the DATABRICKS_APP_PORT en
 
     └── requirements.txt    # Dependencies
 
-2. Create app.py — Entry point
+**2. Create app.py — Entry point**
 
     A thin wrapper that:
     - Reads DATABRICKS_APP_PORT and passes it as the server port
@@ -58,7 +58,7 @@ Databricks Apps must bind to 0.0.0.0 on the port from the DATABRICKS_APP_PORT en
             )
         )
     ```
-3. Create app.yaml — Runtime config
+**3. Create app.yaml — Runtime config**
 
     command: ['python', 'app.py']
     env:
@@ -71,7 +71,7 @@ Databricks Apps must bind to 0.0.0.0 on the port from the DATABRICKS_APP_PORT en
     - name: NEO4J_DATABASE
         value: 'neo4j'
 
-4. Create requirements.txt
+**4. Create requirements.txt**
 
     neo4j>=5.26.0
 
@@ -81,7 +81,7 @@ Databricks Apps must bind to 0.0.0.0 on the port from the DATABRICKS_APP_PORT en
 
     (FastAPI/uvicorn are pre-installed in Databricks Apps runtime)
 
-5. Set up Databricks Secrets
+**5. Set up Databricks Secrets**
 
     Before deploying, create secrets in Databricks:
 
@@ -91,7 +91,7 @@ Databricks Apps must bind to 0.0.0.0 on the port from the DATABRICKS_APP_PORT en
     databricks secrets put-secret neo4j-mcp neo4j-password
 
 
-6. Deploy to Databricks
+**6. Deploy to Databricks**
 
     **Sync files to workspace**
 
@@ -163,7 +163,7 @@ Databricks Apps must bind to 0.0.0.0 on the port from the DATABRICKS_APP_PORT en
 
     ![pic 3](/images/dbx-mcp-claude-3.jpg "pic 3")
 
-7. Verify
+**7. Verify**
 
     - The app will be accessible at
     https://<workspace>.databricksapps.com/mcp-neo4j-cypher/api/mcp/
