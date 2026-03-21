@@ -125,6 +125,5 @@ Whether this specific formulation becomes the new default remains to be seen. Bu
 
 ---
 
-*Source: "Attention Residuals" by the Kimi Team (MoonshotAI), arXiv:2603.15031, March 2026. Code available at github.com/MoonshotAI/Attention-Residuals.*
+*Source: ["Attention Residuals"](https://arxiv.org/abs/2603.15031) by the Kimi Team (MoonshotAI), arXiv:2603.15031, March 2026. Code available at github.com/MoonshotAI/Attention-Residuals.*
 
-*This article is a non-technical summary. For full details including mathematical formulations, scaling law curves, and ablation studies, see the original paper.*
