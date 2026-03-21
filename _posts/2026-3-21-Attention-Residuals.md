@@ -4,8 +4,6 @@ title: Attention Residuals - Teach AI to remmeber better
 categories: AI
 ---
 
-# Teaching AI to Remember Better: What Are Attention Residuals?
-
 **A new technique from the Kimi Team lets each layer of a neural network choose which earlier layers to listen to — instead of being forced to listen to all of them equally.**
 
 *Based on the technical report by the Kimi Team (MoonshotAI) · Published March 2026 on arXiv*
