@@ -267,7 +267,7 @@ Add MCP Server configuration as the following in .mcp.json file:
 
 **3. Use Claude Desktop**
 
-Claude Destop configuration is a little bit treacky. It's because the json format of passing client_id value.
+Claude Destop configuration is a little bit tricky. It's because the json format of passing client_id value.
 
 * Make a json file to store client_id configuration:
 	
@@ -294,3 +294,10 @@ Claude Destop configuration is a little bit treacky. It's because the json forma
     ```
 ![pic 7](/images/dbx-mcp-claude-7.jpg "pic 7")
 
+**4. Use Claude.ai**
+
+I initially encountered the issue to get claude.ai work with DBX MCP server. The reason is the trailing slash at the URL. Trailing slash of URL is removed when save the connector on the configuration. When you connect to https://mcp-neo4j-cypher-.../api/mcp (no trailing slash), the server issues an HTTP redirect to add the trailing slash. The problem is that the redirect response is generating a Location header pointing to https://localhost:8000/api/mcp/ — the app's internal address — instead of the public Databricks URL. This is a classic reverse proxy misconfiguration.
+
+It look like a bug of Claude.ai UI for connector configuration. To workaround it, I ended up adding a dummy query parameter - https://mcp-neo4j-cypher-.../api/mcp/? This forces the URL to not end in a slash while still hitting the right path, which may avoid the redirect.
+
+![pic 8](/images/dbx-mcp-claude-8.jpg "pic 8")
