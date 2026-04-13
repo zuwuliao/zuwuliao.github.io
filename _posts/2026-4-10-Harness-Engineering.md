@@ -69,7 +69,7 @@ The most reliable way to implement harness engineering is to treat it like build
 
 * **Step 5 — Implement Tools with Strong Contracts and Sandboxing**. Tools should be narrow in scope, follow least-privilege principles, and return structured outputs. Execution should be isolated in containers or sandboxes with restricted network access when possible.
 
-* **Step 6 — Add Verification and Feedback**. Layer deterministic checks first (unit tests, linters, schema validators), then add semantic judges if needed. The paper distinguishes between computational sensors (fast, reliable, deterministic) and inferential sensors (semantic, LLM-based) and recommends using both.
+* **Step 6 — Add Verification and Feedback**. Layer deterministic checks first (unit tests, linters, schema validators), then add semantic judges if needed. It distinguishes between computational sensors (fast, reliable, deterministic) and inferential sensors (semantic, LLM-based) and recommends using both.
 
 * **Step 7 — Add Observability and Traces**. Record prompts, contexts, tool calls, outputs, costs, latency, and failure types. Use traces to analyze agent failure modes at scale and iteratively improve harness configuration. This trace-driven improvement is described as core to the harness engineering practice.
 
