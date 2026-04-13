@@ -43,13 +43,13 @@ The architecture flow is shown as:
 
 **Key Design Patterns**
 
-* **Progressive Disclosure (“Map Not Manual”)**: Rather than loading a monolithic instruction file into context, treat it as an index into a structured documentation directory. The paper reports that monolithic approaches failed because context is scarce, guidance becomes stale, and it is hard to verify. Instead, teams maintain a “system of record” enforced by linters and documentation-maintenance agents.
+* **Progressive Disclosure (“Map Not Manual”)**: Rather than loading a monolithic instruction file into context, treat it as an index into a structured documentation directory. The monolithic approaches failed because context is scarce, guidance becomes stale, and it is hard to verify. Instead, teams maintain a “system of record” enforced by linters and documentation-maintenance agents.
 
 * **Guide + Sensor Regulation**: A cybernetic model combining feedforward guides (which steer the model before it acts) and feedback sensors (which check outputs after). Sensors are further divided into computational sensors (fast, deterministic—tests and linters) and inferential sensors (semantic, LLM-based—more expensive but capable of nuanced judgment). Both types are distributed across the lifecycle.
 
 * **Generator–Evaluator Loops**: A three-agent architecture consisting of a planner, a generator, and an evaluator. The evaluator actively tests the running application (for example, via browser automation) and feeds grading criteria back to the generator across multiple iterations until quality thresholds are met.
 
-* **Compaction vs. Context Resets**: Two strategies for managing long-running tasks. Compaction summarizes context in place to preserve key state in a token-efficient form. Context resets start a fresh agent with a structured handoff of essential information. The paper notes these have different trade-offs and that some models exhibit behavioral changes near their context limits.
+* **Compaction vs. Context Resets**: Two strategies for managing long-running tasks. Compaction summarizes context in place to preserve key state in a token-efficient form. Context resets start a fresh agent with a structured handoff of essential information. They have different trade-offs and some models exhibit behavioral changes near their context limits.
 
 * **Standardized Session/Event Primitives**: Defining explicit “items” and “turns” with typed lifecycles, enabling robust UI integration, resumability, and consistent timelines across client reconnections.
 
@@ -86,3 +86,4 @@ The core idea can be represented with a simple formula:
 The core mechanism is an agent loop where the model proposes actions, the harness manages context, executes tools in controlled environments, evaluates results, and iterates until completion.
 
 In production systems, the harness also provides evaluation frameworks, tracing, safety controls, and lifecycle management — enabling persistence, execution, recovery, and auditability that raw models lack.
+
