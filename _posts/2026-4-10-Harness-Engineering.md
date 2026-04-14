@@ -14,8 +14,24 @@ Prompt engineering tells the agent what you want. It's the instruction for a sin
 
 Harness engineering is the system level design to ensures that the entire task stays under control, with proper monitoring and constraints. It includes continous observation, orchestration and convergence. If the agent starts to go off track, harness engineering provides the mechanisms to correct and steer it. In other words, harness engineering is about managing how the agent runs: keeping it stable, keeping it on track, and pulling it back when it begins to fail.
 
-
 ![pic 1](/images/harness-1.jpg "pic 1")
+
+**What problems does Harness Engineering solve**
+
+Raw models are not operational systems. By themselves, they cannot maintain state, execute tools, recover from errors, or provide auditable behavior. Harness engineering addresses six key gaps:
+
+* **Reliability over long horizons** — Multi-step agent loops are sensitive to early decisions. Small mistakes compound, and without harness-level controls, performance degrades as tasks grow longer.
+
+* **Context scale and drift** — As tasks run, the context window fills and the model loses track of earlier instructions. Compaction and context resets are harness strategies to manage this.
+
+* **Tool access and execution** — Models can propose tool calls but cannot execute them. The harness provides the orchestrator that runs tools and feeds results back.
+
+* **Reproducibility and change control** — Model behavior varies across versions. The harness enforces snapshot pinning and evals to detect regressions during upgrades.
+
+* **Security and governance** — Tools and retrieval expand the attack surface. The harness implements defense-in-depth: permission gates, output validation, rate limits, and approval workflows.
+
+* **Multi-agent coordination** — Complex tasks require multiple agents working in parallel. Without explicit coordination (spawning, messaging, work isolation), agents conflict and pollute each other's context.
+
 
 **Core Components of Agent Harness**
 
@@ -82,7 +98,7 @@ The most reliable way to implement harness engineering is to treat it like build
 
 **Claude Code with Harness Engineering**
 
-Let’s examine a real example of harness engineering in practice. Claude Code stands out as a leading agent workflow because it is built on a comprehensive harness engineering stack. Its design illustrates many of the techniques we’ve been discussing.”
+Let’s examine a real example of harness engineering in practice. Claude Code stands out as a leading agent workflow because it is built on a comprehensive harness engineering stack. Its design illustrates many of the techniques we’ve been discussing.
 
 ![pic 3](/images/harness-3.jpg "pic 3")
 
