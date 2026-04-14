@@ -80,13 +80,13 @@ The most reliable way to implement harness engineering is to treat it like build
 
 * **Step 9 — Implement Multi-Agent Orchestration (when needed)**. For complex tasks that benefit from parallelism or specialization, add a multi-agent layer. This includes implementing subagent spawning with isolated contexts, inter-agent communication channels, a state machine protocol governing agent interactions, task distribution mechanisms, and work isolation to prevent concurrent modification conflicts. Start with simple delegation (one parent spawning focused child agents) before evolving toward peer-to-peer autonomous patterns.
 
-**Claude Code Harness Engineering**
+**Claude Code with Harness Engineering**
 
-Let's look at a real example of how claude Code does harness engineering. Claude code is probably the best agent workflow in the world. It is built with full harness engineering stack. Here is how it is built with the harness engineering techiques we talk about.
+Let’s examine a real example of harness engineering in practice. Claude Code stands out as a leading agent workflow because it is built on a comprehensive harness engineering stack. Its design illustrates many of the techniques we’ve been discussing.”
 
 ![pic 3](/images/harness-3.jpg "pic 3")
 
-The below table shows how to map Claude Code to the Harness Engineering core components:
+The table below maps Claude Code to the core components of harness engineering.
 
 | Claude Code Architecture Component | Report Core Component  | Notes |
 |-----------------------------------|------------------------------------|-------|
