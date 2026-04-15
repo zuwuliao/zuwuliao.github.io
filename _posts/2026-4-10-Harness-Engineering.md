@@ -150,5 +150,10 @@ In production systems, the harness also provides evaluation frameworks, tracing,
 
 **References**
 
+Anthropic Harness Design - [here](https://www.anthropic.com/engineering/harness-design-long-running-apps)
+LangChain The Anatomy of an Agent Harness - [blog](https://blog.langchain.com/the-anatomy-of-an-agent-harness/)
+Meta-Harness: End-to-End Optimization of Model Harnesses - [paper](https://arxiv.org/abs/2603.28052)
+OpenAI Harness engineering: leveraging Codex in an agent-first - [here](https://openai.com/index/harness-engineering/)
 Building Claude Code with Harness Engineering - [blog](https://medium.com/gitconnected/building-claude-code-with-harness-engineering-d2e8c0da85f0)
 
+And Thanks to many vlogs on YouTube and Xhs!
