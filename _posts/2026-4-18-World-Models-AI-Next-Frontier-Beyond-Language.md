@@ -86,7 +86,7 @@ The debate turns in part on the fact that "world model" itself is an under-defin
 The world-model landscape has crystallized into several distinct approaches, each with different strengths and applications. The interactive timeline below traces the full arc — from Craik's 1943 hypothesis to the 2025-2026 commercial inflection.
 
 <details>
-<summary><strong>Interactive Timeline: World Model Architecture Evolution (click to expand)</strong></summary>
+<summary style="color: #1e6fe0; cursor: pointer; text-decoration: underline; font-weight: 600;">Interactive Timeline: World Model Architecture Evolution (click to expand)</summary>
 
 <style>
 .wm-timeline {
