@@ -10,13 +10,13 @@ categories: AI
 
 ---
 
-## The Bet Against Language Alone
+## 1. The Bet Against Language Alone
 
 Within twelve months, Meta released V-JEPA 2, Google DeepMind unveiled Genie 3, NVIDIA opened Cosmos, Fei-Fei Li's World Labs shipped a commercial product called Marble, Yann LeCun left Meta to found a billion-dollar startup built entirely around this idea, and LeWorldModel demonstrated the first stable end-to-end JEPA trainable on a single GPU. The common bet: that scaling text-based large language models will not, by itself, produce machines that understand the physical world, and that a different kind of model — grounded in video, action, and 3D/4D geometry — is the missing piece for robotics, autonomous vehicles, scientific simulation, and ultimately artificial general intelligence.
 
 The intellectual lineage runs from Kenneth Craik's 1943 "small-scale model" hypothesis through Schmidhuber's 1990 recurrent controller-world model and Ha & Schmidhuber's 2018 "World Models" paper to today's generative 3D world engines. What has changed is scale, stakes, and money: the research debate is now also a commercial race — and it is global.
 
-## What a World Model Actually Is
+## 2. What a World Model Actually Is
 
 A world model is a learned, typically compressed, internal representation of an environment's dynamics that an agent can use to **predict, simulate, plan, and reason counterfactually** about future states conditioned on actions.
 
@@ -28,13 +28,13 @@ Ha & Schmidhuber's 2018 *World Models* paper (arXiv:1803.10122) grounds the idea
 
 The remarkable result: an agent trained **entirely inside its own "hallucinated dream"** could transfer to real VizDoom and CarRacing-v0 environments.
 
-**Neuroscience Roots**
+**2.1 Neuroscience Roots**
 
 The conceptual foundations go much deeper than 2018. Scottish psychologist Kenneth Craik wrote in *The Nature of Explanation* (Cambridge, 1943) that if an organism carries a small-scale model of external reality and of its possible actions within its head, it is able to try out various alternatives and react in a much fuller, safer, and more competent manner. Philip Johnson-Laird formalized this as mental-models theory in 1983. Wolpert, Miall, and Kawato's *Internal Models in the Cerebellum* (1998) showed the brain's cerebellum likely implements paired forward models (predicting sensory consequences of motor commands) and inverse models (computing commands for desired states). Rao & Ballard's *Predictive Coding in the Visual Cortex* (1999) and Karl Friston's free-energy principle generalized this into a hierarchical Bayesian brain that continuously minimizes prediction error.
 
 Jürgen Schmidhuber introduced recurrent neural world models to machine learning in 1990, splitting an agent into a **controller C** and a recurrent world model **M** and training C to exploit M for planning — a lineage he still defends.
 
-**Key Properties of Modern World Models**
+**2.2 Key Properties of Modern World Models**
 
 Modern world models aim to exhibit the following capabilities:
 
@@ -49,23 +49,23 @@ Modern world models aim to exhibit the following capabilities:
 
 Fei-Fei Li, writing in her November 2025 manifesto *From Words to Worlds*, describes them as a new type of generative model whose capabilities of understanding, reasoning, generation, and interaction with the semantically, physically, geometrically, and dynamically complex worlds are far beyond the reach of today's LLMs.
 
-## How World Models Differ from Large Language Models
+## 3. How World Models Differ from Large Language Models
 
-The gap between LLMs and world models is not a matter of degree but of fundamental design. The differences run along three axes.
+The gap between LLMs and world models is not a matter of degree but of fundamental design. The differences run along three dimensions.
 
-**Axis 1: Object of Prediction**
+**3.1 Dimension 1: Object of Prediction**
 
 LLMs perform autoregressive next-token prediction over a discrete symbolic vocabulary. The loss is cross-entropy on human text, and whatever "state" exists lives implicitly in the KV-cache of hidden activations. World models predict future **state** — latent, pixel, occupancy, or 3D/4D — conditioned on **actions**, using reconstruction, contrastive, or energy-based objectives in representation space. The target of one is a distribution over linguistic tokens; the target of the other is a compressed model of environmental dynamics.
 
-**Axis 2: Grounding**
+**3.2 Dimension 2: Grounding**
 
 LLMs operate on symbols whose referents they never observe. They learn, as Yann LeCun puts it, the map (text), not the territory (reality). A child learns fire is hot by touching it; an LLM learns that "fire" co-occurs with "hot." World models aim for **grounded representations** — pixels, depth, LiDAR, proprioception, robot trajectories — that retain object permanence and physical constraints. Fei-Fei Li frames this sharply: today's LLMs remain wordsmiths in the dark — eloquent but inexperienced, knowledgeable but ungrounded.
 
-**Axis 3: Reasoning and Planning**
+**3.3 Dimension 3: Reasoning and Planning**
 
 LLMs lack an explicit planner. Plans emerge only as token sequences, and chain-of-thought is a scaffold bolted on top. Dziri et al.'s *Faith and Fate* (NeurIPS 2023) showed transformer accuracy degrades with graph depth in ways consistent with compounding error. World models natively support **model-based reinforcement learning**: Dreamer backpropagates analytic value gradients through imagined latent trajectories; MuZero runs MCTS inside a learned model; PlaNet uses CEM planning in latent space. Actions are first-class inputs, not generated strings.
 
-**LeCun's Critique of Autoregressive LLMs**
+**3.4 LeCun's Critique of Autoregressive LLMs**
 
 LeCun's critique, articulated in *A Path Towards Autonomous Machine Intelligence* (2022) and refined through 2025-2026, rests on five specific claims:
 
@@ -75,13 +75,13 @@ LeCun's critique, articulated in *A Path Towards Autonomous Machine Intelligence
 4. **No energy-based reasoning** — real reasoning should be energy minimization over plans in representation space, not token generation
 5. **The "dumber than a cat" argument** — a house cat has roughly LLM-scale synapses, yet can remember, understand the physical world, plan complex actions, and reason far better than the biggest LLMs
 
-**The Counterargument: LLMs as Implicit World Models**
+**3.5 The Counterargument: LLMs as Implicit World Models**
 
 The opposing camp argues LLMs already contain limited world models. *Emergent World Representations* (Li, Hopkins, Bau, Pfister, Wattenberg — ICLR 2023) showed a GPT trained only on Othello move sequences developed an internal board-state representation recoverable and causally controllable via probes; illegal-move rate fell from 93.3% untrained to 0.01%. Neel Nanda et al. (BlackboxNLP 2023) confirmed the representation is linearly probeable. Karvonen's Chess-GPT (COLM 2024) extended the finding to chess, with probes recovering even player Elo ratings.
 
 The debate turns in part on the fact that "world model" itself is an under-defined term — a point flagged by recent surveys from Ding et al. (2024) and Kong et al. (2025).
 
-## Major Approaches and Reference Architectures
+## 4. Major Approaches and Reference Architectures
 
 The world-model landscape has crystallized into several distinct approaches, each with different strengths and applications. The interactive timeline below traces the full arc — from Craik's 1943 hypothesis to the 2025-2026 commercial inflection.
 
@@ -408,7 +408,7 @@ The world-model landscape has crystallized into several distinct approaches, eac
 
 </details>
 
-**Reinforcement-Learning World Models (The Original Lineage)**
+**4.1 Reinforcement-Learning World Models (The Original Lineage)**
 
 The RL track represents the longest-running line of world-model research:
 
@@ -421,7 +421,7 @@ The RL track represents the longest-running line of world-model research:
 
 DreamerV3 introduced key innovations including symlog observations, KL-balance with free bits, and percentile return normalization. DeepMind's **MuZero** (2020) mastered Go, chess, shogi, and Atari without being told the rules, planning inside an implicit learned model. Transformer-based variants like **IRIS**, **STORM**, and **TWM** continue to push the frontier.
 
-**Joint Embedding Predictive Architecture (JEPA)**
+**4.2 Joint Embedding Predictive Architecture (JEPA)**
 
 LeCun's non-generative alternative predicts in representation space rather than pixel space:
 
@@ -432,13 +432,13 @@ LeCun's non-generative alternative predicts in representation space rather than 
 
 LeWorldModel deserves special attention. Existing JEPAs relied on complex multi-term losses (up to six tunable hyperparameters), exponential moving averages, pretrained encoders, or auxiliary supervision to prevent encoders from mapping all inputs to identical representations. LeWM is the **first JEPA that trains stably end-to-end from raw pixels** using only two loss terms: a next-embedding prediction loss and a **SIGReg regularizer** that enforces Gaussian-distributed latent embeddings. This reduces tunable loss hyperparameters from six to one. With only ~15 million parameters trainable on a single GPU in a few hours, LeWM plans up to **48x faster** than foundation-model-based world models while remaining competitive across diverse 2D and 3D control tasks — and linear probes confirm its latent space encodes meaningful physical quantities like positions and velocities.
 
-**Video Generation as World Simulation**
+**4.3 Video Generation as World Simulation**
 
 OpenAI's **Sora** (February 2024) used spacetime-patch diffusion transformers to generate video, with its technical report claiming emergent 3D consistency and object permanence. Sora 2 (September 2025) added camera-physics simulation. Runway Gen-3, Pika, Kling, Luma Dream Machine, and Google Veo 3 form a crowded field of text-to-video systems that blur into world-model territory.
 
 Critics including LeCun point out that these models show physical-commonsense failures and, more fundamentally, do not run interactive simulations with action conditioning or persistent state.
 
-**Interactive World Simulators**
+**4.4 Interactive World Simulators**
 
 - **Genie (DeepMind, 2024)** — learned action-conditioned platformer environments from unlabeled video
 - **Genie 2 (December 2024)** — extended to 3D
@@ -446,43 +446,43 @@ Critics including LeCun point out that these models show physical-commonsense fa
 - **Oasis (Decart + Etched, October 2024)** — a Minecraft-like real-time diffusion world model running at 20 fps on a single NVIDIA H100
 - **GameNGen (Microsoft/Google, 2024)** — diffusion models running interactive Doom as a "neural game engine"
 
-**Diffusion-Based World Models**
+**4.5 Diffusion-Based World Models**
 
 **DIAMOND** (NeurIPS 2024 Spotlight) achieved 1.46 mean human-normalized score on Atari 100k — a new record for agents trained entirely inside a world model.
 
-**Autonomous-Driving World Models**
+**4.6 Autonomous-Driving World Models**
 
 Wayve's **GAIA-1** (2023) scaled to 9 billion parameters on 4,700 hours of London driving data. **GAIA-2** (March 2025) added multi-camera, controllable generation of safety-critical scenarios using latent diffusion.
 
-**World Foundation Models for Physical AI**
+**4.7 World Foundation Models for Physical AI**
 
 NVIDIA's **Cosmos** (January 2025) is a platform of open-weight world foundation models, tokenizers, and guardrails trained on **9,000 trillion tokens from 20 million hours of real-world data**. Models ship in 4B to 14B parameter sizes under an open license.
 
-**3D/Spatial World Models**
+**4.8 3D/Spatial World Models**
 
 Fei-Fei Li's **World Labs** built **Marble** (commercial launch November 2025), which generates persistent, downloadable 3D environments as Gaussian splats, meshes, or video from text/image/video/panorama/3D-layout prompts, with an AI-native hybrid 3D editor called Chisel.
 
-**Embodied/Robotics World Models**
+**4.9 Embodied/Robotics World Models**
 
 NVIDIA's **GR00T N1** (March 2025) is a 2.2B-parameter dual-system VLA — System-2 Eagle-2 VLM plus System-1 diffusion transformer — trained on ~50K H100-hours. Physical Intelligence's **pi-zero** (2024) and **pi-zero.5** (2025) VLAs are the other major embodied-AI play.
 
-## Three Tracks, One Term: A Taxonomy of World Models
+## 5. Three Tracks, One Term: A Taxonomy of World Models
 
 A crucial insight is that "world model" is not a single concept but an umbrella term covering **three fundamentally different tracks**. Confusing them leads to misunderstanding where real value lies. As analyst Natasha Malpani has noted, although major players are all building "world models," they are not building the same structure.
 
-**Track 1: Simulation Infrastructure — Modeling the Environment**
+**5.1 Track 1: Simulation Infrastructure — Modeling the Environment**
 
 NVIDIA's Cosmos and Omniverse ecosystem exemplify the "God's-eye view." The goal is to build large-scale, physics-based synthetic environments for training, evaluating, and deploying physical AI systems. The core motivation is **data scarcity**: it is impossible to let robots fall a hundred million times in the real world just to learn walking, and real-world edge cases — a child running into traffic, a forklift dropping a pallet — are too rare and dangerous to collect naturally.
 
 NVIDIA's approach is scale-driven: brute-force simulation plus massive compute, on the bet that intelligence emerges from sufficient synthetic experience. The philosophy: if you build a faithful enough environment, the agents will come. **NVIDIA solves "where to train."**
 
-**Track 2: Spatial Intelligence — Modeling Objects and Their Relationships**
+**5.2 Track 2: Spatial Intelligence — Modeling Objects and Their Relationships**
 
 Fei-Fei Li's World Labs and Marble represent the "Architect view." The goal is to give machines a persistent, accurate model of physical space — understanding where objects are (precise 3D positioning), how they move (dynamic trajectories), and what affordances they provide (a cup can be grasped, a chair can be sat on).
 
 This is perception-first: the conviction that without understanding 3D space and object relationships, intelligence is illusion. Because the scope is narrower and more concrete, it is the **easiest to commercialize near-term**: VR/AR, 3D design, film/VFX, and game content creation all have immediate demand. **Fei-Fei Li solves "what to perceive."**
 
-**Track 3: Cognitive Architecture — Modeling Causal Logic**
+**5.3 Track 3: Cognitive Architecture — Modeling Causal Logic**
 
 LeCun's JEPA paradigm and AMI Labs represent the "Philosopher view." The goal is to construct a **causal model of reality** and enable planning within it. Unlike LLMs that predict the next token, JEPA predicts future states in abstract representation space — not pixels or words, but "what will happen next."
 
@@ -504,7 +504,7 @@ The analogy: confusing these three tracks is like calling engine makers, tire ma
 
 This maturity gradient explains an important puzzle: why NVIDIA can monetize world models today while LeCun's approach remains years from revenue.
 
-## Key Advocates and Who Drives the Field
+## 6. Key Advocates and Who Drives the Field
 
 **Yann LeCun** is the field's most public advocate and loudest critic of LLM-centrism. His 2022 *A Path Towards Autonomous Machine Intelligence* blueprints a cognitive architecture of configurator, perception, world model, cost, short-term memory, and actor modules. In **November 2025 he left Meta after 12 years**, telling the *Financial Times* Llama 4 results were "fudged a bit." He co-founded **AMI Labs** in Paris and by March 2026 raised $1.03 billion at a $3.5 billion pre-money valuation. He continues to co-author foundational JEPA research, including the March 2026 LeWorldModel paper.
 
@@ -518,7 +518,7 @@ This maturity gradient explains an important puzzle: why NVIDIA can monetize wor
 
 **Jürgen Schmidhuber** defends priority for the 1990 controller-world-model architecture. **Demis Hassabis** (DeepMind CEO, Chemistry Nobel 2024) oversees the Genie 1-3 line. **Alex Kendall** (Wayve) built GAIA-1/2. **Sergey Levine** and **Chelsea Finn** co-founded Physical Intelligence.
 
-## Where the Field Stands in 2025-2026
+## 7. Where the Field Stands in 2025-2026
 
 The field has bifurcated into three distinct product shapes:
 
@@ -526,7 +526,7 @@ The field has bifurcated into three distinct product shapes:
 2. **Generative 3D/video simulators** (Genie 3, Marble, Cosmos, GAIA-2) — producing interactive or downloadable worlds for creators, robotic training, and AV scenario generation
 3. **Action-conditioned agent training stacks** (DreamerV3, GR00T, SIMA, pi-zero.5) — integrating the two for embodied control
 
-**Capital at Unusual Rates**
+**7.1 Capital at Unusual Rates**
 
 The investment intensity is striking:
 
@@ -536,11 +536,11 @@ The investment intensity is striking:
 - Wayve: $1.5B cumulative
 - Physical Intelligence, Skild AI, Figure, 1X: all at billion-plus valuations with world-model narratives
 
-**The Global Race**
+**7.2 The Global Race**
 
 The world-model race is no longer Western-only. On April 16, 2026 alone, **Alibaba launched HappyOyster** — an open world model for persistent, interactive 3D environments — while **Tencent open-sourced HY-World2.0** for 3D scene generation importable into game engines. Tencent's strategy is clear: as the world's highest-grossing gaming company, it possesses vast 3D data, mature engine experience, and continuous demand for content. **XPeng** has deployed a "physical world large model" combining VLT + VLA + VLM architectures in both autonomous driving and its IRON humanoid robot.
 
-**Open Problems Remain Severe**
+**7.3 Open Problems Remain Severe**
 
 - Genie 3 consistency maxes out at a few minutes when training agents needs hours
 - Sora and Veo still show physics failures
@@ -551,7 +551,7 @@ The world-model race is no longer Western-only. On April 16, 2026 alone, **Aliba
 
 However, LeWM's March 2026 result suggests a complementary path: rather than only scaling up, it may be possible to scale *down* — building lightweight, stable, physically-grounded world models accessible to any researcher with a single GPU. A 15M-parameter model planning 48x faster than foundation-model alternatives while encoding meaningful physics hints that the JEPA paradigm's real bottleneck was training stability, not scale.
 
-## The Convergence Question
+## 8. The Convergence Question
 
 The three tracks currently address different subproblems of a larger goal: enabling machines to understand and act in the physical world. Will they converge?
 
@@ -563,7 +563,7 @@ There are early signs:
 
 The most consequential near-term outcome may be **integration**: simulation infrastructure providing the environments, spatial intelligence providing the perceptual grounding, and cognitive architectures providing the reasoning and planning — with LLMs serving as semantic interfaces layered on top.
 
-## Key References
+## 9. Key References
 
 | Paper | Authors | Year | Contribution |
 |-------|---------|------|--------------|
