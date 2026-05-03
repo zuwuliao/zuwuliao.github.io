@@ -175,7 +175,7 @@ For anyone wishing to push this inquiry further, five threads are particularly p
 
 ## 8. The Verdict
 
-The intuition is correct and substantive. There are genuine, deep structural parallels between representation learning in machine learning and Buddhist philosophy — particularly the Yogācāra school's theory of mind. These are not metaphors stretched across an unbridgeable gap. They are concept-to-concept correspondences in how an intelligent system acquires, organizes, and operates on internal models of a world to which it has no direct access.
+Buddhism is not a single, unified theoretical system, but a collection of distinct philosophical traditions. Within this landscape, there are genuine structural parallels between representation learning in machine learning and Buddhist philosophy—particularly the Yogācāra school’s theory of mind. These parallels are not merely loose metaphors, but reflect meaningful correspondences in how both systems describe the construction and use of internal representations of a world that is never directly accessed.
 
 The parallel is strongest where it is most structural — vijñaptimātratā with the constructed nature of representations, śūnyatā with the relational geometry of embeddings, pratītyasamutpāda with the computation graph, anattā with distributed representation. It is weakest where it would require neural networks to have what they do not — phenomenal experience, ethical intention, a soteriological purpose.
 
