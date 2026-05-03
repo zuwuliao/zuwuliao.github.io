@@ -4,6 +4,12 @@ title: 表征学习与佛教哲学（中文版）
 categories: AI
 ---
 
+在研究人工智能和神经网络时，尤其是在图像分类领域，我注意到每一层的抽象表示都对应着物体的某些特征。这些特征可能并不直接可见，但它们确实存在于模型的内部表示之中。
+
+在佛教中，也有一个类似的概念，被称为“唯识”（或“唯表象”的学说）。这一相似性引起了我的兴趣。有趣的是，在最近一次对谢赛宁的采访中，他也提到何恺明曾建议研究人员在开展研究之前阅读《金刚经》。
+
+这让我产生了一个问题：古代佛教哲学与现代人工智能技术之间，是否存在更深层次的联系？带着这个问题，我进行了一些研究，以下是我的一些发现。
+
 <div style="margin: 1.5rem 0;">
   <a href="{{ site.baseurl }}/Representation-Learning-and-Buddhist-Philosophy/"
      style="display: inline-block; padding: 0.6rem 1.1rem; background: #1d4ed8; color: #fff; border-radius: 6px; text-decoration: none; font-weight: 600; font-size: 0.95rem;">

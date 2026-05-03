@@ -4,6 +4,12 @@ title: Representation Learning and Buddhist Philosophy
 categories: AI
 ---
 
+When studying AI and neural networks especially in image classification, I noticed that each layer’s abstraction represents certain characteristics of an object. These features may not be directly visible, but they are still present in the model’s internal representation.
+
+In Buddhism, there is a similar concept known as the “doctrine of mere representation.” This parallel caught my attention. Interestingly, in a recent interview with Xie Saining, he also mentioned that He Kaiming encouraged researchers to read the Diamond Sutra before conducting their work.
+
+This raised a question for me: is there a deeper relationship between ancient Buddhist philosophy and modern AI technology? With this in mind, I conducted some research, and here is what I found.
+
 <div style="margin: 1.5rem 0;">
   <a href="{{ site.baseurl }}/Representation-Learning-and-Buddhist-Philosophy-CN/"
      style="display: inline-block; padding: 0.6rem 1.1rem; background: #b91c1c; color: #fff; border-radius: 6px; text-decoration: none; font-weight: 600; font-size: 0.95rem;">
