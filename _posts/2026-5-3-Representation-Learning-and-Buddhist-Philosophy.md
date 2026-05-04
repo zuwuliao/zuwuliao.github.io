@@ -179,7 +179,7 @@ Buddhism is not a single, unified theoretical system, but a collection of distin
 
 The parallel is strongest where it is most structural — vijñaptimātratā with the constructed nature of representations, śūnyatā with the relational geometry of embeddings, pratītyasamutpāda with the computation graph, anattā with distributed representation. It is weakest where it would require neural networks to have what they do not — phenomenal experience, ethical intention, a soteriological purpose.
 
-Buddhist philosophy and machine learning are not the same project. But on the question of how a mind models a world, two traditions separated by sixteen centuries have arrived at architectures whose deep logic is the same. That is worth taking seriously.
+Buddhist philosophy and machine learning are not the same project. Yet, on the question of how a system models a world it cannot directly access, two traditions separated by sixteen centuries have arrived at strikingly similar underlying structures. That convergence is worth taking seriously.
 
 ## Sources
 
