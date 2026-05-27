@@ -10,10 +10,13 @@ The three flows look superficially similar — they all involve a client, an aut
 
 This post is a practical walkthrough of the three flows — Authorization Code, On-Behalf-Of, and Client Credentials — covering how each works mechanically, what credentials are required, when to pick which, and the security insights that explain *why* each flow is shaped the way it is.
 
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,600;1,9..144,300&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+
 <style>
-.oauth-post {
+.oauth-guide {
   --bg2: #14161a;
   --bg3: #1c1f25;
+  --text: #e8e6e0;
   --border: rgba(255,255,255,0.07);
   --border2: rgba(255,255,255,0.12);
   --muted: #7a7870;
@@ -24,284 +27,590 @@ This post is a practical walkthrough of the three flows — Authorization Code, 
   --accent-blue-dim: rgba(91,156,246,0.12);
   --accent-amber-dim: rgba(240,168,67,0.12);
   --accent-teal-dim: rgba(62,207,142,0.12);
+  --mono: 'DM Mono', ui-monospace, monospace;
+  --serif: 'Fraunces', serif;
+  --sans: 'DM Sans', sans-serif;
+
+  background: #0e0f11;
+  color: var(--text);
+  font-family: var(--sans);
+  font-size: 15px;
+  line-height: 1.7;
+  border-radius: 12px;
+  padding: 8px 32px;
+  margin: 32px 0;
+  border: 1px solid var(--border);
 }
-.oauth-diagram {
-  background: #14161a;
-  border: 1px solid rgba(255,255,255,0.07);
+.oauth-guide section {
+  padding: 40px 0;
+  border-bottom: 1px solid var(--border);
+}
+.oauth-guide section:last-child { border-bottom: none; }
+
+.oauth-guide .section-header {
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+.oauth-guide .section-num {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--muted);
+  letter-spacing: .08em;
+}
+.oauth-guide h2 {
+  font-family: var(--serif);
+  font-size: 26px;
+  font-weight: 300;
+  color: #f0ede6;
+  margin: 0;
+  border: none;
+  padding: 0;
+}
+.oauth-guide h3 {
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 12px;
+  border: none;
+  padding: 0;
+}
+.oauth-guide p { color: #b8b5ae; margin-bottom: 12px; }
+.oauth-guide p:last-child { margin-bottom: 0; }
+.oauth-guide strong { color: var(--text); font-weight: 500; }
+
+.oauth-guide .flow-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-top: 24px;
+}
+.oauth-guide .flow-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 24px;
+  position: relative;
+  overflow: hidden;
+}
+.oauth-guide .flow-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+}
+.oauth-guide .flow-card.blue::before { background: var(--accent-blue); }
+.oauth-guide .flow-card.amber::before { background: var(--accent-amber); }
+.oauth-guide .flow-card.teal::before { background: var(--accent-teal); }
+.oauth-guide .flow-tag {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  padding: 3px 10px;
+  border-radius: 99px;
+  display: inline-block;
+  margin-bottom: 14px;
+}
+.oauth-guide .flow-tag.blue { background: var(--accent-blue-dim); color: var(--accent-blue); }
+.oauth-guide .flow-tag.amber { background: var(--accent-amber-dim); color: var(--accent-amber); }
+.oauth-guide .flow-tag.teal { background: var(--accent-teal-dim); color: var(--accent-teal); }
+.oauth-guide .flow-card h4 {
+  font-family: var(--serif);
+  font-size: 20px;
+  font-weight: 300;
+  color: #f0ede6;
+  margin: 0 0 10px 0;
+  border: none;
+  padding: 0;
+}
+.oauth-guide .flow-card p {
+  font-size: 13px;
+  line-height: 1.65;
+  color: var(--muted);
+}
+
+.oauth-guide .diagram-wrap {
+  background: var(--bg2);
+  border: 1px solid var(--border);
   border-radius: 12px;
   padding: 28px 24px 20px;
-  margin: 20px 0;
+  margin-bottom: 16px;
   overflow-x: auto;
 }
-.oauth-diagram .diagram-title {
-  font-family: 'DM Mono', ui-monospace, monospace;
+.oauth-guide .diagram-title {
+  font-family: var(--mono);
   font-size: 11px;
   letter-spacing: .1em;
   text-transform: uppercase;
-  color: #7a7870;
+  color: var(--muted);
   margin-bottom: 20px;
 }
-.oauth-insight {
-  background: #1c1f25;
-  border-left: 2px solid #f0a843;
+
+.oauth-guide .insight {
+  background: var(--bg3);
+  border-left: 2px solid var(--accent-amber);
   border-radius: 0 8px 8px 0;
   padding: 16px 20px;
   margin: 20px 0;
-  color: #b8b5ae;
-  font-size: 14px;
-  line-height: 1.65;
 }
-.oauth-insight strong { color: #f0a843; }
-.oauth-insight code {
-  font-family: 'DM Mono', ui-monospace, monospace;
+.oauth-guide .insight p { font-size: 13px; color: #b8b5ae; margin: 0; }
+.oauth-guide .insight strong { color: var(--accent-amber); }
+
+.oauth-guide .note-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 0;
+  margin: 0;
+}
+.oauth-guide .note-item {
+  display: grid;
+  grid-template-columns: 18px 1fr;
+  gap: 12px;
+  align-items: start;
+  font-size: 13px;
+  color: #b8b5ae;
+  line-height: 1.65;
+  list-style: none;
+}
+.oauth-guide .note-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  margin-top: 8px;
+  flex-shrink: 0;
+  display: inline-block;
+}
+
+.oauth-guide code {
+  font-family: var(--mono);
   font-size: 12px;
   background: rgba(255,255,255,0.06);
   padding: 1px 6px;
   border-radius: 4px;
-  color: #5b9cf6;
+  color: var(--accent-blue);
+}
+
+.oauth-guide .compare-wrap {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+}
+.oauth-guide .compare-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  margin: 0;
+}
+.oauth-guide .compare-table th {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  padding: 10px 14px;
+  text-align: left;
+  border-bottom: 1px solid var(--border2);
+  font-weight: 400;
+  background: transparent;
+}
+.oauth-guide .compare-table th:not(:first-child) { text-align: center; }
+.oauth-guide .compare-table td {
+  padding: 11px 14px;
+  border-bottom: 1px solid var(--border);
+  color: #b8b5ae;
+  vertical-align: middle;
+  background: transparent;
+}
+.oauth-guide .compare-table td:not(:first-child) { text-align: center; }
+.oauth-guide .compare-table tr:last-child td { border-bottom: none; }
+.oauth-guide .compare-table td:first-child { color: var(--muted); font-size: 12px; }
+.oauth-guide .check { color: var(--accent-teal); font-size: 15px; }
+.oauth-guide .cross { color: var(--muted); opacity: .4; font-size: 15px; }
+.oauth-guide .col-blue { color: var(--accent-blue); font-weight: 500; }
+.oauth-guide .col-amber { color: var(--accent-amber); font-weight: 500; }
+.oauth-guide .col-teal { color: var(--accent-teal); font-weight: 500; }
+
+.oauth-guide .cred-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+.oauth-guide .cred-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 22px;
+}
+.oauth-guide .cred-card h4 {
+  font-family: var(--serif);
+  font-size: 17px;
+  font-weight: 300;
+  color: #f0ede6;
+  margin: 0 0 14px 0;
+  border: none;
+  padding: 0;
+}
+.oauth-guide .cred-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 7px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 12px;
+}
+.oauth-guide .cred-row:last-child { border-bottom: none; }
+.oauth-guide .cred-label { color: var(--muted); font-family: var(--mono); font-size: 11px; }
+.oauth-guide .cred-val { color: var(--text); }
+.oauth-guide .cred-val.yes { color: var(--accent-teal); }
+.oauth-guide .cred-val.opt { color: var(--accent-amber); }
+.oauth-guide .cred-val.no { color: var(--muted); opacity: .5; }
+
+.oauth-guide .decision-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-top: 8px;
+}
+.oauth-guide .decision-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 22px;
+}
+.oauth-guide .decision-q {
+  color: #b8b5ae;
+  margin-bottom: 12px;
+  font-family: var(--serif);
+  font-weight: 300;
+  font-size: 15px;
+  line-height: 1.5;
+  font-style: italic;
+}
+.oauth-guide .decision-a {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  padding: 4px 12px;
+  border-radius: 99px;
+  display: inline-block;
+  margin-bottom: 10px;
+}
+.oauth-guide .decision-a.blue { background: var(--accent-blue-dim); color: var(--accent-blue); }
+.oauth-guide .decision-a.amber { background: var(--accent-amber-dim); color: var(--accent-amber); }
+.oauth-guide .decision-a.teal { background: var(--accent-teal-dim); color: var(--accent-teal); }
+.oauth-guide .decision-note { font-size: 12px; color: var(--muted); line-height: 1.6; margin: 0; }
+
+@media (max-width: 700px) {
+  .oauth-guide { padding: 8px 16px; }
+  .oauth-guide .flow-grid,
+  .oauth-guide .cred-grid,
+  .oauth-guide .decision-grid { grid-template-columns: 1fr; }
+  .oauth-guide .compare-table { font-size: 12px; }
+  .oauth-guide .compare-table th,
+  .oauth-guide .compare-table td { padding: 8px 10px; }
 }
 </style>
 
-<div class="oauth-post"></div>
+<div class="oauth-guide" markdown="0">
 
-**The Core Question Behind the Three Flows**
+<section id="overview">
+  <div class="section-header">
+    <span class="section-num">01</span>
+    <h2>The core question</h2>
+  </div>
+  <p>OAuth 2.0's three main flows exist because they answer the same question differently: <strong>who is the principal authenticating?</strong></p>
+  <div class="flow-grid">
+    <div class="flow-card blue">
+      <span class="flow-tag blue">Auth code</span>
+      <h4>A human user is present</h4>
+      <p>The app acts on behalf of a logged-in person who consents interactively via a browser redirect.</p>
+    </div>
+    <div class="flow-card amber">
+      <span class="flow-tag amber">On-behalf-of</span>
+      <h4>User identity must travel deeper</h4>
+      <p>A middle-tier API needs to call a downstream API while preserving the original user's identity.</p>
+    </div>
+    <div class="flow-card teal">
+      <span class="flow-tag teal">Client credentials</span>
+      <h4>No user — service is the principal</h4>
+      <p>A daemon or service authenticates as itself. No browser, no redirect, no user context.</p>
+    </div>
+  </div>
+</section>
 
-The three OAuth 2.0 flows that show up in 95% of real-world systems are:
+<section id="authcode">
+  <div class="section-header">
+    <span class="section-num">02</span>
+    <h2>Authorization code flow</h2>
+  </div>
+  <p>The most common OAuth flow. A user is redirected to the auth server to authenticate and grant consent. The app receives an authorization code via the browser, then exchanges it server-to-server for tokens — keeping secrets off the browser entirely.</p>
+  <div class="diagram-wrap">
+    <p class="diagram-title">Sequence — Auth code flow</p>
+    <svg width="100%" viewBox="0 0 680 390" role="img" style="display:block;">
+      <title>Authorization code flow sequence diagram</title>
+      <desc>Shows redirect-based flow between browser, app, auth server, and resource API with code exchange and token issuance</desc>
+      <defs><marker id="arr-ac" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+      <rect x="20" y="16" width="110" height="38" rx="7" fill="#1c1f25" stroke="rgba(255,255,255,0.18)" stroke-width="0.5"/>
+      <text x="75" y="38" text-anchor="middle" dominant-baseline="central" fill="#9ca3af" font-size="12" font-family="DM Sans,sans-serif" font-weight="500">User / Browser</text>
+      <rect x="180" y="16" width="110" height="38" rx="7" fill="#1c1f25" stroke="rgba(91,156,246,0.5)" stroke-width="0.5"/>
+      <text x="235" y="38" text-anchor="middle" dominant-baseline="central" fill="#5b9cf6" font-size="12" font-family="DM Sans,sans-serif" font-weight="500">Client app</text>
+      <rect x="340" y="16" width="120" height="38" rx="7" fill="#1c1f25" stroke="rgba(62,207,142,0.5)" stroke-width="0.5"/>
+      <text x="400" y="38" text-anchor="middle" dominant-baseline="central" fill="#3ecf8e" font-size="12" font-family="DM Sans,sans-serif" font-weight="500">Auth server</text>
+      <rect x="520" y="16" width="130" height="38" rx="7" fill="#1c1f25" stroke="rgba(240,168,67,0.5)" stroke-width="0.5"/>
+      <text x="585" y="38" text-anchor="middle" dominant-baseline="central" fill="#f0a843" font-size="12" font-family="DM Sans,sans-serif" font-weight="500">Resource API</text>
+      <line x1="75"  y1="54" x2="75"  y2="382" stroke="rgba(255,255,255,0.08)" stroke-width="0.5" stroke-dasharray="4 4"/>
+      <line x1="235" y1="54" x2="235" y2="382" stroke="rgba(255,255,255,0.08)" stroke-width="0.5" stroke-dasharray="4 4"/>
+      <line x1="400" y1="54" x2="400" y2="382" stroke="rgba(255,255,255,0.08)" stroke-width="0.5" stroke-dasharray="4 4"/>
+      <line x1="585" y1="54" x2="585" y2="382" stroke="rgba(255,255,255,0.08)" stroke-width="0.5" stroke-dasharray="4 4"/>
+      <line x1="75" y1="82" x2="227" y2="82" stroke="rgba(255,255,255,0.35)" stroke-width="1" marker-end="url(#arr-ac)"/>
+      <text x="151" y="76" text-anchor="middle" fill="#7a7870" font-size="11" font-family="DM Mono,monospace">1. Login request</text>
+      <line x1="235" y1="110" x2="392" y2="110" stroke="rgba(255,255,255,0.35)" stroke-width="1" marker-end="url(#arr-ac)"/>
+      <text x="314" y="104" text-anchor="middle" fill="#7a7870" font-size="11" font-family="DM Mono,monospace">2. Redirect to auth server</text>
+      <line x1="75" y1="138" x2="392" y2="138" stroke="rgba(255,255,255,0.35)" stroke-width="1" marker-end="url(#arr-ac)"/>
+      <text x="234" y="132" text-anchor="middle" fill="#7a7870" font-size="11" font-family="DM Mono,monospace">3. User authenticates + consents</text>
+      <line x1="400" y1="166" x2="88" y2="166" stroke="#3ecf8e" stroke-width="1" marker-end="url(#arr-ac)"/>
+      <text x="234" y="160" text-anchor="middle" fill="#3ecf8e" font-size="11" font-family="DM Mono,monospace">4. Auth code returned (redirect)</text>
+      <line x1="235" y1="194" x2="392" y2="194" stroke="rgba(255,255,255,0.35)" stroke-width="1" marker-end="url(#arr-ac)"/>
+      <text x="314" y="188" text-anchor="middle" fill="#7a7870" font-size="11" font-family="DM Mono,monospace">5. Exchange code + client_secret</text>
+      <line x1="400" y1="222" x2="248" y2="222" stroke="#3ecf8e" stroke-width="1" marker-end="url(#arr-ac)"/>
+      <text x="314" y="216" text-anchor="middle" fill="#3ecf8e" font-size="11" font-family="DM Mono,monospace">6. Access token + refresh token</text>
+      <line x1="235" y1="258" x2="577" y2="258" stroke="rgba(255,255,255,0.35)" stroke-width="1" marker-end="url(#arr-ac)"/>
+      <text x="406" y="252" text-anchor="middle" fill="#7a7870" font-size="11" font-family="DM Mono,monospace">7. API call with access token</text>
+      <line x1="585" y1="286" x2="248" y2="286" stroke="#3ecf8e" stroke-width="1" marker-end="url(#arr-ac)"/>
+      <text x="416" y="280" text-anchor="middle" fill="#3ecf8e" font-size="11" font-family="DM Mono,monospace">8. Protected resource</text>
+    </svg>
+  </div>
+  <div class="insight">
+    <p><strong>Key security insight:</strong> The authorization code travels through the browser (untrusted channel), but the token exchange happens server-to-server with the client secret. Even if the code is intercepted, it's useless without the secret.</p>
+  </div>
+  <h3>Key properties</h3>
+  <ul class="note-list">
+    <li class="note-item"><span class="note-dot" style="background: #5b9cf6"></span><span>Token is <strong>delegated</strong> — scoped to what the logged-in user is allowed to do, not what the app can do globally.</span></li>
+    <li class="note-item"><span class="note-dot" style="background: #5b9cf6"></span><span><strong>PKCE variant</strong>: For SPAs and mobile apps (public clients) that cannot safely store a <code>client_secret</code>, PKCE replaces it with a cryptographic challenge-verifier pair.</span></li>
+    <li class="note-item"><span class="note-dot" style="background: #5b9cf6"></span><span>Produces <strong>refresh tokens</strong> for silent renewal without re-prompting the user.</span></li>
+    <li class="note-item"><span class="note-dot" style="background: #5b9cf6"></span><span><strong>Use cases:</strong> Any user-facing app — web, mobile, SPA. "Login with Google/Microsoft", calling Microsoft Graph as the signed-in user.</span></li>
+  </ul>
+</section>
 
-* **Authorization Code Flow** — a human user is present and consents interactively.
-* **On-Behalf-Of (OBO) Flow** — a middle-tier API needs to call a downstream API while preserving the original user's identity.
-* **Client Credentials Flow** — no user is involved; a service authenticates as itself.
+<section id="obo">
+  <div class="section-header">
+    <span class="section-num">03</span>
+    <h2>On-behalf-of flow</h2>
+  </div>
+  <p>OBO extends auth code flow — it doesn't replace it. Phase 1 is always auth code flow (the user logs in and API A gets a user token). Phase 2 is the OBO exchange, which happens entirely server-side when API A needs to call a downstream API B as the same user.</p>
+  <div class="diagram-wrap">
+    <p class="diagram-title">Sequence — On-behalf-of flow (both phases)</p>
+    <svg width="100%" viewBox="0 0 680 510" role="img" style="display:block;">
+      <title>OBO full flow showing auth code phase then OBO phase</title>
+      <desc>Phase 1 is auth code flow where the user logs in and API A gets a user token. Phase 2 is OBO where API A exchanges that token to call API B as the user.</desc>
+      <defs><marker id="arr-obo" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+      <rect x="10" y="66" width="660" height="188" rx="8" fill="rgba(91,156,246,0.07)" stroke="rgba(91,156,246,0.15)" stroke-width="0.5"/>
+      <rect x="10" y="266" width="660" height="222" rx="8" fill="rgba(240,168,67,0.07)" stroke="rgba(240,168,67,0.15)" stroke-width="0.5"/>
+      <text x="24" y="84" fill="#5b9cf6" font-size="10" font-family="DM Mono,monospace" letter-spacing="0.08em">PHASE 1 — AUTH CODE FLOW (user logs in)</text>
+      <text x="24" y="282" fill="#f0a843" font-size="10" font-family="DM Mono,monospace" letter-spacing="0.08em">PHASE 2 — ON-BEHALF-OF FLOW (API A calls API B)</text>
+      <rect x="14"  y="18" width="96"  height="36" rx="7" fill="#1c1f25" stroke="rgba(255,255,255,0.18)" stroke-width="0.5"/>
+      <text x="62"  y="36" text-anchor="middle" dominant-baseline="central" fill="#9ca3af" font-size="11" font-family="DM Sans,sans-serif" font-weight="500">User / browser</text>
+      <rect x="154" y="18" width="96"  height="36" rx="7" fill="#1c1f25" stroke="rgba(91,156,246,0.5)" stroke-width="0.5"/>
+      <text x="202" y="36" text-anchor="middle" dominant-baseline="central" fill="#5b9cf6" font-size="11" font-family="DM Sans,sans-serif" font-weight="500">Client app</text>
+      <rect x="294" y="18" width="96"  height="36" rx="7" fill="#1c1f25" stroke="rgba(62,207,142,0.5)" stroke-width="0.5"/>
+      <text x="342" y="36" text-anchor="middle" dominant-baseline="central" fill="#3ecf8e" font-size="11" font-family="DM Sans,sans-serif" font-weight="500">Auth server</text>
+      <rect x="434" y="18" width="80"  height="36" rx="7" fill="#1c1f25" stroke="rgba(240,168,67,0.5)" stroke-width="0.5"/>
+      <text x="474" y="36" text-anchor="middle" dominant-baseline="central" fill="#f0a843" font-size="11" font-family="DM Sans,sans-serif" font-weight="500">API A</text>
+      <rect x="556" y="18" width="110" height="36" rx="7" fill="#1c1f25" stroke="rgba(232,106,170,0.5)" stroke-width="0.5"/>
+      <text x="611" y="36" text-anchor="middle" dominant-baseline="central" fill="#e86aaa" font-size="11" font-family="DM Sans,sans-serif" font-weight="500">API B</text>
+      <line x1="62"  y1="54" x2="62"  y2="500" stroke="rgba(255,255,255,0.07)" stroke-width="0.5" stroke-dasharray="4 4"/>
+      <line x1="202" y1="54" x2="202" y2="500" stroke="rgba(255,255,255,0.07)" stroke-width="0.5" stroke-dasharray="4 4"/>
+      <line x1="342" y1="54" x2="342" y2="500" stroke="rgba(255,255,255,0.07)" stroke-width="0.5" stroke-dasharray="4 4"/>
+      <line x1="474" y1="54" x2="474" y2="500" stroke="rgba(255,255,255,0.07)" stroke-width="0.5" stroke-dasharray="4 4"/>
+      <line x1="611" y1="54" x2="611" y2="500" stroke="rgba(255,255,255,0.07)" stroke-width="0.5" stroke-dasharray="4 4"/>
+      <line x1="62" y1="102" x2="194" y2="102" stroke="rgba(255,255,255,0.3)" stroke-width="1" marker-end="url(#arr-obo)"/>
+      <text x="128" y="96" text-anchor="middle" fill="#7a7870" font-size="10" font-family="DM Mono,monospace">1. User clicks login</text>
+      <line x1="202" y1="122" x2="334" y2="122" stroke="rgba(255,255,255,0.3)" stroke-width="1" marker-end="url(#arr-obo)"/>
+      <text x="272" y="116" text-anchor="middle" fill="#7a7870" font-size="10" font-family="DM Mono,monospace">2. Redirect to auth server</text>
+      <line x1="62" y1="142" x2="334" y2="142" stroke="rgba(255,255,255,0.3)" stroke-width="1" marker-end="url(#arr-obo)"/>
+      <text x="196" y="136" text-anchor="middle" fill="#7a7870" font-size="10" font-family="DM Mono,monospace">3. Authenticate + consent</text>
+      <line x1="342" y1="162" x2="75" y2="162" stroke="#3ecf8e" stroke-width="1" marker-end="url(#arr-obo)"/>
+      <text x="204" y="156" text-anchor="middle" fill="#3ecf8e" font-size="10" font-family="DM Mono,monospace">4. Auth code (redirect)</text>
+      <line x1="202" y1="182" x2="334" y2="182" stroke="rgba(255,255,255,0.3)" stroke-width="1" marker-end="url(#arr-obo)"/>
+      <text x="268" y="176" text-anchor="middle" fill="#7a7870" font-size="10" font-family="DM Mono,monospace">5. Exchange code + secret</text>
+      <line x1="342" y1="202" x2="215" y2="202" stroke="#3ecf8e" stroke-width="1" marker-end="url(#arr-obo)"/>
+      <text x="278" y="196" text-anchor="middle" fill="#3ecf8e" font-size="10" font-family="DM Mono,monospace">6. User access token (aud=API A)</text>
+      <line x1="202" y1="236" x2="466" y2="236" stroke="rgba(255,255,255,0.3)" stroke-width="1" marker-end="url(#arr-obo)"/>
+      <text x="334" y="230" text-anchor="middle" fill="#7a7870" font-size="10" font-family="DM Mono,monospace">7. Request + user token → API A</text>
+      <line x1="474" y1="304" x2="354" y2="304" stroke="rgba(255,255,255,0.3)" stroke-width="1" marker-end="url(#arr-obo)"/>
+      <text x="414" y="298" text-anchor="middle" fill="#7a7870" font-size="10" font-family="DM Mono,monospace">8. OBO: token + secret + scope(B)</text>
+      <line x1="342" y1="330" x2="462" y2="330" stroke="rgba(255,255,255,0.3)" stroke-width="1" marker-end="url(#arr-obo)"/>
+      <text x="402" y="324" text-anchor="middle" fill="#3ecf8e" font-size="10" font-family="DM Mono,monospace">9. New token (same user, aud=API B)</text>
+      <line x1="474" y1="362" x2="603" y2="362" stroke="rgba(255,255,255,0.3)" stroke-width="1" marker-end="url(#arr-obo)"/>
+      <text x="538" y="356" text-anchor="middle" fill="#7a7870" font-size="10" font-family="DM Mono,monospace">10. Call API B + new token</text>
+      <line x1="611" y1="390" x2="487" y2="390" stroke="#3ecf8e" stroke-width="1" marker-end="url(#arr-obo)"/>
+      <text x="548" y="384" text-anchor="middle" fill="#3ecf8e" font-size="10" font-family="DM Mono,monospace">11. Response</text>
+      <line x1="474" y1="420" x2="215" y2="420" stroke="#3ecf8e" stroke-width="1" marker-end="url(#arr-obo)"/>
+      <text x="344" y="414" text-anchor="middle" fill="#3ecf8e" font-size="10" font-family="DM Mono,monospace">12. Final response to client app</text>
+      <rect x="248" y="444" width="276" height="40" rx="6" fill="rgba(240,168,67,0.1)" stroke="rgba(240,168,67,0.3)" stroke-width="0.5"/>
+      <text x="386" y="460" text-anchor="middle" fill="#f0a843" font-size="10" font-family="DM Mono,monospace">Token at step 9 ≠ token at step 6</text>
+      <text x="386" y="476" text-anchor="middle" fill="#f0a843" font-size="10" font-family="DM Mono,monospace">Re-issued for API B's audience</text>
+    </svg>
+  </div>
+  <div class="insight">
+    <p><strong>Critical detail:</strong> The token at step 09 is <em>not</em> the same token from step 06. The original token's <code>aud</code> is API A — API B would correctly reject it. The OBO exchange re-issues a brand-new token scoped for API B, while carrying through the same user identity claims.</p>
+  </div>
+  <h3>Key properties</h3>
+  <ul class="note-list">
+    <li class="note-item"><span class="note-dot" style="background: #f0a843"></span><span>Primarily a <strong>Microsoft / Azure AD pattern</strong>. The generic IETF equivalent is RFC 8693 token exchange.</span></li>
+    <li class="note-item"><span class="note-dot" style="background: #f0a843"></span><span>Middle-tier API must authenticate itself with its own <code>client_id</code> + <code>client_secret</code> (or certificate) — there is no PKCE escape hatch.</span></li>
+    <li class="note-item"><span class="note-dot" style="background: #f0a843"></span><span>Simply <strong>forwarding the original token</strong> downstream is an anti-pattern and will fail — the audience mismatch is intentional.</span></li>
+    <li class="note-item"><span class="note-dot" style="background: #f0a843"></span><span><strong>Use cases:</strong> Multi-tier APIs where downstream services need to apply user-level authorization. e.g. a REST API calling Microsoft Graph on behalf of the signed-in user.</span></li>
+  </ul>
+</section>
 
-The cleanest mental model is to ask: *whose identity is the token going to carry?* If it's a logged-in human's identity, you're in Auth Code territory. If it's a human's identity but needs to flow through additional API hops, you need OBO. If there's no human and the service is the principal, you want Client Credentials.
+<section id="cc">
+  <div class="section-header">
+    <span class="section-num">04</span>
+    <h2>Client credentials flow</h2>
+  </div>
+  <p>The simplest flow. No user, no browser, no redirect. The service authenticates directly as itself using its own credentials and receives an access token carrying application permissions.</p>
+  <div class="diagram-wrap">
+    <p class="diagram-title">Sequence — Client credentials flow</p>
+    <svg width="100%" viewBox="0 0 680 280" role="img" style="display:block;">
+      <title>Client credentials flow sequence diagram</title>
+      <desc>Service authenticates directly to auth server with its own credentials, receives a token, and calls the API — no user in the loop</desc>
+      <defs><marker id="arr-cc" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+      <rect x="30"  y="16" width="160" height="38" rx="7" fill="#1c1f25" stroke="rgba(91,156,246,0.5)" stroke-width="0.5"/>
+      <text x="110" y="35" text-anchor="middle" dominant-baseline="central" fill="#5b9cf6" font-size="12" font-family="DM Sans,sans-serif" font-weight="500">Service / Daemon</text>
+      <rect x="270" y="16" width="140" height="38" rx="7" fill="#1c1f25" stroke="rgba(62,207,142,0.5)" stroke-width="0.5"/>
+      <text x="340" y="35" text-anchor="middle" dominant-baseline="central" fill="#3ecf8e" font-size="12" font-family="DM Sans,sans-serif" font-weight="500">Auth server</text>
+      <rect x="490" y="16" width="160" height="38" rx="7" fill="#1c1f25" stroke="rgba(240,168,67,0.5)" stroke-width="0.5"/>
+      <text x="570" y="35" text-anchor="middle" dominant-baseline="central" fill="#f0a843" font-size="12" font-family="DM Sans,sans-serif" font-weight="500">Resource API</text>
+      <rect x="30" y="76" width="160" height="26" rx="5" fill="rgba(232,106,170,0.08)" stroke="rgba(232,106,170,0.25)" stroke-width="0.5"/>
+      <text x="110" y="89" text-anchor="middle" dominant-baseline="central" fill="#e86aaa" font-size="10" font-family="DM Mono,monospace">No user interaction needed</text>
+      <line x1="110" y1="54" x2="110" y2="272" stroke="rgba(255,255,255,0.08)" stroke-width="0.5" stroke-dasharray="4 4"/>
+      <line x1="340" y1="54" x2="340" y2="272" stroke="rgba(255,255,255,0.08)" stroke-width="0.5" stroke-dasharray="4 4"/>
+      <line x1="570" y1="54" x2="570" y2="272" stroke="rgba(255,255,255,0.08)" stroke-width="0.5" stroke-dasharray="4 4"/>
+      <line x1="110" y1="130" x2="332" y2="130" stroke="rgba(255,255,255,0.35)" stroke-width="1" marker-end="url(#arr-cc)"/>
+      <text x="221" y="124" text-anchor="middle" fill="#7a7870" font-size="11" font-family="DM Mono,monospace">1. client_id + secret + scope</text>
+      <line x1="340" y1="160" x2="123" y2="160" stroke="#3ecf8e" stroke-width="1" marker-end="url(#arr-cc)"/>
+      <text x="226" y="154" text-anchor="middle" fill="#3ecf8e" font-size="11" font-family="DM Mono,monospace">2. Access token (app permissions)</text>
+      <line x1="110" y1="200" x2="562" y2="200" stroke="rgba(255,255,255,0.35)" stroke-width="1" marker-end="url(#arr-cc)"/>
+      <text x="336" y="194" text-anchor="middle" fill="#7a7870" font-size="11" font-family="DM Mono,monospace">3. API call with access token</text>
+      <line x1="570" y1="230" x2="123" y2="230" stroke="#3ecf8e" stroke-width="1" marker-end="url(#arr-cc)"/>
+      <text x="346" y="224" text-anchor="middle" fill="#3ecf8e" font-size="11" font-family="DM Mono,monospace">4. Response</text>
+    </svg>
+  </div>
+  <div class="insight">
+    <p><strong>Key insight:</strong> The token carries <em>application permissions</em> (roles), not delegated user scopes. These must be explicitly granted by an admin — there is no user consent dialog. The service can only do what it has been administratively authorized to do.</p>
+  </div>
+  <h3>Key properties</h3>
+  <ul class="note-list">
+    <li class="note-item"><span class="note-dot" style="background: #3ecf8e"></span><span>Access tokens are typically <strong>short-lived but easily re-fetched</strong> — refresh tokens are unnecessary since the service can get a new token anytime with its credentials.</span></li>
+    <li class="note-item"><span class="note-dot" style="background: #3ecf8e"></span><span>Credential types: <strong>client secret</strong> (simple, must be rotated), <strong>X.509 certificate</strong> (preferred — private key never leaves the service), or <strong>federated identity</strong>.</span></li>
+    <li class="note-item"><span class="note-dot" style="background: #3ecf8e"></span><span><strong>Use cases:</strong> Scheduled batch jobs, CI/CD pipelines, background workers, microservice-to-microservice calls, daemons with no interactive session.</span></li>
+  </ul>
+</section>
 
-Everything else — refresh tokens, PKCE, certificates, federated identity — is a refinement of those three answers.
+<section id="comparison">
+  <div class="section-header">
+    <span class="section-num">05</span>
+    <h2>Side-by-side comparison</h2>
+  </div>
+  <div class="compare-wrap">
+    <table class="compare-table">
+      <thead>
+        <tr>
+          <th>Dimension</th>
+          <th class="col-blue">Auth code</th>
+          <th class="col-amber">On-behalf-of</th>
+          <th class="col-teal">Client credentials</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Who initiates?</td><td>Human user</td><td>Middle-tier API</td><td>Service / daemon</td></tr>
+        <tr><td>User present?</td><td><span class="check">✓</span> Yes</td><td>Identity only</td><td><span class="cross">✗</span> No</td></tr>
+        <tr><td>Token type</td><td>Delegated</td><td>Delegated (re-issued)</td><td>Application</td></tr>
+        <tr><td>Browser redirect?</td><td><span class="check">✓</span> Yes</td><td><span class="cross">✗</span> No</td><td><span class="cross">✗</span> No</td></tr>
+        <tr><td>Requires client secret?</td><td>Yes (or PKCE)</td><td>Yes — always</td><td>Yes — always</td></tr>
+        <tr><td>Refresh tokens?</td><td><span class="check">✓</span> Yes</td><td><span class="check">✓</span> Yes</td><td>Not needed</td></tr>
+        <tr><td>Token audience</td><td>Resource API</td><td>Downstream API (re-scoped)</td><td>Resource API</td></tr>
+        <tr><td>Typical scenario</td><td>User logs into web app</td><td>API calls another API as user</td><td>Nightly batch job</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
 
-**Authorization Code Flow**
+<section id="credentials">
+  <div class="section-header">
+    <span class="section-num">06</span>
+    <h2>Credential requirements</h2>
+  </div>
+  <p>All three flows always require a <code>client_id</code> — it identifies <em>which app</em> is talking to the auth server. The <code>client_secret</code> (or equivalent) is what <em>proves</em> the app's identity.</p>
+  <div class="cred-grid">
+    <div class="cred-card">
+      <h4>Auth code flow</h4>
+      <div class="cred-row"><span class="cred-label">client_id</span><span class="cred-val yes">Always required</span></div>
+      <div class="cred-row"><span class="cred-label">client_secret</span><span class="cred-val opt">Confidential clients</span></div>
+      <div class="cred-row"><span class="cred-label">PKCE</span><span class="cred-val opt">Public clients (SPA/mobile)</span></div>
+      <div class="cred-row"><span class="cred-label">Certificate</span><span class="cred-val opt">Replaces secret</span></div>
+    </div>
+    <div class="cred-card">
+      <h4>On-behalf-of flow</h4>
+      <div class="cred-row"><span class="cred-label">client_id</span><span class="cred-val yes">Always required</span></div>
+      <div class="cred-row"><span class="cred-label">client_secret</span><span class="cred-val yes">Always required</span></div>
+      <div class="cred-row"><span class="cred-label">PKCE</span><span class="cred-val no">Not applicable</span></div>
+      <div class="cred-row"><span class="cred-label">Certificate</span><span class="cred-val opt">Replaces secret</span></div>
+    </div>
+    <div class="cred-card">
+      <h4>Client credentials</h4>
+      <div class="cred-row"><span class="cred-label">client_id</span><span class="cred-val yes">Always required</span></div>
+      <div class="cred-row"><span class="cred-label">client_secret</span><span class="cred-val yes">Always required</span></div>
+      <div class="cred-row"><span class="cred-label">PKCE</span><span class="cred-val no">Not applicable</span></div>
+      <div class="cred-row"><span class="cred-label">Certificate</span><span class="cred-val opt">Preferred in production</span></div>
+    </div>
+  </div>
+  <div class="insight" style="margin-top: 20px;">
+    <p><strong>Public vs. confidential clients:</strong> Auth code with PKCE is the only flow where a <code>client_secret</code> can be omitted — for SPAs and mobile apps that cannot safely store secrets. OBO and client credentials are always confidential client flows with no public-client variant.</p>
+  </div>
+  <ul class="note-list" style="margin-top: 16px;">
+    <li class="note-item"><span class="note-dot" style="background: #7a7870"></span><span><code>client_id</code> is never secret — it's a public identifier. Only the secret or certificate proves identity.</span></li>
+    <li class="note-item"><span class="note-dot" style="background: #7a7870"></span><span>X.509 certificates are preferred over secrets in production: the private key never leaves the service — you sign a JWT locally and send that as a <em>client assertion</em> instead of transmitting a shared secret.</span></li>
+    <li class="note-item"><span class="note-dot" style="background: #7a7870"></span><span>Federated identity (e.g. workload identity federation) is an emerging alternative: no stored credential at all — the service proves identity via a token from its hosting platform (Azure Managed Identity, GitHub Actions OIDC, etc.).</span></li>
+  </ul>
+</section>
 
-The Authorization Code flow is the most common OAuth flow and the one most developers encounter first. It's what happens behind every "Sign in with Google" or "Login with Microsoft" button. A user is redirected from the application to the authorization server, authenticates there, grants consent, and is redirected back to the app with a short-lived authorization code. The app then exchanges that code — server-to-server, with its own client secret — for an access token and a refresh token.
+<section id="decision">
+  <div class="section-header">
+    <span class="section-num">07</span>
+    <h2>Decision guide</h2>
+  </div>
+  <p>Pick the flow that matches your actual scenario. The relationship between flows and user context is the clearest separator.</p>
+  <div class="decision-grid">
+    <div class="decision-card">
+      <p class="decision-q">"A human user is logging in and the app calls APIs on their behalf."</p>
+      <span class="decision-a blue">Auth code flow</span>
+      <p class="decision-note">Use PKCE if the client is a SPA or mobile app without a secure back-end. Use a client secret if you have a server-side component.</p>
+    </div>
+    <div class="decision-card">
+      <p class="decision-q">"My API receives a user token, but needs to call another API as that same user."</p>
+      <span class="decision-a amber">On-behalf-of flow</span>
+      <p class="decision-note">Phase 1 is still auth code (user logged in). Phase 2 is OBO — your API exchanges the inbound token for a new one scoped to the downstream API.</p>
+    </div>
+    <div class="decision-card">
+      <p class="decision-q">"A background job, scheduled task, or microservice needs to call an API — no user involved."</p>
+      <span class="decision-a teal">Client credentials</span>
+      <p class="decision-note">The service authenticates as itself. Ensure an admin has granted the required application permissions (roles) to the service principal in advance.</p>
+    </div>
+  </div>
+</section>
 
-The reason for the two-step "code, then token" structure is security. The authorization code travels through the browser, which is an untrusted channel: it could be intercepted, logged, or replayed. But by itself, the code is useless. To redeem it for a token, the client must also present its `client_secret`, which never leaves the server. Even if an attacker grabs the code, they can't trade it in.
-
-<div class="oauth-diagram">
-  <p class="diagram-title">Sequence — Auth code flow</p>
-  <svg width="100%" viewBox="0 0 680 390" role="img" style="display:block;">
-    <title>Authorization code flow sequence diagram</title>
-    <desc>Shows redirect-based flow between browser, app, auth server, and resource API with code exchange and token issuance</desc>
-    <defs><marker id="arr-ac" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
-    <rect x="20" y="16" width="110" height="38" rx="7" fill="#1c1f25" stroke="rgba(255,255,255,0.18)" stroke-width="0.5"/>
-    <text x="75" y="38" text-anchor="middle" dominant-baseline="central" fill="#9ca3af" font-size="12" font-family="DM Sans,sans-serif" font-weight="500">User / Browser</text>
-    <rect x="180" y="16" width="110" height="38" rx="7" fill="#1c1f25" stroke="rgba(91,156,246,0.5)" stroke-width="0.5"/>
-    <text x="235" y="38" text-anchor="middle" dominant-baseline="central" fill="#5b9cf6" font-size="12" font-family="DM Sans,sans-serif" font-weight="500">Client app</text>
-    <rect x="340" y="16" width="120" height="38" rx="7" fill="#1c1f25" stroke="rgba(62,207,142,0.5)" stroke-width="0.5"/>
-    <text x="400" y="38" text-anchor="middle" dominant-baseline="central" fill="#3ecf8e" font-size="12" font-family="DM Sans,sans-serif" font-weight="500">Auth server</text>
-    <rect x="520" y="16" width="130" height="38" rx="7" fill="#1c1f25" stroke="rgba(240,168,67,0.5)" stroke-width="0.5"/>
-    <text x="585" y="38" text-anchor="middle" dominant-baseline="central" fill="#f0a843" font-size="12" font-family="DM Sans,sans-serif" font-weight="500">Resource API</text>
-    <line x1="75"  y1="54" x2="75"  y2="382" stroke="rgba(255,255,255,0.08)" stroke-width="0.5" stroke-dasharray="4 4"/>
-    <line x1="235" y1="54" x2="235" y2="382" stroke="rgba(255,255,255,0.08)" stroke-width="0.5" stroke-dasharray="4 4"/>
-    <line x1="400" y1="54" x2="400" y2="382" stroke="rgba(255,255,255,0.08)" stroke-width="0.5" stroke-dasharray="4 4"/>
-    <line x1="585" y1="54" x2="585" y2="382" stroke="rgba(255,255,255,0.08)" stroke-width="0.5" stroke-dasharray="4 4"/>
-    <line x1="75" y1="82" x2="227" y2="82" stroke="rgba(255,255,255,0.35)" stroke-width="1" marker-end="url(#arr-ac)"/>
-    <text x="151" y="76" text-anchor="middle" fill="#7a7870" font-size="11" font-family="DM Mono,monospace">1. Login request</text>
-    <line x1="235" y1="110" x2="392" y2="110" stroke="rgba(255,255,255,0.35)" stroke-width="1" marker-end="url(#arr-ac)"/>
-    <text x="314" y="104" text-anchor="middle" fill="#7a7870" font-size="11" font-family="DM Mono,monospace">2. Redirect to auth server</text>
-    <line x1="75" y1="138" x2="392" y2="138" stroke="rgba(255,255,255,0.35)" stroke-width="1" marker-end="url(#arr-ac)"/>
-    <text x="234" y="132" text-anchor="middle" fill="#7a7870" font-size="11" font-family="DM Mono,monospace">3. User authenticates + consents</text>
-    <line x1="400" y1="166" x2="88" y2="166" stroke="#3ecf8e" stroke-width="1" marker-end="url(#arr-ac)"/>
-    <text x="234" y="160" text-anchor="middle" fill="#3ecf8e" font-size="11" font-family="DM Mono,monospace">4. Auth code returned (redirect)</text>
-    <line x1="235" y1="194" x2="392" y2="194" stroke="rgba(255,255,255,0.35)" stroke-width="1" marker-end="url(#arr-ac)"/>
-    <text x="314" y="188" text-anchor="middle" fill="#7a7870" font-size="11" font-family="DM Mono,monospace">5. Exchange code + client_secret</text>
-    <line x1="400" y1="222" x2="248" y2="222" stroke="#3ecf8e" stroke-width="1" marker-end="url(#arr-ac)"/>
-    <text x="314" y="216" text-anchor="middle" fill="#3ecf8e" font-size="11" font-family="DM Mono,monospace">6. Access token + refresh token</text>
-    <line x1="235" y1="258" x2="577" y2="258" stroke="rgba(255,255,255,0.35)" stroke-width="1" marker-end="url(#arr-ac)"/>
-    <text x="406" y="252" text-anchor="middle" fill="#7a7870" font-size="11" font-family="DM Mono,monospace">7. API call with access token</text>
-    <line x1="585" y1="286" x2="248" y2="286" stroke="#3ecf8e" stroke-width="1" marker-end="url(#arr-ac)"/>
-    <text x="416" y="280" text-anchor="middle" fill="#3ecf8e" font-size="11" font-family="DM Mono,monospace">8. Protected resource</text>
-  </svg>
 </div>
-
-<div class="oauth-insight"><strong>Key security insight:</strong> The authorization code travels through the browser (untrusted channel), but the token exchange happens server-to-server with the client secret. Even if the code is intercepted, it's useless without the secret.</div>
-
-The token that comes back from this flow is a *delegated* token — its permissions are scoped to what the signed-in user can do, not what the app can do globally. The app can only do things the user has consented to, and only against resources that user has access to.
-
-A few properties are worth pinning down:
-
-* **PKCE variant.** Single-page apps and mobile apps are "public clients" — they can't safely store a `client_secret` because the secret would end up in the JavaScript bundle or mobile binary, both of which are inspectable. PKCE (Proof Key for Code Exchange) replaces the static secret with a cryptographic challenge/verifier pair generated fresh for each authorization attempt. The flow still has two legs, but the second leg is bound to the first by something only the legitimate client knows.
-
-* **Refresh tokens.** The access token is short-lived (typically 1 hour). The refresh token, returned alongside it, lets the app obtain a new access token silently — without prompting the user again. This is what makes "stay signed in" work without compromising on token lifetime.
-
-* **Typical use cases.** Any user-facing application: web apps, native mobile clients, single-page apps, desktop apps. "Login with Google/Microsoft/Okta", calling Microsoft Graph as the signed-in user, accessing the user's GitHub repos, posting to the user's Slack — all of these are Auth Code flow.
-
-**On-Behalf-Of Flow**
-
-OBO is the flow that confuses people the most, because at first glance it looks like the system should "just forward the user's token." It does not, and the reason it does not is the heart of the entire flow.
-
-Picture this architecture: a user logs into a web app (Phase 1 — that's just Auth Code flow). The app calls API A with the user's access token. API A now needs to call API B downstream — say, Microsoft Graph — *as that same user*, so that Graph applies the user's own permissions, not the API's. Here's the catch: the token the app sent to API A has an `aud` (audience) claim of API A. If API A simply forwards that token to API B, API B will look at the audience, see "not for me", and reject it. As it should — that's the audience check working correctly.
-
-OBO solves this with a server-side token exchange. API A takes the user's inbound token, presents it to the authorization server along with its own `client_id` and `client_secret`, and asks for a *new* token scoped for API B but still carrying the same user identity. API B accepts that token because the audience now matches, and applies the user's permissions normally.
-
-<div class="oauth-diagram">
-  <p class="diagram-title">Sequence — On-behalf-of flow (both phases)</p>
-  <svg width="100%" viewBox="0 0 680 510" role="img" style="display:block;">
-    <title>OBO full flow showing auth code phase then OBO phase</title>
-    <desc>Phase 1 is auth code flow where the user logs in and API A gets a user token. Phase 2 is OBO where API A exchanges that token to call API B as the user.</desc>
-    <defs><marker id="arr-obo" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
-    <rect x="10" y="66" width="660" height="188" rx="8" fill="rgba(91,156,246,0.07)" stroke="rgba(91,156,246,0.15)" stroke-width="0.5"/>
-    <rect x="10" y="266" width="660" height="222" rx="8" fill="rgba(240,168,67,0.07)" stroke="rgba(240,168,67,0.15)" stroke-width="0.5"/>
-    <text x="24" y="84" fill="#5b9cf6" font-size="10" font-family="DM Mono,monospace" letter-spacing="0.08em">PHASE 1 — AUTH CODE FLOW (user logs in)</text>
-    <text x="24" y="282" fill="#f0a843" font-size="10" font-family="DM Mono,monospace" letter-spacing="0.08em">PHASE 2 — ON-BEHALF-OF FLOW (API A calls API B)</text>
-    <rect x="14"  y="18" width="96"  height="36" rx="7" fill="#1c1f25" stroke="rgba(255,255,255,0.18)" stroke-width="0.5"/>
-    <text x="62"  y="36" text-anchor="middle" dominant-baseline="central" fill="#9ca3af" font-size="11" font-family="DM Sans,sans-serif" font-weight="500">User / browser</text>
-    <rect x="154" y="18" width="96"  height="36" rx="7" fill="#1c1f25" stroke="rgba(91,156,246,0.5)" stroke-width="0.5"/>
-    <text x="202" y="36" text-anchor="middle" dominant-baseline="central" fill="#5b9cf6" font-size="11" font-family="DM Sans,sans-serif" font-weight="500">Client app</text>
-    <rect x="294" y="18" width="96"  height="36" rx="7" fill="#1c1f25" stroke="rgba(62,207,142,0.5)" stroke-width="0.5"/>
-    <text x="342" y="36" text-anchor="middle" dominant-baseline="central" fill="#3ecf8e" font-size="11" font-family="DM Sans,sans-serif" font-weight="500">Auth server</text>
-    <rect x="434" y="18" width="80"  height="36" rx="7" fill="#1c1f25" stroke="rgba(240,168,67,0.5)" stroke-width="0.5"/>
-    <text x="474" y="36" text-anchor="middle" dominant-baseline="central" fill="#f0a843" font-size="11" font-family="DM Sans,sans-serif" font-weight="500">API A</text>
-    <rect x="556" y="18" width="110" height="36" rx="7" fill="#1c1f25" stroke="rgba(232,106,170,0.5)" stroke-width="0.5"/>
-    <text x="611" y="36" text-anchor="middle" dominant-baseline="central" fill="#e86aaa" font-size="11" font-family="DM Sans,sans-serif" font-weight="500">API B</text>
-    <line x1="62"  y1="54" x2="62"  y2="500" stroke="rgba(255,255,255,0.07)" stroke-width="0.5" stroke-dasharray="4 4"/>
-    <line x1="202" y1="54" x2="202" y2="500" stroke="rgba(255,255,255,0.07)" stroke-width="0.5" stroke-dasharray="4 4"/>
-    <line x1="342" y1="54" x2="342" y2="500" stroke="rgba(255,255,255,0.07)" stroke-width="0.5" stroke-dasharray="4 4"/>
-    <line x1="474" y1="54" x2="474" y2="500" stroke="rgba(255,255,255,0.07)" stroke-width="0.5" stroke-dasharray="4 4"/>
-    <line x1="611" y1="54" x2="611" y2="500" stroke="rgba(255,255,255,0.07)" stroke-width="0.5" stroke-dasharray="4 4"/>
-    <line x1="62" y1="102" x2="194" y2="102" stroke="rgba(255,255,255,0.3)" stroke-width="1" marker-end="url(#arr-obo)"/>
-    <text x="128" y="96" text-anchor="middle" fill="#7a7870" font-size="10" font-family="DM Mono,monospace">1. User clicks login</text>
-    <line x1="202" y1="122" x2="334" y2="122" stroke="rgba(255,255,255,0.3)" stroke-width="1" marker-end="url(#arr-obo)"/>
-    <text x="272" y="116" text-anchor="middle" fill="#7a7870" font-size="10" font-family="DM Mono,monospace">2. Redirect to auth server</text>
-    <line x1="62" y1="142" x2="334" y2="142" stroke="rgba(255,255,255,0.3)" stroke-width="1" marker-end="url(#arr-obo)"/>
-    <text x="196" y="136" text-anchor="middle" fill="#7a7870" font-size="10" font-family="DM Mono,monospace">3. Authenticate + consent</text>
-    <line x1="342" y1="162" x2="75" y2="162" stroke="#3ecf8e" stroke-width="1" marker-end="url(#arr-obo)"/>
-    <text x="204" y="156" text-anchor="middle" fill="#3ecf8e" font-size="10" font-family="DM Mono,monospace">4. Auth code (redirect)</text>
-    <line x1="202" y1="182" x2="334" y2="182" stroke="rgba(255,255,255,0.3)" stroke-width="1" marker-end="url(#arr-obo)"/>
-    <text x="268" y="176" text-anchor="middle" fill="#7a7870" font-size="10" font-family="DM Mono,monospace">5. Exchange code + secret</text>
-    <line x1="342" y1="202" x2="215" y2="202" stroke="#3ecf8e" stroke-width="1" marker-end="url(#arr-obo)"/>
-    <text x="278" y="196" text-anchor="middle" fill="#3ecf8e" font-size="10" font-family="DM Mono,monospace">6. User access token (aud=API A)</text>
-    <line x1="202" y1="236" x2="466" y2="236" stroke="rgba(255,255,255,0.3)" stroke-width="1" marker-end="url(#arr-obo)"/>
-    <text x="334" y="230" text-anchor="middle" fill="#7a7870" font-size="10" font-family="DM Mono,monospace">7. Request + user token → API A</text>
-    <line x1="474" y1="304" x2="354" y2="304" stroke="rgba(255,255,255,0.3)" stroke-width="1" marker-end="url(#arr-obo)"/>
-    <text x="414" y="298" text-anchor="middle" fill="#7a7870" font-size="10" font-family="DM Mono,monospace">8. OBO: token + secret + scope(B)</text>
-    <line x1="342" y1="330" x2="462" y2="330" stroke="rgba(255,255,255,0.3)" stroke-width="1" marker-end="url(#arr-obo)"/>
-    <text x="402" y="324" text-anchor="middle" fill="#3ecf8e" font-size="10" font-family="DM Mono,monospace">9. New token (same user, aud=API B)</text>
-    <line x1="474" y1="362" x2="603" y2="362" stroke="rgba(255,255,255,0.3)" stroke-width="1" marker-end="url(#arr-obo)"/>
-    <text x="538" y="356" text-anchor="middle" fill="#7a7870" font-size="10" font-family="DM Mono,monospace">10. Call API B + new token</text>
-    <line x1="611" y1="390" x2="487" y2="390" stroke="#3ecf8e" stroke-width="1" marker-end="url(#arr-obo)"/>
-    <text x="548" y="384" text-anchor="middle" fill="#3ecf8e" font-size="10" font-family="DM Mono,monospace">11. Response</text>
-    <line x1="474" y1="420" x2="215" y2="420" stroke="#3ecf8e" stroke-width="1" marker-end="url(#arr-obo)"/>
-    <text x="344" y="414" text-anchor="middle" fill="#3ecf8e" font-size="10" font-family="DM Mono,monospace">12. Final response to client app</text>
-    <rect x="248" y="444" width="276" height="40" rx="6" fill="rgba(240,168,67,0.1)" stroke="rgba(240,168,67,0.3)" stroke-width="0.5"/>
-    <text x="386" y="460" text-anchor="middle" fill="#f0a843" font-size="10" font-family="DM Mono,monospace">Token at step 9 ≠ token at step 6</text>
-    <text x="386" y="476" text-anchor="middle" fill="#f0a843" font-size="10" font-family="DM Mono,monospace">Re-issued for API B's audience</text>
-  </svg>
-</div>
-
-<div class="oauth-insight"><strong>Critical detail:</strong> The token at step 9 is <em>not</em> the same token from step 6. The original token's <code>aud</code> is API A — API B would correctly reject it. The OBO exchange re-issues a brand-new token scoped for API B, while carrying through the same user identity claims.</div>
-
-A few properties of OBO that are worth internalizing:
-
-* **It extends Auth Code, it does not replace it.** Phase 1 is always Auth Code — somebody had to log in for a user token to exist in the first place. Phase 2 is the token exchange. People sometimes describe OBO as a stand-alone flow, but mechanically it always sits on top of an earlier user login.
-
-* **It is primarily a Microsoft / Azure AD pattern.** The IETF generalization is RFC 8693 token exchange (`grant_type=urn:ietf:params:oauth:grant-type:jwt-bearer`), which is a superset of OBO. Other identity providers (Auth0, Okta, Keycloak) increasingly support token exchange too, but the OBO name and ergonomics are Microsoft-shaped.
-
-* **The middle-tier API is a confidential client — no PKCE escape hatch.** Because the OBO exchange is server-side, the middle-tier API must authenticate to the auth server with its own `client_id` plus a `client_secret` or certificate. There is no public-client variant of OBO.
-
-* **Don't forward tokens; exchange them.** A surprising number of bugs come from teams who try to "save a round trip" by passing the inbound user token straight through to a downstream API. It will not work, and the audience check is what protects every API from being used as a confused-deputy stepping stone.
-
-**Use cases:** Multi-tier API architectures where downstream services need to enforce user-level authorization. A REST API calling Microsoft Graph for the logged-in user, a BFF calling internal microservices, an AI agent backend that calls user-scoped data APIs.
-
-**Client Credentials Flow**
-
-Client credentials is the simplest of the three flows because it strips away everything user-related. No browser, no redirect, no consent dialog, no refresh token. The service authenticates directly to the authorization server using its own credentials, receives an access token, and uses that token to call APIs.
-
-<div class="oauth-diagram">
-  <p class="diagram-title">Sequence — Client credentials flow</p>
-  <svg width="100%" viewBox="0 0 680 280" role="img" style="display:block;">
-    <title>Client credentials flow sequence diagram</title>
-    <desc>Service authenticates directly to auth server with its own credentials, receives a token, and calls the API — no user in the loop</desc>
-    <defs><marker id="arr-cc" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
-    <rect x="30"  y="16" width="160" height="38" rx="7" fill="#1c1f25" stroke="rgba(91,156,246,0.5)" stroke-width="0.5"/>
-    <text x="110" y="35" text-anchor="middle" dominant-baseline="central" fill="#5b9cf6" font-size="12" font-family="DM Sans,sans-serif" font-weight="500">Service / Daemon</text>
-    <rect x="270" y="16" width="140" height="38" rx="7" fill="#1c1f25" stroke="rgba(62,207,142,0.5)" stroke-width="0.5"/>
-    <text x="340" y="35" text-anchor="middle" dominant-baseline="central" fill="#3ecf8e" font-size="12" font-family="DM Sans,sans-serif" font-weight="500">Auth server</text>
-    <rect x="490" y="16" width="160" height="38" rx="7" fill="#1c1f25" stroke="rgba(240,168,67,0.5)" stroke-width="0.5"/>
-    <text x="570" y="35" text-anchor="middle" dominant-baseline="central" fill="#f0a843" font-size="12" font-family="DM Sans,sans-serif" font-weight="500">Resource API</text>
-    <rect x="30" y="76" width="160" height="26" rx="5" fill="rgba(232,106,170,0.08)" stroke="rgba(232,106,170,0.25)" stroke-width="0.5"/>
-    <text x="110" y="89" text-anchor="middle" dominant-baseline="central" fill="#e86aaa" font-size="10" font-family="DM Mono,monospace">No user interaction needed</text>
-    <line x1="110" y1="54" x2="110" y2="272" stroke="rgba(255,255,255,0.08)" stroke-width="0.5" stroke-dasharray="4 4"/>
-    <line x1="340" y1="54" x2="340" y2="272" stroke="rgba(255,255,255,0.08)" stroke-width="0.5" stroke-dasharray="4 4"/>
-    <line x1="570" y1="54" x2="570" y2="272" stroke="rgba(255,255,255,0.08)" stroke-width="0.5" stroke-dasharray="4 4"/>
-    <line x1="110" y1="130" x2="332" y2="130" stroke="rgba(255,255,255,0.35)" stroke-width="1" marker-end="url(#arr-cc)"/>
-    <text x="221" y="124" text-anchor="middle" fill="#7a7870" font-size="11" font-family="DM Mono,monospace">1. client_id + secret + scope</text>
-    <line x1="340" y1="160" x2="123" y2="160" stroke="#3ecf8e" stroke-width="1" marker-end="url(#arr-cc)"/>
-    <text x="226" y="154" text-anchor="middle" fill="#3ecf8e" font-size="11" font-family="DM Mono,monospace">2. Access token (app permissions)</text>
-    <line x1="110" y1="200" x2="562" y2="200" stroke="rgba(255,255,255,0.35)" stroke-width="1" marker-end="url(#arr-cc)"/>
-    <text x="336" y="194" text-anchor="middle" fill="#7a7870" font-size="11" font-family="DM Mono,monospace">3. API call with access token</text>
-    <line x1="570" y1="230" x2="123" y2="230" stroke="#3ecf8e" stroke-width="1" marker-end="url(#arr-cc)"/>
-    <text x="346" y="224" text-anchor="middle" fill="#3ecf8e" font-size="11" font-family="DM Mono,monospace">4. Response</text>
-  </svg>
-</div>
-
-<div class="oauth-insight"><strong>Key insight:</strong> The token carries <em>application permissions</em> (roles), not delegated user scopes. These must be explicitly granted by an admin — there is no user consent dialog. The service can only do what it has been administratively authorized to do.</div>
-
-The simplicity is what makes Client Credentials both powerful and dangerous. Because there is no user, there is no user-level access control on the API call. The service can do anything its application permissions allow, against any data the API exposes — typically across the entire tenant. A misconfigured nightly batch job with the wrong Graph scope can read every email in an organization. This is why application permissions almost always require explicit admin consent: the user consent dialog that exists in Auth Code flow has no equivalent here, so an administrator must approve the trust relationship up front.
-
-Some practical notes:
-
-* **Refresh tokens aren't needed.** The service has its own credentials, so it can simply request a new access token whenever the current one expires. The whole concept of a refresh token exists to avoid re-prompting a user — there's no user to re-prompt here.
-
-* **Credential types matter in production.** A `client_secret` works, but a string in an environment variable is a liability — it leaks into logs, dumps, git history, and second-shift on-call pages. X.509 certificates are preferred: the private key never leaves the service, you sign a JWT locally, and you send that JWT as a *client assertion* instead of a shared secret. Federated identity (Azure Managed Identity, GitHub Actions OIDC, AWS IAM Roles for Service Accounts) is the next step up — no stored credential at all; the hosting platform vouches for the service.
-
-* **Application permissions, not delegated scopes.** Tokens from this flow do not carry a user's identity. APIs that expect a user context — anything that reads "my mailbox" or "my calendar" — usually won't accept these tokens at all, or will require completely different endpoints for application-level access.
-
-**Use cases:** Nightly batch jobs, CI/CD pipelines, data ingestion workers, microservice-to-microservice calls inside a trust boundary, AI agents running unattended, webhook backends, infrastructure automation.
-
-**Side-by-side Comparison**
-
-Lining the three flows up against the same set of dimensions makes the trade-offs explicit.
-
-| Dimension | Auth Code | On-Behalf-Of | Client Credentials |
-|-----------|-----------|--------------|--------------------|
-| Who initiates? | Human user | Middle-tier API | Service / daemon |
-| User present? | Yes | Identity only | No |
-| Token type | Delegated | Delegated (re-issued) | Application |
-| Browser redirect? | Yes | No | No |
-| Requires client secret? | Yes (or PKCE) | Yes — always | Yes — always |
-| Refresh tokens? | Yes | Yes | Not needed |
-| Token audience | Resource API | Downstream API (re-scoped) | Resource API |
-| Typical scenario | User logs into web app | API calls another API as user | Nightly batch job |
-
-The clearest separator is the **token type** row. Delegated tokens carry a user's identity and are bounded by what that user can do; application tokens carry only the service's identity and are bounded by what an admin has granted to the service principal. OBO is the only flow that re-issues a delegated token, swapping the audience while preserving the user identity.
-
-**Credential Requirements**
-
-Every OAuth client — across all three flows — always has a `client_id`. It identifies *which app* is talking to the auth server. The `client_id` itself is not secret; it's a public identifier that often appears in URLs. What proves the app's identity is the `client_secret`, certificate, or PKCE verifier.
-
-| Flow | client_id | client_secret | PKCE | Certificate |
-|------|-----------|---------------|------|-------------|
-| Auth Code | Always required | Confidential clients | Public clients (SPA/mobile) | Replaces secret |
-| On-Behalf-Of | Always required | Always required | Not applicable | Replaces secret |
-| Client Credentials | Always required | Always required | Not applicable | Preferred in production |
-
-Some implications worth pulling out:
-
-* **Auth Code with PKCE is the only public-client flow.** PKCE replaces the static secret with a per-request cryptographic binding. It is the only OAuth flow where a `client_secret` can legitimately be omitted, and it exists specifically because SPAs and mobile apps cannot safely store a secret.
-
-* **OBO and Client Credentials are always confidential.** Both happen entirely server-side and both require the client to prove its identity strongly. There is no PKCE-style accommodation for either.
-
-* **Certificates beat secrets in production.** With a secret, the proof of identity is a shared string that has to be transmitted on every token request. With a certificate, the private key never leaves the service — the service signs a short-lived JWT locally and sends that as a *client assertion*. The auth server validates the signature using the corresponding public key. Compromise of the auth server's logs no longer exposes a long-lived shared secret.
-
-* **Federated identity is the modern answer for cloud services.** Managed Identity (Azure), IAM Roles for Service Accounts (AWS/GCP), and Workload Identity Federation eliminate the stored credential entirely. The service proves its identity via a platform-issued token that the auth server already trusts. Nothing to rotate, nothing to leak.
-
-**Decision Guide**
-
-In practice the right flow is almost always determined by who initiates the call.
-
-* **"A human user is logging in and the app calls APIs on their behalf."** → **Authorization Code Flow.** Use PKCE if the client is a SPA or mobile app without a secure back-end. Use a `client_secret` (or, better, a certificate) if you have a server-side component.
-
-* **"My API receives a user token, but needs to call another API as that same user."** → **On-Behalf-Of Flow.** Phase 1 is still Auth Code (the user has to have logged in somewhere). Phase 2 is OBO — your API exchanges the inbound user token for a new one scoped to the downstream API. Do not forward the original token.
-
-* **"A background job, scheduled task, or microservice needs to call an API — no user is involved."** → **Client Credentials Flow.** The service authenticates as itself. Make sure an administrator has granted the required application permissions (roles) to the service principal in advance, since there is no interactive consent step.
-
-When a flow is ambiguous — for instance, a service that *sometimes* runs unattended and *sometimes* acts on behalf of a user — split it. Use Auth Code (and OBO if needed) for the user-driven path, and Client Credentials for the background path. Trying to make one flow cover both leads to over-broad application permissions, which is exactly the kind of attack surface OAuth is designed to minimize.
 
 **Summary**
 
