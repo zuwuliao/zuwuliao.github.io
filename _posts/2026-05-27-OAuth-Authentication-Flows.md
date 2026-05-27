@@ -34,8 +34,8 @@ categories: Cloud
   padding: 8px 36px;
   margin-top: 32px;
   margin-bottom: 32px;
-  margin-left: max(-220px, calc(370px - 50vw));
-  margin-right: max(-220px, calc(370px - 50vw));
+  margin-left: max(-110px, calc(370px - 50vw));
+  margin-right: max(-110px, calc(370px - 50vw));
   border: 1px solid var(--border);
 }
 .oauth-guide section {
