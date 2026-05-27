@@ -31,8 +31,11 @@ categories: Cloud
   font-size: 15px;
   line-height: 1.7;
   border-radius: 12px;
-  padding: 8px 32px;
-  margin: 32px 0;
+  padding: 8px 36px;
+  margin-top: 32px;
+  margin-bottom: 32px;
+  margin-left: max(-220px, calc(370px - 50vw));
+  margin-right: max(-220px, calc(370px - 50vw));
   border: 1px solid var(--border);
 }
 .oauth-guide section {
@@ -287,13 +290,14 @@ categories: Cloud
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 7px 0;
+  gap: 12px;
+  padding: 8px 0;
   border-bottom: 1px solid var(--border);
   font-size: 12px;
 }
 .oauth-guide .cred-row:last-child { border-bottom: none; }
-.oauth-guide .cred-label { color: var(--muted); font-family: var(--mono); font-size: 11px; }
-.oauth-guide .cred-val { color: var(--text); }
+.oauth-guide .cred-label { color: var(--muted); font-family: var(--mono); font-size: 11px; white-space: nowrap; }
+.oauth-guide .cred-val { color: var(--text); text-align: right; }
 .oauth-guide .cred-val.yes { color: var(--accent-teal); }
 .oauth-guide .cred-val.opt { color: var(--accent-amber); }
 .oauth-guide .cred-val.no { color: var(--muted); opacity: .5; }
@@ -341,8 +345,12 @@ categories: Cloud
   margin-top: 8px;
 }
 
-@media (max-width: 700px) {
-  .oauth-guide { padding: 8px 16px; }
+@media (max-width: 740px) {
+  .oauth-guide {
+    padding: 8px 16px;
+    margin-left: 0;
+    margin-right: 0;
+  }
   .oauth-guide .flow-grid,
   .oauth-guide .cred-grid,
   .oauth-guide .decision-grid,
