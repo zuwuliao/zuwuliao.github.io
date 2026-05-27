@@ -4,12 +4,6 @@ title: OAuth 2.0 Authentication Flows Explained
 categories: Cloud
 ---
 
-Almost every modern application I touch — web apps, mobile clients, internal APIs, batch jobs, AI agents — has to answer the same question before it can do anything useful: *who is making this call, and are they allowed to?* OAuth 2.0 is the protocol that most of the industry has settled on to answer it, and once you understand its three main flows, a huge amount of identity and integration work becomes obvious instead of confusing.
-
-The three flows look superficially similar — they all involve a client, an authorization server, and a resource API, and they all end with the client holding an access token. But they exist as separate flows because they answer a deeper question differently: **who is the principal authenticating?** A human user clicking "Sign in with Microsoft" is fundamentally different from a nightly batch job, which is in turn different from an API forwarding a user's identity to a downstream API. Each scenario gets its own flow, with its own trust model and its own credential requirements.
-
-This post is a practical walkthrough of the three flows — Authorization Code, On-Behalf-Of, and Client Credentials — covering how each works mechanically, what credentials are required, when to pick which, and the security insights that explain *why* each flow is shaped the way it is.
-
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,600;1,9..144,300&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 
 <style>
@@ -75,13 +69,39 @@ This post is a practical walkthrough of the three flows — Authorization Code, 
   letter-spacing: .06em;
   text-transform: uppercase;
   color: var(--muted);
-  margin-bottom: 12px;
+  margin: 24px 0 12px 0;
   border: none;
   padding: 0;
 }
 .oauth-guide p { color: #b8b5ae; margin-bottom: 12px; }
 .oauth-guide p:last-child { margin-bottom: 0; }
+.oauth-guide em { font-style: italic; color: var(--accent-amber); }
 .oauth-guide strong { color: var(--text); font-weight: 500; }
+
+.oauth-guide .eyebrow {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: .14em;
+  color: var(--accent-blue);
+  text-transform: uppercase;
+  margin-bottom: 16px;
+}
+.oauth-guide .lede {
+  font-family: var(--serif);
+  font-size: clamp(28px, 3.5vw, 38px);
+  font-weight: 300;
+  line-height: 1.2;
+  color: #f0ede6;
+  margin-bottom: 20px;
+  border: none;
+  padding: 0;
+}
+.oauth-guide .subtitle {
+  color: #b8b5ae;
+  font-size: 15px;
+  line-height: 1.7;
+  margin-bottom: 14px;
+}
 
 .oauth-guide .flow-grid {
   display: grid;
@@ -225,18 +245,23 @@ This post is a practical walkthrough of the three flows — Authorization Code, 
 .oauth-guide .compare-table td {
   padding: 11px 14px;
   border-bottom: 1px solid var(--border);
-  color: #b8b5ae;
   vertical-align: middle;
   background: transparent;
 }
 .oauth-guide .compare-table td:not(:first-child) { text-align: center; }
 .oauth-guide .compare-table tr:last-child td { border-bottom: none; }
 .oauth-guide .compare-table td:first-child { color: var(--muted); font-size: 12px; }
-.oauth-guide .check { color: var(--accent-teal); font-size: 15px; }
-.oauth-guide .cross { color: var(--muted); opacity: .4; font-size: 15px; }
-.oauth-guide .col-blue { color: var(--accent-blue); font-weight: 500; }
-.oauth-guide .col-amber { color: var(--accent-amber); font-weight: 500; }
-.oauth-guide .col-teal { color: var(--accent-teal); font-weight: 500; }
+.oauth-guide .compare-table td.col-blue { color: var(--accent-blue); }
+.oauth-guide .compare-table td.col-amber { color: var(--accent-amber); }
+.oauth-guide .compare-table td.col-teal { color: var(--accent-teal); }
+.oauth-guide .compare-table th.col-blue { color: var(--accent-blue); font-weight: 500; }
+.oauth-guide .compare-table th.col-amber { color: var(--accent-amber); font-weight: 500; }
+.oauth-guide .compare-table th.col-teal { color: var(--accent-teal); font-weight: 500; }
+.oauth-guide .check { font-size: 15px; }
+.oauth-guide .col-blue .check, .oauth-guide td.col-blue .check { color: var(--accent-blue); }
+.oauth-guide .col-amber .check, .oauth-guide td.col-amber .check { color: var(--accent-amber); }
+.oauth-guide .col-teal .check, .oauth-guide td.col-teal .check { color: var(--accent-teal); }
+.oauth-guide .cross { opacity: .4; font-size: 15px; }
 
 .oauth-guide .cred-grid {
   display: grid;
@@ -309,11 +334,19 @@ This post is a practical walkthrough of the three flows — Authorization Code, 
 .oauth-guide .decision-a.teal { background: var(--accent-teal-dim); color: var(--accent-teal); }
 .oauth-guide .decision-note { font-size: 12px; color: var(--muted); line-height: 1.6; margin: 0; }
 
+.oauth-guide .summary-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-top: 8px;
+}
+
 @media (max-width: 700px) {
   .oauth-guide { padding: 8px 16px; }
   .oauth-guide .flow-grid,
   .oauth-guide .cred-grid,
-  .oauth-guide .decision-grid { grid-template-columns: 1fr; }
+  .oauth-guide .decision-grid,
+  .oauth-guide .summary-grid { grid-template-columns: 1fr; }
   .oauth-guide .compare-table { font-size: 12px; }
   .oauth-guide .compare-table th,
   .oauth-guide .compare-table td { padding: 8px 10px; }
@@ -321,6 +354,14 @@ This post is a practical walkthrough of the three flows — Authorization Code, 
 </style>
 
 <div class="oauth-guide" markdown="0">
+
+<section id="intro">
+  <p class="eyebrow">OAuth 2.0 — Practical Guide</p>
+  <h2 class="lede">Authentication <em>flows</em> explained</h2>
+  <p class="subtitle">Almost every modern application — web apps, mobile clients, internal APIs, batch jobs, AI agents — has to answer the same question before it can do anything useful: <em>who is making this call, and are they allowed to?</em> OAuth 2.0 is the protocol most of the industry has settled on to answer it, and once you understand its three main flows, a huge amount of identity and integration work becomes obvious instead of confusing.</p>
+  <p class="subtitle">The three flows look superficially similar — they all involve a client, an authorization server, and a resource API, and they all end with the client holding an access token. But they exist as separate flows because they answer a deeper question differently: <strong>who is the principal authenticating?</strong> A human user clicking "Sign in with Microsoft" is fundamentally different from a nightly batch job, which is in turn different from an API forwarding a user's identity to a downstream API.</p>
+  <p class="subtitle">This guide is a practical walkthrough of all three flows — Authorization Code, On-Behalf-Of, and Client Credentials — covering how each works mechanically, what credentials are required, when to pick which, and the security insights that explain <em>why</em> each flow is shaped the way it is.</p>
+</section>
 
 <section id="overview">
   <div class="section-header">
@@ -533,14 +574,14 @@ This post is a practical walkthrough of the three flows — Authorization Code, 
         </tr>
       </thead>
       <tbody>
-        <tr><td>Who initiates?</td><td>Human user</td><td>Middle-tier API</td><td>Service / daemon</td></tr>
-        <tr><td>User present?</td><td><span class="check">✓</span> Yes</td><td>Identity only</td><td><span class="cross">✗</span> No</td></tr>
-        <tr><td>Token type</td><td>Delegated</td><td>Delegated (re-issued)</td><td>Application</td></tr>
-        <tr><td>Browser redirect?</td><td><span class="check">✓</span> Yes</td><td><span class="cross">✗</span> No</td><td><span class="cross">✗</span> No</td></tr>
-        <tr><td>Requires client secret?</td><td>Yes (or PKCE)</td><td>Yes — always</td><td>Yes — always</td></tr>
-        <tr><td>Refresh tokens?</td><td><span class="check">✓</span> Yes</td><td><span class="check">✓</span> Yes</td><td>Not needed</td></tr>
-        <tr><td>Token audience</td><td>Resource API</td><td>Downstream API (re-scoped)</td><td>Resource API</td></tr>
-        <tr><td>Typical scenario</td><td>User logs into web app</td><td>API calls another API as user</td><td>Nightly batch job</td></tr>
+        <tr><td>Who initiates?</td><td class="col-blue">Human user</td><td class="col-amber">Middle-tier API</td><td class="col-teal">Service / daemon</td></tr>
+        <tr><td>User present?</td><td class="col-blue"><span class="check">✓</span> Yes</td><td class="col-amber">Identity only</td><td class="col-teal"><span class="cross">✗</span> No</td></tr>
+        <tr><td>Token type</td><td class="col-blue">Delegated</td><td class="col-amber">Delegated (re-issued)</td><td class="col-teal">Application</td></tr>
+        <tr><td>Browser redirect?</td><td class="col-blue"><span class="check">✓</span> Yes</td><td class="col-amber"><span class="cross">✗</span> No</td><td class="col-teal"><span class="cross">✗</span> No</td></tr>
+        <tr><td>Requires client secret?</td><td class="col-blue">Yes (or PKCE)</td><td class="col-amber">Yes — always</td><td class="col-teal">Yes — always</td></tr>
+        <tr><td>Refresh tokens?</td><td class="col-blue"><span class="check">✓</span> Yes</td><td class="col-amber"><span class="check">✓</span> Yes</td><td class="col-teal">Not needed</td></tr>
+        <tr><td>Token audience</td><td class="col-blue">Resource API</td><td class="col-amber">Downstream API (re-scoped)</td><td class="col-teal">Resource API</td></tr>
+        <tr><td>Typical scenario</td><td class="col-blue">User logs into web app</td><td class="col-amber">API calls another API as user</td><td class="col-teal">Nightly batch job</td></tr>
       </tbody>
     </table>
   </div>
@@ -610,16 +651,32 @@ This post is a practical walkthrough of the three flows — Authorization Code, 
   </div>
 </section>
 
+<section id="summary">
+  <div class="section-header">
+    <span class="section-num">08</span>
+    <h2>Summary</h2>
+  </div>
+  <p>OAuth 2.0's three flows are not three implementations of the same idea — they are three answers to three different identity questions. The mechanics (codes vs. assertions, browser redirects vs. server posts, refresh tokens vs. re-fetches) all fall out of those three answers. Once the principal/audience model is in your head, every identity provider's documentation starts reading like the same conversation.</p>
+  <div class="summary-grid">
+    <div class="flow-card blue">
+      <span class="flow-tag blue">Auth code</span>
+      <h4>There's a user, they're here</h4>
+      <p>They've consented — give the app a token scoped to what they can do. Use PKCE for SPAs and mobile clients.</p>
+    </div>
+    <div class="flow-card amber">
+      <span class="flow-tag amber">On-behalf-of</span>
+      <h4>The user isn't on this hop</h4>
+      <p>Their identity has to travel — exchange the user's token for a new one with the right audience. Don't forward.</p>
+    </div>
+    <div class="flow-card teal">
+      <span class="flow-tag teal">Client credentials</span>
+      <h4>No user — the service is the principal</h4>
+      <p>Give the service a token scoped to what an admin has granted. Prefer certificates or federated identity over secrets.</p>
+    </div>
+  </div>
+  <div class="insight" style="margin-top: 24px;">
+    <p><strong>Modern defaults:</strong> Auth Code with PKCE for user-facing apps, OBO for API-to-API hops that carry user identity, and Client Credentials with certificates or federated identity for everything unattended. With those three patterns wired correctly, the rest of an identity architecture has somewhere stable to stand on.</p>
+  </div>
+</section>
+
 </div>
-
-**Summary**
-
-OAuth 2.0's three flows are not three implementations of the same idea; they are three answers to three different identity questions.
-
-* **Authorization Code** says: there's a user, they're here, they've consented — give the app a token scoped to what they can do.
-* **On-Behalf-Of** says: there's a user, they're not on this hop, but their identity has to travel — exchange the user's token for a new one with the right audience.
-* **Client Credentials** says: there's no user — the service is the principal, here are its credentials, give it a token scoped to what an admin has granted.
-
-The mechanics — codes vs. assertions, browser redirects vs. server posts, refresh tokens vs. re-fetches — all fall out of those three answers. Once you have the principal/audience model in your head, every OAuth conversation in every identity provider's documentation starts reading like the same conversation, and decisions about which flow to use stop feeling like guessing.
-
-In modern systems, the right defaults are: **Auth Code with PKCE** for user-facing apps, **OBO** for API-to-API hops that need to carry user identity, and **Client Credentials with certificates or federated identity** for everything unattended. With those three patterns wired correctly, the rest of an identity architecture has somewhere stable to stand on.
