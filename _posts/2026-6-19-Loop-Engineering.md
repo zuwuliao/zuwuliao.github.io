@@ -20,12 +20,7 @@ This post is a synthesis of the early thinking on loop engineering — what it i
 
 Loop engineering is best understood as the latest step up a ladder of abstraction. Each layer wraps and requires the one below it.
 
-| Paradigm | When | Associated with | What you design |
-|---|---|---|---|
-| **Prompt engineering** | 2023–24 | Early practitioners | Craft instructions for a single call |
-| **Context engineering** | Mid-2025 | Karpathy, Lütke, Anthropic | Design everything the model sees |
-| **Harness engineering** | Early 2026 | Hashimoto, OpenAI, Fowler | Design the environment agents run inside |
-| **Loop engineering** | June 2026 | Steinberger, Osmani, Cherny | Design systems that prompt agents |
+![pic 1](/images/loop-engineering-four-paradigms.jpg "pic 1")
 
 The progression matters because each paradigm only became necessary once the one beneath it was solved. Prompt engineering was about the words in a single call. Context engineering widened the frame to everything the model sees — conversation history, retrieved data, tool definitions, memory. Harness engineering widened it again to the environment a single agent runs inside: rules files, sandboxed execution, feedback gates, constraints. Loop engineering wraps all of that and asks the next question — *who keeps the agent running, who checks its work, and who decides what it does next?*
 
@@ -69,7 +64,7 @@ A loop is a repeating cycle that replaces the human turn-by-turn prompter with a
 
 6. **Decide** — The orchestrator reads the state and decides what happens next: pick the next task, escalate to a human, or terminate because the goal is met or the budget is exceeded.
 
-![pic 1](/images/loop-engineering-cycle.jpg "pic 1")
+![pic 2](/images/loop-engineering-cycle.jpg "pic 2")
 
 **The two types of loops**
 
