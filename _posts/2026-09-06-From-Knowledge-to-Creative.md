@@ -70,27 +70,22 @@ That leads to one of the most important concepts in the interview: the **intelli
 
 The Internet era produced powerful data flywheels:
 
-```text
 More users → More data → Better prediction → Better product → More users
-```
+
 
 The AI era adds another layer. When an Agent actually performs work, it generates real-world experience:
 
-```test
 Task → Reasoning → Action → Outcome → Feedback → Learning → Better capability
-```
 
 The system is no longer only collecting data. It is accumulating experience that can improve planning, memory, tool use, task decomposition, and judgment. That is what Zeng calls **intelligence compounding**. 
 
 A simple way to express the difference is:
 
-```text
 Data flywheel:
 More data → better prediction
 
 Intelligence flywheel:
 More experience → better capability
-```
 
 More importantly, I think his idea of the **intelligence flywheel** can be extended further: the most important competitive advantage in the AI era may come from the ability to generate new data, with recursive self-improving, create better capability, then generate new knowledge, and use that new knowledge to create greater intelligence.
 
@@ -102,15 +97,11 @@ Another important Zeng thesis is that the traditional company was designed aroun
 
 The old model of company consists of:
 
-```text
 Position → Employee → Manager → Department → Workflow
-```
 
 An AI-native organization may instead organize around tasks: 
 
-```text
 Objective, Tasks, Required capabilities, Humans + Agents, Outcome
-```
 
 This reduces the need for some layers of coordination and approval. 
 
@@ -124,9 +115,7 @@ Zeng also argues that traditional strategic planning becomes less effective in a
 
 Instead of Predict future, Make planm, Execute plan, companies need a continuous strategy-generation system:
 
-```text
 Signals → Insights → Hypotheses → Experiments → Evidence → Decisions → New signals
-```
 
 The organization itself must continuously generate better strategic judgment.
 
