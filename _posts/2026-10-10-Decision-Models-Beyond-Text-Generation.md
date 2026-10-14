@@ -47,7 +47,7 @@ The innovation is not classification itself, which is decades old. It is the com
 
 ---
 
-## What is TypeSafe Jev
+**What is TypeSafe Jev**
 
 TypeSafe describes the Jev stack as having three components:
 
