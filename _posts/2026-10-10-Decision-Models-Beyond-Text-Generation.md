@@ -12,7 +12,7 @@ On September 15, 2026, TypeSafe released **Jev**, its first public "System One M
 
 ---
 
-**What is a Decision Model?**
+## What is a Decision Model?
 
 "Decision model" is not yet a standardized ML architecture name. TypeSafe calls its family **System One Models**, inspired by Daniel Kahneman's fast, intuitive System 1 thinking, as opposed to the slow, deliberate System 2 reasoning that LLMs with chain-of-thought try to emulate.
 
@@ -47,7 +47,7 @@ The innovation is not classification itself, which is decades old. It is the com
 
 ---
 
-**What is TypeSafe Jev**
+## What is TypeSafe Jev
 
 TypeSafe describes the Jev stack as having three components:
 
@@ -56,22 +56,6 @@ TypeSafe describes the Jev stack as having three components:
 - A training method called **Reinforcement Learning for Calibrated Decisions (RLCD)**
 
 Jev intentionally gives up open-ended string generation. In exchange, it returns structured, probabilistic decisions through a hosted API.
-
-It is worth being careful about what is actually public. The following is established from TypeSafe's blog and API documentation:
-
-- Transformer-based model family
-- No general text generation
-- Typed questions with probabilities and confidence
-- The parallel sampler and the RLCD name
-- A hosted API
-
-And the following remains proprietary or unclear:
-
-- Parameter count and exact topology
-- The detailed RLCD objective and reward function
-- The full training recipe, data composition, and training compute
-
-You may find detailed "Jev architecture" diagrams online showing an encoder-only layout with a classification head. These should be treated cautiously; TypeSafe has not disclosed enough to confirm any of them.
 
 ---
 
@@ -184,7 +168,7 @@ However, we should not overgeneralize "fast". Jev can be dramatically faster and
 
 ---
 
-**Decision Model vs Generative LLM**
+## Decision Model vs Generative LLM
 
 | Dimension | Decision Model / Jev | Generative LLM |
 |-----------|----------------------|----------------|
@@ -198,18 +182,9 @@ However, we should not overgeneralize "fast". Jev can be dramatically faster and
 | Writing and coding | Not the purpose | Strongest fit |
 | Small repeated routing decisions | Excellent fit | Works, often wasteful |
 
-**Why JSON mode is not the same thing**
-
-A common question is: "Can't I just use an LLM with structured output?" Structured generation (JSON mode, grammar-constrained decoding) solves **syntax and schema conformance**. The output will parse. But:
-
-- It still generates tokens, so the cost of autoregressive decoding remains.
-- A field like `"confidence": 0.9` is just another generated token sequence, not a statistically calibrated probability.
-
-A decision model returns **decision semantics** directly: here is the distribution over the allowed outcomes. Software can then route, gate, score, or escalate based on it.
-
 ---
 
-**Decision Model vs Traditional ML Classifier**
+## Decision Model vs Traditional ML Classifier
 
 This is the more subtle comparison, because both ultimately map inputs to probabilities over outcomes. The key difference is **task flexibility**.
 
@@ -253,7 +228,7 @@ Sebastian Raschka makes the same practical point in his article on text classifi
 
 ---
 
-**Confidence, Calibration, and "Hallucination"**
+## Confidence, Calibration, and "Hallucination"
 
 **Calibration is operationally valuable**
 
@@ -292,7 +267,7 @@ A better engineering phrase: a decision model is **schema-safe and output-bounde
 
 ---
 
-**Where Decision Models Are Useful**
+## Where Decision Models Are Useful
 
 Decision models fit anywhere software needs a fast, fuzzy, semantic judgment with a bounded answer:
 
@@ -314,7 +289,7 @@ On October 7, 2026, TypeSafe published a case study in which Jack & Jill replace
 
 ---
 
-**Recommended Architecture: Layered Decisions**
+## Recommended Architecture: Layered Decisions
 
 The strongest pattern is not "AI decides everything". It is a layered architecture where each component handles the kind of uncertainty it is best at:
 
@@ -357,7 +332,7 @@ The decision model never directly grants or denies access. It produces a probabi
 
 ---
 
-**API Implementation Pattern**
+## API Implementation Pattern
 
 The Jev endpoint is `POST https://api.typesafe.ai/v1/systemone`, and available models are listed at `GET /v1/models`. Below is a support-ticket example that mixes all three question types in one request:
 
@@ -446,7 +421,7 @@ Do not assume 0.5 is the right threshold. The UNFAIR-ToS result above shows how 
 
 ---
 
-**Limitations and Anti-Use-Cases**
+## Limitations and Anti-Use-Cases
 
 **Use something else when:**
 
@@ -466,7 +441,7 @@ Do not assume 0.5 is the right threshold. The UNFAIR-ToS result above shows how 
 
 ---
 
-**The Current Decision Model Landscape**
+## The Current Decision Model Landscape
 
 The category has grown quickly since Jev's launch. Projects now share a common product idea, bounded semantic decisions with probabilities, while implementing it with very different model families. "Decision model" is becoming an **interface and systems category** more than a single architecture. The emerging convention is:
 
@@ -562,7 +537,7 @@ Measure task accuracy, per-class precision/recall, calibration and Brier score, 
 
 ---
 
-**Which Technology Should You Choose?**
+## Which Technology Should You Choose?
 
 A simple rule is to choose the simplest technology that fits the task, by asking four questions in order:
 
@@ -586,7 +561,7 @@ If the answer to question 4 is no, the output is open-ended, and you are back to
 
 ---
 
-**Summary**
+## Summary
 
 Decision models fill a gap that has existed since LLMs became the default tool for everything: the many small, semantic, bounded decisions inside software that do not need generation at all.
 
@@ -601,7 +576,7 @@ Key takeaways:
 
 This space is very new and moving fast. Vendor benchmarks are a starting point, but always re-benchmark candidate models on your own workloads before adopting them in production.
 
-**References**
+## References
 
 - [TypeSafe AI — Introducing System One Models & Jev](https://typesafe.ai/blog/introducing-system-one-models-and-jev)
 - [TypeSafe API — OpenAPI / ReDoc](https://api.typesafe.ai/redoc)
