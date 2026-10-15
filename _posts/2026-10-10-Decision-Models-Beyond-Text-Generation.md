@@ -8,7 +8,7 @@ Over the past few years, most of us have used large language models (LLMs) for a
 
 This works, but it is wasteful. For a decision like "low, medium, high, or critical", the application does not need an essay. It needs one label and, ideally, a probability it can trust. Generating that answer token-by-token through a frontier model costs latency, money, and reliability, and the "confidence" an LLM writes in text is generally not a calibrated probability.
 
-On September 15, 2026, TypeSafe released **Jev**, its first public "System One Model", and the idea of a **decision model** suddenly became a category. Within a few weeks, Cloudflare, Fastino, Together, and others released open and hosted models around the same interface, and llama.cpp added native support. Then, between October 1 and 9, Perplexity, Liquid AI, OpenAI, and Microsoft each shipped decision-model products, so this is no longer a startup-only category. In this post I summarize what a decision model is, how Jev works, how it compares with LLMs and traditional ML classifiers, where it is useful, and how the ecosystem is shaping up as of October 2026.
+On September 15, 2026, TypeSafe released **Jev**, its first public "System One Model", and the idea of a **decision model** suddenly became a category. Within a few weeks, Cloudflare, Fastino, Together, and others released open and hosted models around the same interface, and llama.cpp added native support. In this post I summarize what a decision model is, how Jev works, how it compares with LLMs and traditional ML classifiers, where it is useful, and how the ecosystem is shaping up as of October 2026.
 
 ---
 
@@ -94,6 +94,8 @@ Is this prompt injection?
 ```
 
 Returns a probability of "yes / true". Several Noul questions together can also express multi-label decisions.
+
+The original Jev interface centers on three decision primitives: Choice, Score, and Noul. TypeSafe's current API also exposes experimental image/Box capabilities.
 
 **Why shared state matters**
 
@@ -285,10 +287,6 @@ Decision models fit anywhere software needs a fast, fuzzy, semantic judgment wit
 
 ![pic 6](/images/decision-model-6.jpg "pic 6")
 
-**A production case: candidate screening**
-
-On October 7, 2026, TypeSafe published a case study in which Jack & Jill replaced Gemini 3.1 Flash Lite with Jev for a candidate-screening stage. They report similar accuracy, roughly **50% faster** task completion, and **88% lower cost**. This is a vendor/customer case study, not an independent benchmark, but it shows the typical pattern: a small, high-volume decision that was previously done by a "cheap" LLM.
-
 ---
 
 ## Recommended Architecture: Layered Decisions
@@ -334,9 +332,198 @@ The decision model never directly grants or denies access. It produces a probabi
 
 ---
 
-## API Implementation Pattern
 
-The Jev endpoint is `POST https://api.typesafe.ai/v1/systemone`, and available models are listed at `GET /v1/models`. Below is a support-ticket example that mixes all three question types in one request:
+## API Pattern in One Glance
+
+Jev exposes a decision-native API at `POST https://api.typesafe.ai/v1/systemone`. A request combines shared `state` with one or more typed questions:
+
+```json
+{
+  "model": "jev-latest",
+  "state": {
+    "ticket": "Production is unavailable for three hours."
+  },
+  "questions": {
+    "category": {
+      "type": "choice",
+      "instructions": "Classify the support request.",
+      "criteria": {
+        "billing": "Payment or invoice issue",
+        "availability": "Service outage",
+        "configuration": "Configuration question"
+      }
+    },
+    "human_escalation": {
+      "type": "noul",
+      "instructions": "Should this be escalated immediately?"
+    }
+  }
+}
+```
+
+The response returns typed answers and probabilities that ordinary application code can consume directly. The full Python example is moved to **Appendix A**.
+
+**Production evaluation loop**
+
+Before putting a decision model in production, evaluate it on your own data:
+
+1. Collect historical labeled examples for each decision
+2. Run decision model predictions on them
+3. Measure per decision:
+   - precision, recall, and F1
+   - the business cost of false positives vs false negatives
+   - Brier score, calibration curve, and ECE
+   - latency and cost
+4. Choose thresholds based on the real loss function
+5. Split traffic into automate, abstain, and human-review
+6. Monitor drift and periodically recalibrate
+
+Do not assume 0.5 is the right threshold. The UNFAIR-ToS result above shows how much a tuned threshold can matter.
+
+---
+
+## Limitations and Anti-Use-Cases
+
+**Use something else when:**
+
+- You need generated text, code, translation, or summarization → use an **LLM**
+- Exact deterministic rules can answer the question → use **code**
+- You already have a stable, high-performing local classifier → **keep it**, unless flexibility brings real value
+- The decision is irreversible or regulated → use **deterministic safeguards and human review**
+
+**Weaknesses found in the independent study:**
+
+- Performance degraded on lower-resource languages
+- Fine-grained or noisy label taxonomies were harder
+- Legal-clause tasks and rubric-based quality judgments were weaker areas
+- Noul thresholds could be poorly positioned around a generic 0.5 cutoff
+
+**Benchmark caution:** Jev is proprietary and its training corpus is not public. The evaluation found unusually strong results on some calculation-heavy MMLU questions. The authors ruled out some shallow artifacts but could not rule out exposure to memorized question/answer content.
+
+---
+
+## The Current Decision Model Landscape
+
+The category has grown quickly since Jev's launch. Projects now share a common product idea, bounded semantic decisions with probabilities, while implementing it with very different model families. "Decision model" is becoming an **interface and systems category** more than a single architecture. The emerging convention is:
+
+```
+state + typed questions + allowed outcomes → probabilities
+```
+
+increasingly exposed through a Jev/System One-compatible `/v1/systemone` API.
+
+![pic 4](/images/decision-model-4.jpg "pic 4")
+
+**Four architectural families**
+
+**A. Encoder-native, non-generative models**
+
+```
+state + questions → bidirectional encoder → classification / schema head
+```
+
+These score labels directly in one forward pass. They are the smallest and most CPU-friendly members of the landscape, a good fit for high-volume classification, support routing, and on-prem or air-gapped workloads. Examples: **GLiNER2.5-Decide**, **Laya**, and Liquid AI's experimental **d1-omni-600M** (encoder-based, with vision and audio encoders).
+
+**B. Foundation model + dedicated decision head**
+
+```
+state + questions → large pretrained backbone → joint schema / decision head
+```
+
+A large backbone supplies broad semantic and world knowledge, and a separate head scores only the permitted options instead of generating prose. This brings long context and multimodal potential. Examples: Cloudflare **Clef**, **Clef-Flash**, **Clef-Omni**, **Microsoft-Decision-1**, Perplexity **pplx-decider-v1.1-27b**, and Liquid AI **d1-3B**. The last three are placed here by backbone, since their head designs are not equally documented.
+
+**C. Contrastive state/action models**
+
+```
+state encoder + action encoder → embeddings (cached candidates) → similarity → rank / probability
+```
+
+State and candidate actions are embedded separately, and decisions come from similarity scores. Since candidate embeddings can be cached, this is a natural fit for recurring tools, actions, and agent routes. Example: **CLM-8B**.
+
+**D. Adaptive reasoning decision models**
+
+```
+fast decision pass → uncertainty / difficulty gate → extra compute → typed decision
+```
+
+These keep a typed decision interface but spend additional compute when the first pass is uncertain. They blur the line between fast System 1 classification and deeper System 2 reasoning. Example: Fastino **GLiDE**.
+
+**Adjacent: constrained generative classifiers**
+
+Together's **Tev1-4B** is Jev-inspired but keeps an ordinary autoregressive language-model output head to emit a choice token. It is useful and easy to reproduce with existing LLM tooling, but architecturally it is still a generative model, so I do not count it as a fifth core family.
+
+**Hosted, placement not public**
+
+Some products expose a typed decision API but do not disclose enough about the model to place it in a family: TypeSafe **Jev**, OpenAI **GPT-6 Luna Decisions**, and Liquid AI's hosted **d1**. Treat them as black-box decision services and evaluate them on behavior.
+
+**Representative implementations**
+
+The ecosystem is moving quickly, so the table below uses five models to represent the major architectural and deployment patterns rather than cataloging every release.
+
+| Model | Organization | Family / Scale | Deployment | Why it is representative |
+|-------|--------------|----------------|------------|--------------------------|
+| Jev | TypeSafe AI | Proprietary; topology and size undisclosed | Hosted API | Reference commercial implementation of typed probabilistic decisions |
+| Clef | Cloudflare | Foundation model + joint schema head; Qwen3.8-27B backbone | Apache 2.0; Workers AI or self-hosted | Open-weight, high-capability general decision model |
+| GLiNER2.5-Decide | Fastino | Encoder-native; ~340M | Apache 2.0; local CPU/GPU or API | Compact, private, CPU-friendly decision model |
+| CLM-8B | Contrastive-LM | Contrastive state/action encoders based on Qwen3-8B | Apache 2.0; self-hosted | Natural fit for agent routing, tool selection, and ranking |
+| GLiDE | Fastino | Adaptive reasoning decision model | Hosted API | Represents models that spend extra compute only on harder bounded decisions |
+
+Other notable 2026 entrants include **OpenAI GPT-6 Luna Decisions, Microsoft-Decision-1, Liquid AI d1, Perplexity pplx-decider, Laya, Clef-Flash, and Clef-Omni**. They reinforce the same broader trend: decision models are becoming an interface and systems category implemented with several different architectures.
+
+**Tradeoffs by family**
+
+| Family | Main advantage | Main tradeoff | Where to test it first |
+|--------|----------------|---------------|------------------------|
+| Encoder-native | Smallest footprint, one pass, CPU/on-prem | Less world knowledge; shorter context | Support routing, moderation, private workflows |
+| Foundation + head | Broad pretrained semantics without generation | Large GPU footprint when self-hosted | Agent routing, multimodal policy, complex classification |
+| Contrastive | Cached candidate embeddings; natural ranking | Probabilities are relative to the candidate set | Tool selection, next action, rerankers |
+| Adaptive reasoning | Extra compute only when needed | Less predictable latency and cost; more proprietary | High-stakes or multi-hop bounded choices |
+| Constrained generative | Easy to build from existing LLM stacks | Still autoregressive | Experiments, custom fine-tuning |
+
+---
+
+## Which Technology Should You Choose?
+
+A simple rule is to choose the simplest technology that fits the task, by asking four questions in order:
+
+1. **Do you need to generate text or code?** → **Generative LLM** (reasoning, authoring, summarization, coding)
+2. **Can deterministic rules decide it?** → **Code / rules** (most reliable, cheapest, easiest to audit)
+3. **Is it a stable task with lots of labeled data?** → **Traditional ML classifier** (specialized, high-throughput prediction)
+4. **Is the answer bounded (choice, score, yes/no, route, rank)?** → **Decision model** (zero-shot semantic decisions without generation)
+
+If the answer to question 4 is no, the output is open-ended, and you are back to an LLM.
+
+![pic 5](/images/decision-model-5.jpg "pic 5")
+
+| | Traditional ML | Decision Model | LLM |
+|---|---|---|---|
+| Task flexibility | Low | High | Very high |
+| Task-specific training | Usually yes | No, initially | No |
+| Output | Label / probability | Typed decision / probability | Generated tokens |
+| Generation | No | No | Yes |
+| Typical raw latency | Lowest | Very low for semantic decisions | Higher |
+| Best role | Stable specialized predictor | Software decision layer | Reasoner / author |
+
+---
+
+## Summary
+
+Decision models fill a gap that has existed since LLMs became the default tool for everything: the many small, semantic, bounded decisions inside software that do not need generation at all.
+
+Key takeaways:
+
+- A decision model maps **state + question + allowed outcomes** to **probabilities**, instead of generating text.
+- Its value comes from combining **LLM-like zero-shot flexibility** with **classifier-like bounded outputs**, usable probabilities, and much lower inference cost.
+- It is **schema-safe, not truth-safe**: it cannot invent a label, but it can still pick the wrong one.
+- **Calibration and threshold tuning** are what turn probabilities into reliable selective automation.
+- The best architecture is **layered**: LLMs reason and write, decision models judge, deterministic code holds authority, and humans handle the uncertain and irreversible.
+- Jev started the category, but "decision model" is now an **ecosystem and an interface** (`/v1/systemone`) spanning encoder-native, foundation-plus-head, contrastive, and adaptive-reasoning designs.
+
+This space is very new and moving fast. Vendor benchmarks are a starting point, but always re-benchmark candidate models on your own workloads before adopting them in production.
+
+## Appendix A — Full Jev API Example
+
+The main article keeps the API discussion intentionally short. This appendix preserves a complete Python example showing Choice, Score, and Noul questions in one request.
 
 ```python
 import os
@@ -402,203 +589,9 @@ else:
     continue_standard_workflow()
 ```
 
-Note how the `criteria` field changes meaning with the question type: a dictionary of labeled options for Choice, an ordered list of rubric levels for Score, and nothing at all for Noul.
-
-**Production evaluation loop**
-
-Before putting a decision model in production, evaluate it on your own data:
-
-1. Collect historical labeled examples for each decision
-2. Run decision model predictions on them
-3. Measure per decision:
-   - precision, recall, and F1
-   - the business cost of false positives vs false negatives
-   - Brier score, calibration curve, and ECE
-   - latency and cost
-4. Choose thresholds based on the real loss function
-5. Split traffic into automate, abstain, and human-review
-6. Monitor drift and periodically recalibrate
-
-Do not assume 0.5 is the right threshold. The UNFAIR-ToS result above shows how much a tuned threshold can matter.
+For `criteria`, Choice uses a dictionary of labeled alternatives, Score uses an ordered list of rubric levels, and Noul needs no criteria. In production, derive decision thresholds from validation data rather than choosing them arbitrarily.
 
 ---
-
-## Limitations and Anti-Use-Cases
-
-**Use something else when:**
-
-- You need generated text, code, translation, or summarization → use an **LLM**
-- Exact deterministic rules can answer the question → use **code**
-- You already have a stable, high-performing local classifier → **keep it**, unless flexibility brings real value
-- The decision is irreversible or regulated → use **deterministic safeguards and human review**
-
-**Weaknesses found in the independent study:**
-
-- Performance degraded on lower-resource languages
-- Fine-grained or noisy label taxonomies were harder
-- Legal-clause tasks and rubric-based quality judgments were weaker areas
-- Noul thresholds could be poorly positioned around a generic 0.5 cutoff
-
-**Benchmark caution:** Jev is proprietary and its training corpus is not public. The evaluation found unusually strong results on some calculation-heavy MMLU questions. The authors ruled out some shallow artifacts but could not rule out exposure to memorized question/answer content.
-
----
-
-## The Current Decision Model Landscape
-
-The category has grown quickly since Jev's launch. Between October 1 and 9 alone, Perplexity, Liquid AI, OpenAI, and Microsoft each shipped decision-model products. Projects now share a common product idea, bounded semantic decisions with probabilities, while implementing it with very different model families. "Decision model" is becoming an **interface and systems category** more than a single architecture. The emerging convention is:
-
-```
-state + typed questions + allowed outcomes → probabilities
-```
-
-exposed through a small number of compatible APIs, most commonly the Jev/System One-style `/v1/systemone` endpoint, with OpenAI's `/v1/decisions` as a second dialect.
-
-![pic 4](/images/decision-model-4.jpg "pic 4")
-
-**Four architectural families**
-
-**A. Encoder-native, non-generative models**
-
-```
-state + questions → bidirectional encoder → classification / schema head
-```
-
-These score labels directly in one forward pass. They are the smallest and most CPU-friendly members of the landscape, a good fit for high-volume classification, support routing, and on-prem or air-gapped workloads. Examples: **GLiNER2.5-Decide**, **Laya**, and Liquid AI's experimental **d1-omni-600M** (encoder-based, with vision and audio encoders).
-
-**B. Foundation model + dedicated decision head**
-
-```
-state + questions → large pretrained backbone → joint schema / decision head
-```
-
-A large backbone supplies broad semantic and world knowledge, and a separate head scores only the permitted options instead of generating prose. This brings long context and multimodal potential. Examples: Cloudflare **Clef**, **Clef-Flash**, **Clef-Omni**, **Microsoft-Decision-1**, Perplexity **pplx-decider-v1.1-27b**, and Liquid AI **d1-3B**. The last three are placed here by backbone, since their head designs are not equally documented.
-
-**C. Contrastive state/action models**
-
-```
-state encoder + action encoder → embeddings (cached candidates) → similarity → rank / probability
-```
-
-State and candidate actions are embedded separately, and decisions come from similarity scores. Since candidate embeddings can be cached, this is a natural fit for recurring tools, actions, and agent routes. Example: **CLM-8B**.
-
-**D. Adaptive reasoning decision models**
-
-```
-fast decision pass → uncertainty / difficulty gate → extra compute → typed decision
-```
-
-These keep a typed decision interface but spend additional compute when the first pass is uncertain. They blur the line between fast System 1 classification and deeper System 2 reasoning. Example: Fastino **GLiDE**.
-
-**Adjacent: constrained generative classifiers**
-
-Together's **Tev1-4B** is Jev-inspired but keeps an ordinary autoregressive language-model output head to emit a choice token. It is useful and easy to reproduce with existing LLM tooling, but architecturally it is still a generative model, so I do not count it as a fifth core family.
-
-**Hosted, placement not public**
-
-Some products expose a typed decision API but do not disclose enough about the model to place it in a family: TypeSafe **Jev**, OpenAI **GPT-6 Luna Decisions**, and Liquid AI's hosted **d1**. Treat them as black-box decision services and evaluate them on behavior.
-
-**Notable implementations**
-
-| Model | Organization | Architecture / Scale | Modalities | Deployment | Best-fit role |
-|-------|--------------|----------------------|------------|------------|---------------|
-| Jev | TypeSafe AI | Proprietary; topology and size undisclosed | Structured state / text | Hosted API | Reference commercial implementation; calibrated typed decisions |
-| Clef | Cloudflare | Qwen3.8-27B backbone + joint schema head | Text, JSON, image, video | Apache 2.0; Workers AI or self-hosted | High-capability general decision model |
-| Clef-Flash | Cloudflare | Qwen3.5-9B backbone + joint schema head | Text, JSON, image, video | Apache 2.0; Workers AI or self-hosted | Low-latency routing, classification, guardrails |
-| Clef-Omni | Cloudflare | Qwen3-Omni 30B-A3B MoE + joint schema head (~3B active) | Text, JSON, image, audio, video | Apache 2.0; Workers AI or self-hosted | Multimodal decisions without separate transcription/vision chains |
-| GLiNER2.5-Decide | Fastino | ~340M schema-aware encoder, constrained decoding | Text | Apache 2.0; local CPU/GPU or API | Small, private, air-gapped classification |
-| Laya | ConvAI Innovations | 421M ModernBERT (multilingual variant on mmBERT) | Text / JSON-like state | Apache 2.0; self-hosted | Compact non-autoregressive decisions, multilingual routing |
-| CLM-8B | Contrastive-LM | Frozen Qwen3-8B encoders + ~20M projection heads | Primarily text | Apache 2.0; self-hosted | Agent routing, tool selection, ranking, best-of-N verification |
-| GLiDE | Fastino | Adaptive "thinking decision model"; not publicly detailed | Structured / text | Hosted API | Harder multi-hop choices, large action spaces |
-| Tev1-4B | Together | Qwen3.5-4B + LoRA/SFT, ordinary LM head | Text | Open recipe / checkpoint | Reproduction and custom fine-tuning |
-| GPT-6 Luna Decisions | OpenAI | Built on gpt-6-luna; architecture undisclosed. `predicate` / `choice` / `score` questions with probability and confidence fields | Text, images | Hosted `/v1/decisions` API; $0.10 / M input tokens | Frontier-lab hosted comparator for Jev (released Oct 6) |
-| Microsoft-Decision-1 | Microsoft | Qwen3.5-9B post-trained for single-pass decision scoring; head design not detailed | Text only; ~32K context (reported) | Hosted (Microsoft Foundry, OpenRouter); weights not distributed | Managed routing, gating, prioritization, rubric scoring (released Oct 8–9); Microsoft excludes sole-model use for consequential decisions about people |
-| d1 / d1-3B / d1-omni-600M | Liquid AI | Hosted d1 undisclosed; d1-3B ~3.1B on LFM2.5-VL-3B; d1-omni-600M (experimental) on LFM2.5-Encoder-350M + vision/audio encoders | d1-3B: text, images. d1-omni-600M: text with images or audio | Hosted d1; open weights for d1-3B and d1-omni-600M under LFM Open License v1.0 (not Apache 2.0) | Edge and on-device multimodal decisions |
-| pplx-decider-v1.1-27b | Perplexity | Qwen3.8-27B with LM head replaced by a 255-answer-code readout; noncausal attention in v1.1 | Text, JSON, images | Apache 2.0; Perplexity API, OpenRouter, or self-hosted on SGLang via `/v1/systemone` | Wide option sets (choice up to 255, score up to 10 levels) |
-
-**Tradeoffs by family**
-
-| Family | Main advantage | Main tradeoff | Where to test it first |
-|--------|----------------|---------------|------------------------|
-| Encoder-native | Smallest footprint, one pass, CPU/on-prem | Less world knowledge; shorter context | Support routing, moderation, private workflows |
-| Foundation + head | Broad pretrained semantics without generation | Large GPU footprint when self-hosted | Agent routing, multimodal policy, complex classification |
-| Contrastive | Cached candidate embeddings; natural ranking | Probabilities are relative to the candidate set | Tool selection, next action, rerankers |
-| Adaptive reasoning | Extra compute only when needed | Less predictable latency and cost; more proprietary | High-stakes or multi-hop bounded choices |
-| Constrained generative | Easy to build from existing LLM stacks | Still autoregressive | Experiments, custom fine-tuning |
-
-**Ecosystem signals**
-
-- **API convergence** — Cloudflare Clef and CLM expose Jev/System One-compatible request shapes, which lowers the switching cost between providers.
-- **Local runtime support** — llama.cpp added a `/v1/systemone` endpoint for supported decision models in October 2026, a sign the interface is moving beyond a single vendor.
-- **Multimodality** — Clef-Omni makes decisions directly on text, image, audio, and video, so "decision model" no longer means only text classification.
-- **Frontier labs and platforms enter** — OpenAI's Decisions API (Oct 6) and Microsoft-Decision-1 (Oct 8–9) arrived within days of each other, alongside Perplexity and Liquid AI.
-- **Two request dialects, one vocabulary** — Jev and Perplexity use `noul` / `choice` / `score` (and `/v1/systemone` on SGLang), while OpenAI uses `predicate` / `choice` / `score` on `/v1/decisions`. Gateways such as Vercel AI Gateway already serve both Jev and OpenAI decision models.
-- **Edge and on-device decisions** — Liquid AI's d1-3B and d1-omni-600M target edge hardware, with a vendor-reported ~8 ms per short question on an RTX 4090 and 16–50 ms on NVIDIA Jetson devices.
-
-**A practical benchmark set for enterprise evaluation**
-
-Rather than picking a winner from vendor benchmarks, compare models on the same private workload and thresholds. A useful baseline, with optional additions for the October entrants:
-
-```
-Jev               → hosted proprietary reference
-Clef-Flash        → open-weight general decision model
-GLiNER2.5-Decide  → compact local / CPU-friendly baseline
-CLM-8B            → agent/action-ranking specialist
-GLiDE (optional)  → harder decisions that may benefit from adaptive reasoning
-```
-
-Optional additions:
-
-```
-Microsoft-Decision-1  → head-to-head with Clef-Flash (both Qwen3.5-9B-based)
-pplx-decider-v1.1-27b → head-to-head with Clef (both Qwen3.8-27B-based); wide option sets up to 255
-d1-3B / d1-omni-600M  → edge and multimodal tier, beside GLiNER2.5-Decide and Laya
-GPT-6 Luna Decisions  → frontier-lab hosted comparator against Jev
-```
-
-Vendors such as Liquid AI and Perplexity publish their own "Decision Index" scores on vendor-chosen comparison sets, so those numbers are a reason to test, not a ranking.
-
-Measure task accuracy, per-class precision/recall, calibration and Brier score, abstention quality, p50/p95 latency, throughput, infrastructure cost, context limits, privacy requirements, and behavior under taxonomy changes. For routing or authorization, evaluate the full application loss function, not model accuracy alone.
-
----
-
-## Which Technology Should You Choose?
-
-A simple rule is to choose the simplest technology that fits the task, by asking four questions in order:
-
-1. **Do you need to generate text or code?** → **Generative LLM** (reasoning, authoring, summarization, coding)
-2. **Can deterministic rules decide it?** → **Code / rules** (most reliable, cheapest, easiest to audit)
-3. **Is it a stable task with lots of labeled data?** → **Traditional ML classifier** (specialized, high-throughput prediction)
-4. **Is the answer bounded (choice, score, yes/no, route, rank)?** → **Decision model** (zero-shot semantic decisions without generation)
-
-If the answer to question 4 is no, the output is open-ended, and you are back to an LLM.
-
-![pic 5](/images/decision-model-5.jpg "pic 5")
-
-| | Traditional ML | Decision Model | LLM |
-|---|---|---|---|
-| Task flexibility | Low | High | Very high |
-| Task-specific training | Usually yes | No, initially | No |
-| Output | Label / probability | Typed decision / probability | Generated tokens |
-| Generation | No | No | Yes |
-| Typical raw latency | Lowest | Very low for semantic decisions | Higher |
-| Best role | Stable specialized predictor | Software decision layer | Reasoner / author |
-
----
-
-## Summary
-
-Decision models fill a gap that has existed since LLMs became the default tool for everything: the many small, semantic, bounded decisions inside software that do not need generation at all.
-
-Key takeaways:
-
-- A decision model maps **state + question + allowed outcomes** to **probabilities**, instead of generating text.
-- Its value comes from combining **LLM-like zero-shot flexibility** with **classifier-like bounded outputs**, usable probabilities, and much lower inference cost.
-- It is **schema-safe, not truth-safe**: it cannot invent a label, but it can still pick the wrong one.
-- **Calibration and threshold tuning** are what turn probabilities into reliable selective automation.
-- The best architecture is **layered**: LLMs reason and write, decision models judge, deterministic code holds authority, and humans handle the uncertain and irreversible.
-- Jev started the category, but it is now one member of a fast-forming **ecosystem**, reinforced by October entries from OpenAI, Microsoft, Liquid AI, and Perplexity. The interface (`/v1/systemone`, plus OpenAI's `/v1/decisions`) spans encoder-native, foundation-plus-head, contrastive, and adaptive-reasoning designs.
-
-This space is very new and moving fast. Vendor benchmarks are a starting point, but always re-benchmark candidate models on your own workloads before adopting them in production.
 
 ## References
 
@@ -606,7 +599,6 @@ This space is very new and moving fast. Vendor benchmarks are a starting point, 
 - [TypeSafe API — OpenAPI / ReDoc](https://api.typesafe.ai/redoc)
 - [Deußer, Sparrenberg & Sifa — Evaluating and Benchmarking Jev (arXiv:2609.37647)](https://arxiv.org/abs/2609.37647)
 - [Sebastian Raschka — Language Models for Text Classification: From Bag-of-Words to Jev](https://magazine.sebastianraschka.com)
-- [TypeSafe AI — Jack & Jill & Jev case study](https://typesafe.ai/blog/jack-jill-jev-case-study)
 - [Cloudflare — Introducing Clef](https://blog.cloudflare.com/clef-decision-models)
 - [Cloudflare — Clef model card](https://huggingface.co/Cloudflare/clef)
 - [Fastino — GLiNER2.5-Decide and GLiDE](https://fastino.ai)
