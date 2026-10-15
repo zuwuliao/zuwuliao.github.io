@@ -495,15 +495,6 @@ If the answer to question 4 is no, the output is open-ended, and you are back to
 
 ![pic 5](/images/decision-model-5.jpg "pic 5")
 
-| | Traditional ML | Decision Model | LLM |
-|---|---|---|---|
-| Task flexibility | Low | High | Very high |
-| Task-specific training | Usually yes | No, initially | No |
-| Output | Label / probability | Typed decision / probability | Generated tokens |
-| Generation | No | No | Yes |
-| Typical raw latency | Lowest | Very low for semantic decisions | Higher |
-| Best role | Stable specialized predictor | Software decision layer | Reasoner / author |
-
 ---
 
 ## Summary
@@ -517,7 +508,7 @@ Key takeaways:
 - It is **schema-safe, not truth-safe**: it cannot invent a label, but it can still pick the wrong one.
 - **Calibration and threshold tuning** are what turn probabilities into reliable selective automation.
 - The best architecture is **layered**: LLMs reason and write, decision models judge, deterministic code holds authority, and humans handle the uncertain and irreversible.
-- Jev started the category, but "decision model" is now an **ecosystem and an interface** (`/v1/systemone`) spanning encoder-native, foundation-plus-head, contrastive, and adaptive-reasoning designs.
+- Jev popularized the modern decision-model category, but "decision model" is now an **ecosystem and an interface** (`/v1/systemone`) spanning encoder-native, foundation-plus-head, contrastive, and adaptive-reasoning designs.
 
 This space is very new and moving fast. Vendor benchmarks are a starting point, but always re-benchmark candidate models on your own workloads before adopting them in production.
 
