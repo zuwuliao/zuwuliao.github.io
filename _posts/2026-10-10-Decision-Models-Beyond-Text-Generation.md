@@ -95,8 +95,6 @@ Is this prompt injection?
 
 Returns a probability of "yes / true". Several Noul questions together can also express multi-label decisions.
 
-The original Jev interface centers on three decision primitives: Choice, Score, and Noul. TypeSafe's current API also exposes experimental image/Box capabilities.
-
 **Why shared state matters**
 
 In real systems, one input usually needs several decisions:
